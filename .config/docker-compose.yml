@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: forgeiq_frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      DB_URI: ${DB_URI}
+      DB_NAME: ${DB_NAME:-forgeiq}
+      SESSION_PASSWORD: ${SESSION_PASSWORD}
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-forgeiq_session}
+      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:5000}
+      NEXT_PUBLIC_BACKEND2_URL: ${NEXT_PUBLIC_BACKEND2_URL:-http://localhost:5001}
+    depends_on:
+      backend1:
+        condition: service_healthy
+      backend2:
+        condition: service_healthy
+
+  backend1:
+    build:
+      context: ../backend1
+      dockerfile: Dockerfile
+    container_name: forgeiq_backend1
+    restart: unless-stopped
+    ports:
+      - "${BACKEND1_PORT:-5000}:5000"
+    environment:
+      FLASK_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+
+  backend2:
+    build:
+      context: ../backend2
+      dockerfile: Dockerfile
+    container_name: forgeiq_backend2
+    restart: unless-stopped
+    ports:
+      - "${BACKEND2_PORT:-5001}:5001"
+    environment:
+      FLASK_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - backend2_results:/app/result
+
+volumes:
+  backend2_results:

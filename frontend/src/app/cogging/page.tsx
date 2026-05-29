@@ -1,0 +1,142 @@
+"use client";
+
+import { PiCompassTool } from "react-icons/pi";
+import { MdOutlineUnfoldMore } from "react-icons/md";
+import TrainDataForm from "./train_data/default";
+import { useState } from "react";
+import PassSchedule from "./pass_schedule/default";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import Link from "next/link";
+import Image from "next/image";
+import logo from "../../../public/logo.png"
+import { FaUserCircle } from "react-icons/fa";
+import { IoIosHelp, IoMdHelp } from "react-icons/io";
+import { logout } from "../auth/lib/actions";
+import HelpHeader from "./help";
+import LeaveMessage from "./leavemessage";
+import { useUser } from "@/lib/user";
+import { useT } from "@/lib/i18n";
+import { LangSwitcher } from "@/components/our/lang-switcher";
+import { ProgramHeader, TabStrip } from "@/components/our/program-header";
+import { ProgramHero } from "@/components/our/program-hero";
+import { useNotifications, NotifBadge, NotifDot } from "@/components/our/notification-context";
+import { toggleAiAssistant } from "@/components/our/ai-assistant";
+import { HiSparkles } from "react-icons/hi2";
+
+const tabs: [string, (states: any, setStates: any) => React.ReactNode][] = [
+    ["svc.train_model", (states, setStates) => (<TrainDataForm states={states} setStates={setStates} />)],
+    ["svc.pass_schedule", (state, setState) => (<PassSchedule />)],
+]
+
+export function Header({ minimize = false, first, second }) {
+    let user = useUser()
+    const { t } = useT();
+    const { counts } = useNotifications();
+    const totalUnread = counts.unreadReplies + (counts.isSuper ? counts.pendingMessages : 0);
+
+    return (
+        <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+                <Link href={"/"} className="flex items-center">{first}</Link>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>{second}</DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="font-public min-w-[220px]">
+                        <DropdownMenuItem className="cursor-pointer"><Link href={"/workflow"} className="w-full flex items-center gap-2"><HiSparkles className="text-amber-500" />Auto Pipeline</Link></DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer"><Link href={"/cogging"} className="w-full">{t("nav.cogging")}</Link></DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer"><Link href={"/processing_map"} className="w-full">{t("nav.processing_map")}</Link></DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer"><Link href={"/3d_preform"} className="w-full">{t("nav.preform_3d")}</Link></DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+            <div className="flex items-center font-public gap-x-2">
+                <LangSwitcher />
+                <button
+                    type="button"
+                    onClick={toggleAiAssistant}
+                    title="Ask AI"
+                    className="cursor-pointer flex items-center gap-1.5 px-3 h-9 rounded-md text-sm font-medium transition-all bg-gradient-to-br from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 text-indigo-700 border border-indigo-200/60"
+                >
+                    <HiSparkles className="text-amber-500" />
+                    Ask AI
+                </button>
+                {!minimize && (
+                    <>
+                        <HelpHeader trigger={
+                            <button type="button" className="cursor-pointer flex items-center gap-1.5 text-slate-700 hover:text-slate-900 px-3 h-9 rounded-md hover:bg-slate-100 text-sm font-medium transition-colors">
+                                <IoMdHelp className="text-base" />
+                                {t("nav.help")}
+                            </button>
+                        } />
+                        <LeaveMessage trigger={
+                            <button type="button" className="cursor-pointer flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3.5 h-9 rounded-md text-sm font-medium transition-colors">
+                                {t("nav.leave_message")}
+                            </button>
+                        } />
+                    </>
+                )}
+                <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                        <button type="button" className="ml-1 relative w-9 h-9 cursor-pointer rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white flex items-center justify-center text-sm font-semibold hover:opacity-90 transition-opacity">
+                            {(user?.name && user.name.length > 0) ? user.name[0].toUpperCase() : "?"}
+                            <NotifDot show={totalUnread > 0} />
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="font-public mr-2 min-w-[200px]">
+                        {user?.name && (
+                            <div className="px-2 py-2 border-b mb-1">
+                                <div className="text-sm font-medium text-slate-900 truncate">{user.name}</div>
+                                {user.email && <div className="text-xs text-slate-500 truncate">{user.email}</div>}
+                            </div>
+                        )}
+                        <Link href={"/history"}><DropdownMenuItem className="cursor-pointer">{t("nav.history")}</DropdownMenuItem></Link>
+                        <Link href={counts.isSuper ? "/super/message" : "/message"}>
+                            <DropdownMenuItem className="cursor-pointer flex items-center justify-between gap-3">
+                                <span>{t("nav.messages")}</span>
+                                <NotifBadge count={counts.isSuper ? counts.pendingMessages : counts.unreadReplies} />
+                            </DropdownMenuItem>
+                        </Link>
+                        <DropdownMenuItem
+                            className="cursor-pointer text-red-600 focus:text-red-700"
+                            onSelect={(e) => {
+                                e.preventDefault();
+                                try { window.localStorage.removeItem("welcome_modal_seen_v1"); } catch {}
+                                void logout();
+                            }}
+                        >
+                            {t("nav.logout")}
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </div>
+    )
+}
+
+export default function Page () {
+    const { t } = useT();
+    let [activeTab, setActiveTab] = useState(0);
+    let [states, setStates] = useState({ trainData: { status: "steady", obj: {} }, trainDataCorrection: { status: "steady", obj: {} } });
+
+    return (
+        <div className="font-public min-h-screen body-cogging">
+            <ProgramHeader title={t("nav.cogging")} accent="blue" />
+            <ProgramHero variant="cogging" />
+            <TabStrip
+                tabs={tabs.map(([key]) => t(key as any))}
+                active={activeTab}
+                onChange={setActiveTab}
+                accent="blue"
+            />
+            <div className="px-6 lg:px-8 py-6">
+                {tabs[activeTab][1](states, setStates)}
+            </div>
+        </div>
+    )
+}

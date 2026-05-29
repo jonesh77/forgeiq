@@ -1,0 +1,62 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# ---- venvs ----
+venv/
+env/
+.env
+.venv/
+
+# ---- Node ----
+node_modules/
+.pnp/
+.pnp.js
+.pnp.cjs
+
+# ---- Next.js ----
+.next/
+out/
+.next-build/
+next-env.d.ts
+*.tsbuildinfo
+
+# ---- Env files (keep .env.example tracked) ----
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ---- Build artifacts ----
+backend2/result/*.stl
+backend2/result/*.STL
+
+# ---- Large sample files (exceed GitHub 100 MB limit) ----
+# Download separately and place into sample_data/ — see README.
+sample_data/*.h5
+sample_data/*.npy
+
+# ---- Personal scratch (notes, credentials, ad-hoc) ----
+New folder/
+*.tmp
+notes-*.txt
+secrets*.txt
+
+# ---- Editor / OS ----
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# ---- Compiled launchers (rebuilt by .config/run*.cpp) ----
+# Keep these tracked if you want to ship pre-built; uncomment to ignore:
+# run.exe
+# run_first_time.exe

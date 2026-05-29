@@ -1,0 +1,11 @@
+flask==3.1.1
+flask-cors==6.0.1
+numpy==1.23.5
+pandas==1.5.3
+numpy-stl==3.2.0
+scikit-image==0.24.0
+pymeshlab==2023.12
+trimesh==4.7.3
+pyvista==0.46.1
+tensorflow==2.10.1
+waitress==3.0.2
