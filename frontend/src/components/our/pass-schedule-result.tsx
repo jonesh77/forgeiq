@@ -13,6 +13,20 @@ import { MdTrendingDown, MdSpeed } from "react-icons/md";
 import { TbArrowsMaximize, TbCircleDot, TbStack3 } from "react-icons/tb";
 import { ForgingBanner } from "@/components/our/forging-banner";
 
+export interface PassFeasibility {
+  max_press_force_tons: number;
+  initial_temp_C: number;
+  temp_drop_per_pass_C: number;
+  min_temp_C: number;
+  force_tons_per_pass: number[];
+  temperatures_C: number[];
+  force_warnings: boolean[];
+  temp_warnings: boolean[];
+  any_force_overload: boolean;
+  any_temp_too_low: boolean;
+  all_passes_feasible: boolean;
+}
+
 export interface PassScheduleData {
   feed: number;
   depth_schedule: number;
@@ -22,6 +36,8 @@ export interface PassScheduleData {
   length_changes: number[];
   cutting_lengths: string[];
   void_closure: number[];
+  /** Equipment-aware feasibility report (added in Faza B №1). */
+  feasibility?: PassFeasibility;
 }
 
 export function PassScheduleResult({ data }: { data: PassScheduleData }) {
@@ -43,6 +59,9 @@ export function PassScheduleResult({ data }: { data: PassScheduleData }) {
         <div className="hidden sm:block w-px h-10 bg-slate-200"></div>
         <Metric icon={<MdSpeed />} label="Avg void closure" value={`${avgVoid.toFixed(1)}%`} />
       </div>
+
+      {/* Equipment-aware feasibility report */}
+      {data.feasibility && <FeasibilityPanel f={data.feasibility} />}
 
       {/* 3 mechanical KPI cards (large) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -103,16 +122,18 @@ export function PassScheduleResult({ data }: { data: PassScheduleData }) {
         <div className="flex items-end gap-3 h-32">
           {data.length_changes.map((_, i) => {
             const max = Math.max(...data.length_changes);
-            const min = Math.min(...data.length_changes);
-            // size depends on remaining cross-section proportionally
-            const factor = data.length_changes[i] / max;
-            const heightPct = 30 + (1 - factor) * 60; // bigger as we reduce (rotated metaphor)
-            const widthPct = factor * 100;
+            // Visualise the *cross-section* metaphor: as length grows the
+            // cross-section shrinks (volume conservation), so smaller bars =
+            // later passes. Compute heights as explicit pixels — using % on
+            // an undeclared-height parent rendered 0px.
+            const factor = data.length_changes[i] / (max || 1);     // 0..1
+            const heightPx = Math.max(10, 30 + (1 - factor) * 70);  // 30–100 px
+            const widthPx = Math.max(14, 20 + (1 - factor) * 50);   // 20–70 px
             return (
               <div key={i} className="flex-1 flex flex-col items-center gap-2">
                 <div
-                  className="rounded-sm bg-gradient-to-b from-slate-300 to-slate-500"
-                  style={{ width: `${20 + widthPct * 0.5}px`, height: `${heightPct}%` }}
+                  className="rounded-sm bg-gradient-to-b from-slate-300 to-slate-500 shadow-sm"
+                  style={{ width: `${widthPx}px`, height: `${heightPx}px` }}
                 />
                 <div className="text-[10px] text-slate-500 font-medium">P{i + 1}</div>
               </div>
@@ -265,6 +286,77 @@ function LegendDot({ color, label }: { color: string; label: string }) {
     <div className="flex items-center gap-1.5">
       <span className={"w-2 h-2 rounded-full " + color}></span>
       <span className="text-slate-600">{label}</span>
+    </div>
+  );
+}
+
+/* ----------------------- Equipment-aware feasibility ----------------------- */
+function FeasibilityPanel({ f }: { f: PassFeasibility }) {
+  const ok = f.all_passes_feasible;
+  const borderColor = ok ? "border-emerald-200" : "border-amber-300";
+  const bgColor = ok ? "from-emerald-50 to-teal-50" : "from-amber-50 to-rose-50";
+  const headerIcon = ok ? "✓" : "⚠";
+  const headerLabel = ok ? "All 7 passes feasible on your equipment" : "Some passes exceed your equipment limits";
+
+  return (
+    <div className={"rounded-2xl border bg-gradient-to-r p-5 shadow-sm " + borderColor + " " + bgColor}>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <div className="text-[10px] uppercase tracking-widest font-semibold text-slate-700">
+            Equipment feasibility · slab-method estimate
+          </div>
+          <h3 className={"text-lg font-semibold mt-0.5 " + (ok ? "text-emerald-800" : "text-amber-900")}>
+            {headerIcon} {headerLabel}
+          </h3>
+          <p className="text-xs text-slate-600 mt-1">
+            Limits: ≤ <strong>{f.max_press_force_tons.toLocaleString()} t</strong> ·
+            T from <strong>{f.initial_temp_C.toFixed(0)} °C</strong> dropping
+            <strong> {f.temp_drop_per_pass_C.toFixed(0)} °C/pass</strong>, min hot
+            <strong> {f.min_temp_C.toFixed(0)} °C</strong>
+          </p>
+        </div>
+        <div className="text-xs flex items-center gap-2">
+          <LegendDot color="bg-emerald-500" label="OK" />
+          <LegendDot color="bg-amber-500" label="Near limit" />
+          <LegendDot color="bg-red-500" label="Exceeds" />
+        </div>
+      </div>
+
+      {/* Per-pass force & temperature row */}
+      <div className="mt-4 grid grid-cols-7 gap-2">
+        {f.force_tons_per_pass.map((force, i) => {
+          const temp = f.temperatures_C[i];
+          const forceFlag = f.force_warnings[i];
+          const tempFlag = f.temp_warnings[i];
+          const ratio = force / f.max_press_force_tons;
+          // amber if within 15 % of limit, red if over
+          const forceTone = forceFlag ? "text-red-700 bg-red-100 border-red-300"
+            : ratio > 0.85 ? "text-amber-800 bg-amber-100 border-amber-300"
+            : "text-emerald-800 bg-emerald-100 border-emerald-300";
+          const tempTone = tempFlag ? "text-red-700 bg-red-100 border-red-300"
+            : temp - f.min_temp_C < 50 ? "text-amber-800 bg-amber-100 border-amber-300"
+            : "text-emerald-800 bg-emerald-100 border-emerald-300";
+          return (
+            <div key={i} className="rounded-lg border border-slate-200 bg-white p-2 text-center">
+              <div className="text-[10px] uppercase tracking-widest text-slate-500 font-medium">Pass {i + 1}</div>
+              <div className={"mt-1.5 rounded border px-1.5 py-0.5 text-[11px] font-mono font-semibold " + forceTone}>
+                {force.toFixed(0)} t
+              </div>
+              <div className={"mt-1 rounded border px-1.5 py-0.5 text-[11px] font-mono font-semibold " + tempTone}>
+                {temp.toFixed(0)} °C
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {!ok && (
+        <div className="mt-4 text-xs text-amber-900 bg-amber-100 border border-amber-300 rounded-md px-3 py-2 leading-relaxed">
+          <strong>Recommended action:</strong>{" "}
+          {f.any_force_overload && "Use a larger press, reduce the bite per pass, or pre-heat to a higher start temperature. "}
+          {f.any_temp_too_low && "Add an inter-pass re-heat between the flagged passes, or split the schedule across two heats."}
+        </div>
+      )}
     </div>
   );
 }

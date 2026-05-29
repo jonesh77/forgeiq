@@ -8,6 +8,8 @@ Web application for metallurgical process analysis: **cogging**, **processing ma
 **Author:** Y. Alibek
 **Organization:** NSMLab — Net Shape Manufacturing Laboratory
 
+> 📘 **For a complete, detailed reference of every program, the exact formulas used, and an honest list of what the platform CANNOT do, see [CAPABILITIES.md](./CAPABILITIES.md).**
+
 ## Architecture
 
 | Service | Tech | Port | Purpose |

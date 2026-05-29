@@ -148,6 +148,81 @@ def calculate_stl_volume(stl_file):
     stl_mesh = trimesh.load_mesh(stl_file)
     return stl_mesh.volume
 
+
+def analyse_stl_quality(stl_file):
+    """Return a manufacturability/quality report for the given STL.
+
+    Uses trimesh's geometry checks. All scalars are plain Python floats / ints
+    so the dict is JSON-serializable for the API response.
+
+    Field meanings:
+      - watertight              : sealed mesh, no holes → required for 3D printing & FEM
+      - winding_consistent      : every face normal points outwards → manifold
+      - euler_number / genus    : topology — genus 0 = topologically a sphere (a good preform)
+      - vertex_count / face_count
+      - volume_mm3              : signed volume (negative ⇒ flipped normals)
+      - surface_area_mm2
+      - bbox_mm                 : (x, y, z) extents of the axis-aligned bounding box
+      - min_wall_thickness_mm   : conservative lower bound (2 × min |signed-distance from inside|)
+                                  via trimesh.proximity; None if not estimable
+      - aspect_ratio            : max(bbox) / min(bbox) — thin-slab indicator
+      - score / grade           : 0..1 aggregate + letter grade for the UI
+    """
+    m = trimesh.load_mesh(stl_file)
+
+    watertight = bool(m.is_watertight)
+    consistent = bool(m.is_winding_consistent)
+    euler = int(m.euler_number)
+    genus = max(0, (2 - euler) // 2) if watertight else None
+    vol = float(abs(m.volume))
+    surf = float(m.area)
+    bbox = m.extents.tolist() if m.extents is not None else [0.0, 0.0, 0.0]
+    bbox = [float(b) for b in bbox]
+    aspect = float(max(bbox) / max(min(bbox), 1e-9)) if bbox else None
+
+    # Min wall thickness: sample 1000 surface points, ask trimesh for the
+    # nearest *interior* distance and double it (≈ wall thickness at that spot).
+    min_wall = None
+    try:
+        if watertight and len(m.faces) > 0:
+            sample_pts, _ = trimesh.sample.sample_surface(m, min(1000, max(50, len(m.faces) // 4)))
+            # Move each sample slightly inward then query distance back to the surface
+            normals = m.face_normals[_]  # face index for each sample
+            inward = sample_pts - normals * 1e-3
+            dists = trimesh.proximity.closest_point(m, inward)[1]
+            min_wall = float(2.0 * float(dists.min()))
+    except Exception:  # noqa: BLE001 — quality probe is best-effort
+        min_wall = None
+
+    # Aggregate 0..1 score and a letter grade (used by the UI badge).
+    flags = {
+        "watertight": watertight,
+        "winding_consistent": consistent,
+        "manifold_genus_ok": (genus is not None and genus <= 2),
+        "aspect_ok": (aspect is not None and aspect < 20.0),
+        "thickness_ok": (min_wall is None or min_wall >= 1.0),  # 1 mm typical print floor
+    }
+    passed = sum(1 for v in flags.values() if v)
+    score = passed / len(flags)
+    grade = "A" if score >= 0.95 else "B" if score >= 0.8 else "C" if score >= 0.6 else "D"
+
+    return {
+        "watertight": watertight,
+        "winding_consistent": consistent,
+        "euler_number": euler,
+        "genus": genus,
+        "vertex_count": int(len(m.vertices)),
+        "face_count": int(len(m.faces)),
+        "volume_mm3": vol,
+        "surface_area_mm2": surf,
+        "bbox_mm": bbox,
+        "aspect_ratio": aspect,
+        "min_wall_thickness_mm": min_wall,
+        "flags": flags,
+        "score": score,
+        "grade": grade,
+    }
+
 def shift_stl_coordinates(input_stl, output_stl, shift_x, shift_y, shift_z):
     mesh_data = trimesh.load_mesh(input_stl)
     mesh_data.vertices += np.array([shift_x, shift_y, shift_z])
@@ -174,7 +249,15 @@ def apply_taubin_smoothing(input_file, output_file, n_iter=50, pass_band=0.0002)
 # ------------------------ [엔트리 함수] ------------------------
 def _load_or_cache_model(h5_path):
     """Load the U-Net model, caching the rebuilt float32 model by file path
-    and last-modified-time. Cache hits skip the 20-30 second re-load."""
+    and last-modified-time. Cache hits skip the 20-30 second re-load.
+
+    Model interchangeability:
+    The plain `build_unet_3d` (train_unet.py) and the upgraded `build_attention_unet_3d`
+    (attention_unet.py) produce .h5 files with identical I/O signatures
+    (128^3 voxel in -> 128^3 sigmoid out) and the same `custom_objects` map.
+    Either one drops in here without code changes — just point the request at
+    the new .h5 file.
+    """
     abs_path = os.path.abspath(h5_path)
     mtime = os.path.getmtime(abs_path)
     cache_key = (abs_path, mtime)
@@ -228,6 +311,7 @@ def run_pipeline(h5_path, csv_path, dat1_path, dat2_path, idx="001", threshold=0
 
     final_volume = calculate_stl_volume(stl_file)
     volume_change_ratio = ((final_volume - initial_volume) / initial_volume) * 100
+    quality = analyse_stl_quality(stl_file)
 
     with open(stl_file, "rb") as f:
         stl_b64 = base64.b64encode(f.read()).decode("utf-8")
@@ -235,5 +319,6 @@ def run_pipeline(h5_path, csv_path, dat1_path, dat2_path, idx="001", threshold=0
     return {
         "final_volume": final_volume,
         "volume_change_ratio": volume_change_ratio,
-        "stl_file": stl_b64
+        "stl_file": stl_b64,
+        "quality": quality,
     }

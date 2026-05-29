@@ -5,6 +5,7 @@ import { MdOutlineUnfoldMore } from "react-icons/md";
 import TrainDataForm from "./train_data/default";
 import { useState } from "react";
 import PassSchedule from "./pass_schedule/default";
+import GradientBoostingForm from "./gradient_boosting/default";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +33,8 @@ import { HiSparkles } from "react-icons/hi2";
 
 const tabs: [string, (states: any, setStates: any) => React.ReactNode][] = [
     ["svc.train_model", (states, setStates) => (<TrainDataForm states={states} setStates={setStates} />)],
-    ["svc.pass_schedule", (state, setState) => (<PassSchedule />)],
+    ["svc.gradient_boosting", () => (<GradientBoostingForm />)],
+    ["svc.pass_schedule", () => (<PassSchedule />)],
 ]
 
 export function Header({ minimize = false, first, second }) {
@@ -52,6 +54,7 @@ export function Header({ minimize = false, first, second }) {
                         <DropdownMenuItem className="cursor-pointer"><Link href={"/cogging"} className="w-full">{t("nav.cogging")}</Link></DropdownMenuItem>
                         <DropdownMenuItem className="cursor-pointer"><Link href={"/processing_map"} className="w-full">{t("nav.processing_map")}</Link></DropdownMenuItem>
                         <DropdownMenuItem className="cursor-pointer"><Link href={"/3d_preform"} className="w-full">{t("nav.preform_3d")}</Link></DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer"><Link href={"/compare"} className="w-full">{t("nav.compare")}</Link></DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

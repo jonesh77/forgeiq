@@ -49,7 +49,23 @@ def _get_model_from_filestorage(model_file):
         return load_model(tmp.name)
 
 
-def process_pass_schedule(model_file, data_file, initial_cross_section, initial_length, cutting_length):
+def process_pass_schedule(model_file, data_file,
+                          initial_cross_section, initial_length, cutting_length,
+                          max_press_force_tons=3000.0,
+                          initial_temp_C=1200.0,
+                          temp_drop_per_pass_C=50.0,
+                          min_temp_C=900.0,
+                          # Material-specific void-closure polynomial coefficients.
+                          # Defaults are the fitted AISI 4340 values from prior NSMLab
+                          # experiments — pass {B, C, D} from the form to support
+                          # other steels/alloys without code changes.
+                          void_B=-1.521351466,
+                          void_C= 0.818014592,
+                          void_D=-0.145775097,
+                          # Flow-stress slope coefficient (MPa per °C below 1200) and
+                          # base flow stress at 1200 °C — also material-dependent.
+                          flow_stress_base_MPa=80.0,
+                          flow_stress_slope=0.6):
     # Step 1: Load model (cached when possible)
     model = _get_model_from_filestorage(model_file)
     temp_model_file = None
@@ -122,14 +138,67 @@ def process_pass_schedule(model_file, data_file, initial_cross_section, initial_
             qty *= 2
         cutting_lengths.append(f"{int(temp_len)} ({qty})")
 
-    # Void Closure
-    B, C, D = -1.521351466, 0.818014592, -0.145775097
+    # Void Closure — coefficients are material-dependent (see function signature)
+    B, C, D = void_B, void_C, void_D
     void_closures = []
     for L in length_changes:
         true_strain = np.log((L - initial_length) / initial_length + 1)
         VOID123 = (1 + B * true_strain + C * true_strain ** 2 + D * true_strain ** 3)
         closure = min(abs(VOID123 - 1) * 100, 100)
         void_closures.append(closure)
+
+    # ---------- Equipment-aware feasibility checks ----------
+    # Per-pass cross-section dimension (square N, mm) — parsed from "NxN" strings.
+    # Falls back to the float forging[] list if parsing fails.
+    def _side_mm(idx):
+        try:
+            return int(forging_ratios[idx].split("×")[0])
+        except Exception:
+            return float(forging[idx]) if idx < len(forging) else float(initial_cross_section)
+
+    # Material-specific flow-stress model:
+    #   σ(T) = max(40, σ_base + slope · (1200 − T))   MPa
+    # Defaults match AISI 4340 (~80 MPa @ 1200 °C, ~210 MPa @ 900 °C).
+    def _flow_stress_MPa(temp_C):
+        return max(40.0, flow_stress_base_MPa + flow_stress_slope * (1200.0 - temp_C))
+
+    # Linear temperature decay (no inter-pass reheating). Real shops re-heat
+    # between passes; this is the worst-case "single heat" estimate, which is
+    # the standard quick check.
+    temperatures_C = [float(initial_temp_C - i * temp_drop_per_pass_C) for i in range(7)]
+
+    # Slab-method forging force with the friction-hill peak pressure:
+    #   p_peak = sigma_flow * (1 + W / (4 * L_c))    (sliding friction)
+    #   F (N)  = p_peak * L_c * W
+    # L_c is the contact length under the anvil — taken as a typical 30 mm
+    # bite for industrial cogging (independent of the dimensionless `feed`
+    # control output by the optimizer, which doesn't carry a length unit).
+    L_CONTACT_MM = 30.0
+    force_tons_per_pass = []
+    for i in range(7):
+        width_mm = _side_mm(i)
+        sigma = _flow_stress_MPa(temperatures_C[i])
+        p_peak_MPa = sigma * (1.0 + width_mm / (4.0 * L_CONTACT_MM))
+        force_N = p_peak_MPa * L_CONTACT_MM * width_mm
+        # N -> metric tonnes-force: divide by g (m/s²) * 1000 (kg→t)
+        force_tons_per_pass.append(force_N / 9806.65)
+
+    force_warnings = [bool(f > max_press_force_tons) for f in force_tons_per_pass]
+    temp_warnings  = [bool(t < min_temp_C)            for t in temperatures_C]
+
+    feasibility = {
+        "max_press_force_tons":   float(max_press_force_tons),
+        "initial_temp_C":         float(initial_temp_C),
+        "temp_drop_per_pass_C":   float(temp_drop_per_pass_C),
+        "min_temp_C":             float(min_temp_C),
+        "force_tons_per_pass":    [round(f, 1) for f in force_tons_per_pass],
+        "temperatures_C":         [round(t, 1) for t in temperatures_C],
+        "force_warnings":         force_warnings,
+        "temp_warnings":          temp_warnings,
+        "any_force_overload":     any(force_warnings),
+        "any_temp_too_low":       any(temp_warnings),
+        "all_passes_feasible":    not (any(force_warnings) or any(temp_warnings)),
+    }
 
     # Cleanup any temp file we may have made
     if temp_model_file is not None:
@@ -146,5 +215,6 @@ def process_pass_schedule(model_file, data_file, initial_cross_section, initial_
         "forging_ratios": forging_ratios,
         "length_changes": length_changes,
         "cutting_lengths": cutting_lengths,
-        "void_closure": void_closures
+        "void_closure": void_closures,
+        "feasibility": feasibility,
     }

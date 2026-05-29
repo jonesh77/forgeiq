@@ -11,6 +11,7 @@ const dict = {
     "nav.cogging": "Cogging Program",
     "nav.processing_map": "Processing Map",
     "nav.preform_3d": "3D Preform",
+    "nav.compare": "Model Comparison",
     "nav.history": "History",
     "nav.messages": "Messages",
     "nav.logout": "Logout",
@@ -61,11 +62,13 @@ const dict = {
 
     // Service labels (shared with backend names)
     "svc.train_model": "Train Model",
+    "svc.gradient_boosting": "Train Model (GB)",
     "svc.train_correction": "Train Data Correction",
     "svc.pass_schedule": "Pass Schedule",
     "svc.main_graph": "Main Graph",
     "svc.plot_vs_strain": "Plot vs Strain",
     "svc.collect_for_strain": "Collect for Strain",
+    "svc.pinn_surrogate": "PINN Surrogate",
     "svc.preform_3d": "3D Preform",
     "svc.display_3d": "Display 3D Model",
 
@@ -135,6 +138,7 @@ const dict = {
     "nav.cogging": "Cogging Dasturi",
     "nav.processing_map": "Processing Map",
     "nav.preform_3d": "3D Preform",
+    "nav.compare": "Model Solishtirish",
     "nav.history": "Tarix",
     "nav.messages": "Xabarlar",
     "nav.logout": "Chiqish",
@@ -180,11 +184,13 @@ const dict = {
     "history.compare_select": "Solishtirish uchun yana bittasini tanlang",
 
     "svc.train_model": "Model o'qitish",
+    "svc.gradient_boosting": "Model o'qitish (GB)",
     "svc.train_correction": "Train ma'lumotni tuzatish",
     "svc.pass_schedule": "Pass Schedule",
     "svc.main_graph": "Asosiy grafik",
     "svc.plot_vs_strain": "Strain bo'yicha grafik",
     "svc.collect_for_strain": "Strain qiymatlari",
+    "svc.pinn_surrogate": "PINN surrogati",
     "svc.preform_3d": "3D Preform",
     "svc.display_3d": "3D modelni ko'rsatish",
 
@@ -247,6 +253,7 @@ const dict = {
     "nav.cogging": "코깅 프로그램",
     "nav.processing_map": "프로세싱 맵",
     "nav.preform_3d": "3D 프리폼",
+    "nav.compare": "모델 비교",
     "nav.history": "기록",
     "nav.messages": "메시지",
     "nav.logout": "로그아웃",
@@ -292,11 +299,13 @@ const dict = {
     "history.compare_select": "비교할 다른 항목을 선택하세요",
 
     "svc.train_model": "모델 학습",
+    "svc.gradient_boosting": "모델 학습 (GB)",
     "svc.train_correction": "학습 데이터 보정",
     "svc.pass_schedule": "패스 스케줄",
     "svc.main_graph": "메인 그래프",
     "svc.plot_vs_strain": "변형률 플롯",
     "svc.collect_for_strain": "변형률 값 수집",
+    "svc.pinn_surrogate": "PINN 대리 모델",
     "svc.preform_3d": "3D 프리폼",
     "svc.display_3d": "3D 모델 표시",
 

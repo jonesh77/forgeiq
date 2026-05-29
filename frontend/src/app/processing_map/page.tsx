@@ -4,6 +4,7 @@ import { useState } from "react";
 import MainGraphGUI from "./main_graph/default";
 import PlotValuesAgainstStrainGUI from "./plot_values_against_strain/default";
 import CollectValuesForStrain from "./collect_values_for_strain/default";
+import PinnForm from "./pinn/default";
 import { ProgramHeader, TabStrip } from "@/components/our/program-header";
 import { ProgramHero } from "@/components/our/program-hero";
 import { useT } from "@/lib/i18n";
@@ -12,6 +13,7 @@ const tabs: [string, () => React.ReactNode][] = [
     ["svc.main_graph", () => <MainGraphGUI states={undefined as any} setStates={undefined as any} />],
     ["svc.plot_vs_strain", () => <PlotValuesAgainstStrainGUI />],
     ["svc.collect_for_strain", () => <CollectValuesForStrain />],
+    ["svc.pinn_surrogate", () => <PinnForm />],
 ];
 
 export default function Page() {

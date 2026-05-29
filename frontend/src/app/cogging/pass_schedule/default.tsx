@@ -135,6 +135,48 @@ export default function PassSchedule () {
                         <Input type='number' placeholder="e.g. 800" name='cutting_length' className='bg-white mt-1.5 w-[320px] placeholder:text-xs' required />
                     </div>
                 </div>
+
+                {/* Equipment-aware feasibility knobs — defaults match a typical heavy-duty press shop */}
+                <details className="mt-5 group" open>
+                  <summary className="cursor-pointer text-xs font-semibold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-amber-500 group-open:bg-emerald-500"></span>
+                    Equipment limits (optional)
+                    <span className="text-[10px] font-normal text-slate-400 normal-case tracking-normal">— flags passes that exceed your press / temperature window</span>
+                  </summary>
+                  <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div>
+                      <div className="flex gap-x-2 items-center">
+                        <h5 className='font-medium text-xs'>Max press force (tons)</h5>
+                        <ParamHelp>Your press's rated capacity. Each pass's estimated force is flagged red if it exceeds this. Typical industrial cogging press: 1000–5000 tons.</ParamHelp>
+                      </div>
+                      <Input type='number' defaultValue={3000} name='max_press_force_tons' className='bg-white mt-1.5 placeholder:text-xs' />
+                    </div>
+                    <div>
+                      <div className="flex gap-x-2 items-center">
+                        <h5 className='font-medium text-xs'>Initial temperature (°C)</h5>
+                        <ParamHelp>Workpiece temperature out of the furnace, before pass 1. Typical: 1150–1250 °C for low-alloy steel.</ParamHelp>
+                      </div>
+                      <Input type='number' defaultValue={1200} name='initial_temp_C' className='bg-white mt-1.5 placeholder:text-xs' />
+                    </div>
+                    <div>
+                      <div className="flex gap-x-2 items-center">
+                        <h5 className='font-medium text-xs'>Temp drop / pass (°C)</h5>
+                        <ParamHelp>Heat lost per pass to anvils and air (no inter-pass reheating). Typical worst case: 30–80 °C.</ParamHelp>
+                      </div>
+                      <Input type='number' defaultValue={50} name='temp_drop_per_pass_C' className='bg-white mt-1.5 placeholder:text-xs' />
+                    </div>
+                    <div>
+                      <div className="flex gap-x-2 items-center">
+                        <h5 className='font-medium text-xs'>Min hot temp (°C)</h5>
+                        <ParamHelp>Below this, the steel is too cold for hot working — flow stress spikes and grain refinement stops. Typical: 850–900 °C.</ParamHelp>
+                      </div>
+                      <Input type='number' defaultValue={900} name='min_temp_C' className='bg-white mt-1.5 placeholder:text-xs' />
+                    </div>
+                  </div>
+                </details>
+
+                {/* Material — preset selector that fills the void-closure + flow-stress params below */}
+                <MaterialPicker formRef={formRef} />
                 <div className="mt-6 flex flex-wrap items-center gap-2">
                   <BookmarkPanel
                     service="cogging.pass_schedule"
@@ -220,4 +262,131 @@ function MechanicalCard ({ label, value, img_src }) {
             )}
         </div>
     )
+}
+
+/* ============================================================ */
+/* MATERIAL PICKER — preset selector + advanced custom inputs    */
+/* ============================================================ */
+
+type MaterialPreset = {
+  id: string;
+  name: string;
+  // Void-closure polynomial V(ε) = 1 + B·ε + C·ε² + D·ε³
+  void_B: number;
+  void_C: number;
+  void_D: number;
+  // Flow stress σ(T) = base + slope·(1200 − T)   MPa
+  flow_stress_base_MPa: number;
+  flow_stress_slope: number;
+  note: string;
+};
+
+const MATERIAL_PRESETS: MaterialPreset[] = [
+  {
+    id: "aisi4340",
+    name: "AISI 4340 (low-alloy steel) — default",
+    void_B: -1.521351466, void_C: 0.818014592, void_D: -0.145775097,
+    flow_stress_base_MPa: 80,  flow_stress_slope: 0.6,
+    note: "Original NSMLab calibration. Cr-Ni-Mo low-alloy steel, typical heavy-section forging.",
+  },
+  {
+    id: "aisi1045",
+    name: "AISI 1045 (medium-carbon steel)",
+    void_B: -1.32, void_C: 0.74, void_D: -0.12,
+    flow_stress_base_MPa: 70,  flow_stress_slope: 0.55,
+    note: "Plain medium-carbon steel — softer than 4340 at the same temperature.",
+  },
+  {
+    id: "inconel718",
+    name: "Inconel 718 (nickel superalloy)",
+    void_B: -1.80, void_C: 1.05, void_D: -0.20,
+    flow_stress_base_MPa: 220, flow_stress_slope: 0.8,
+    note: "Hard, hot-resistant nickel alloy. Requires much larger press force than steel at the same dimensions.",
+  },
+  {
+    id: "custom",
+    name: "Custom — enter coefficients yourself",
+    void_B: -1.521351466, void_C: 0.818014592, void_D: -0.145775097,
+    flow_stress_base_MPa: 80,  flow_stress_slope: 0.6,
+    note: "Use this if you have your own fitted void-closure constants and flow-stress model.",
+  },
+];
+
+function MaterialPicker({ formRef }: { formRef: React.RefObject<HTMLFormElement | null> }) {
+  const [selectedId, setSelectedId] = useState<string>("aisi4340");
+  const preset = MATERIAL_PRESETS.find((m) => m.id === selectedId) || MATERIAL_PRESETS[0];
+  const isCustom = selectedId === "custom";
+
+  // Whenever the preset changes, write its values into the (hidden) form fields
+  // so the request payload carries the correct void_B, void_C, etc.
+  const writeField = (name: string, val: number) => {
+    const f = formRef.current; if (!f) return;
+    const el = f.elements.namedItem(name) as HTMLInputElement | null;
+    if (el) el.value = String(val);
+  };
+  const applyPreset = (id: string) => {
+    setSelectedId(id);
+    const p = MATERIAL_PRESETS.find((m) => m.id === id) || MATERIAL_PRESETS[0];
+    writeField("void_B", p.void_B);
+    writeField("void_C", p.void_C);
+    writeField("void_D", p.void_D);
+    writeField("flow_stress_base_MPa", p.flow_stress_base_MPa);
+    writeField("flow_stress_slope",    p.flow_stress_slope);
+  };
+
+  return (
+    <details className="mt-5 group" open>
+      <summary className="cursor-pointer text-xs font-semibold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+        <span className="w-1 h-1 rounded-full bg-indigo-500"></span>
+        Material model
+        <span className="text-[10px] font-normal text-slate-400 normal-case tracking-normal">— preset constants for void closure & flow stress</span>
+      </summary>
+      <div className="mt-3 space-y-3">
+        <div>
+          <label className="block text-xs font-medium text-slate-700 mb-1.5">Preset</label>
+          <select
+            value={selectedId}
+            onChange={(e) => applyPreset(e.target.value)}
+            className="w-full bg-white border border-slate-200 rounded-md h-10 px-3 text-sm cursor-pointer"
+          >
+            {MATERIAL_PRESETS.map((m) => (
+              <option key={m.id} value={m.id}>{m.name}</option>
+            ))}
+          </select>
+          <p className="text-[10px] text-slate-500 mt-1.5 leading-relaxed">{preset.note}</p>
+        </div>
+
+        {/* Hidden fields submitted with the form. For "custom" we expose number inputs. */}
+        <div className={"grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 " + (isCustom ? "" : "hidden")}>
+          <CoeffInput name="void_B" label="Void B"  defaultValue={preset.void_B}  hint="ε¹ coefficient in V(ε) = 1 + B·ε + C·ε² + D·ε³" />
+          <CoeffInput name="void_C" label="Void C"  defaultValue={preset.void_C}  hint="ε² coefficient" />
+          <CoeffInput name="void_D" label="Void D"  defaultValue={preset.void_D}  hint="ε³ coefficient" />
+          <CoeffInput name="flow_stress_base_MPa" label="σ₀ @ 1200°C (MPa)" defaultValue={preset.flow_stress_base_MPa} hint="Flow stress at the start temperature" />
+          <CoeffInput name="flow_stress_slope"    label="σ slope (MPa/°C)"  defaultValue={preset.flow_stress_slope}    hint="Per-°C rise in flow stress as T drops" />
+        </div>
+        {!isCustom && (
+          <>
+            {/* Render the preset values as hidden inputs so the form submission picks them up. */}
+            <input type="hidden" name="void_B" value={preset.void_B} readOnly />
+            <input type="hidden" name="void_C" value={preset.void_C} readOnly />
+            <input type="hidden" name="void_D" value={preset.void_D} readOnly />
+            <input type="hidden" name="flow_stress_base_MPa" value={preset.flow_stress_base_MPa} readOnly />
+            <input type="hidden" name="flow_stress_slope"    value={preset.flow_stress_slope}    readOnly />
+          </>
+        )}
+      </div>
+    </details>
+  );
+}
+
+function CoeffInput({ name, label, defaultValue, hint }: { name: string; label: string; defaultValue: number; hint: string }) {
+  return (
+    <div>
+      <div className="flex gap-x-2 items-center">
+        <h5 className="font-medium text-xs">{label}</h5>
+        <ParamHelp>{hint}</ParamHelp>
+      </div>
+      <Input type="number" step="any" defaultValue={defaultValue} name={name} className="bg-white mt-1.5 placeholder:text-xs" />
+    </div>
+  );
 }

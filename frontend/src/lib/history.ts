@@ -6,11 +6,13 @@ import { ObjectId } from "mongodb";
 
 export type HistoryService =
   | "cogging.train_model"
+  | "cogging.gradient_boosting"
   | "cogging.train_correction"
   | "cogging.pass_schedule"
   | "processing_map.main_graph"
   | "processing_map.plot_vs_strain"
   | "processing_map.collect_for_strain"
+  | "processing_map.pinn"
   | "preform_3d.generate";
 
 export interface HistoryEntry {

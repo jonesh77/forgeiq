@@ -14,6 +14,7 @@ from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 
 from cogginglogic.fourimages1h5 import process_excel
+from cogginglogic.gradient_boosting import process_excel_gb
 from cogginglogic.traindatacorrection import correct_train_data
 from cogginglogic.passschedule import process_pass_schedule
 from processingmaplogic.processingmap import (
@@ -21,6 +22,7 @@ from processingmaplogic.processingmap import (
     collect_values_for_strain_api,
     plot_values_against_strain,
 )
+from processingmaplogic.pinn_processingmap import train_processing_pinn
 from samples_lib import resolve_sample, register_sample_routes
 
 logging.basicConfig(
@@ -138,6 +140,36 @@ def process_file():
         return ok(result)
 
 
+@app.route("/api/cogging/gradient_boosting", methods=["POST"])
+def gradient_boosting():
+    n_splits = int(request.form.get("n_splits") or 5)
+    if _is_sample_request():
+        sample_path = resolve_sample("cogging_data")
+        if not sample_path:
+            return fail("Sample cogging dataset not available on server", code=500)
+        try:
+            result = process_excel_gb(sample_path, n_splits=n_splits)
+        except Exception as e:
+            log.exception("process_excel_gb (sample) failed")
+            return fail(f"Failed to process sample: {e}", code=500)
+        return ok(result, used_sample=True)
+
+    try:
+        uploaded = require_file("file")
+    except ValueError as e:
+        return fail(str(e))
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        path = os.path.join(temp_dir, uploaded.filename)
+        uploaded.save(path)
+        try:
+            result = process_excel_gb(path, n_splits=n_splits)
+        except Exception as e:
+            log.exception("process_excel_gb failed")
+            return fail(f"Failed to process Excel: {e}", code=500)
+        return ok(result)
+
+
 @app.route("/api/cogging/traindatacorrection", methods=["POST"])
 def train_data_correction():
     if _is_sample_request():
@@ -171,6 +203,22 @@ def train_data_correction():
 
 @app.route("/api/cogging/passschedule", methods=["POST"])
 def pass_schedule():
+    # Optional equipment- and material-specific knobs. All have sensible
+    # defaults (AISI 4340 + typical heavy-duty press) so existing callers
+    # keep working without changes.
+    def _equip_kwargs():
+        return dict(
+            max_press_force_tons = float(request.form.get("max_press_force_tons") or 3000.0),
+            initial_temp_C       = float(request.form.get("initial_temp_C")       or 1200.0),
+            temp_drop_per_pass_C = float(request.form.get("temp_drop_per_pass_C") or 50.0),
+            min_temp_C           = float(request.form.get("min_temp_C")           or 900.0),
+            void_B               = float(request.form.get("void_B")               or -1.521351466),
+            void_C               = float(request.form.get("void_C")               or  0.818014592),
+            void_D               = float(request.form.get("void_D")               or -0.145775097),
+            flow_stress_base_MPa = float(request.form.get("flow_stress_base_MPa") or 80.0),
+            flow_stress_slope    = float(request.form.get("flow_stress_slope")    or 0.6),
+        )
+
     if _is_sample_request():
         model_path = resolve_sample("pretrained_cogging_model")
         data_path = resolve_sample("cogging_data")
@@ -180,7 +228,7 @@ def pass_schedule():
             ics = float(request.form.get("initial_cross_section") or 110.0)
             il = float(request.form.get("initial_length") or 1500.0)
             cl = float(request.form.get("cutting_length") or 800.0)
-            result = process_pass_schedule(_LocalFile(model_path), data_path, ics, il, cl)
+            result = process_pass_schedule(_LocalFile(model_path), data_path, ics, il, cl, **_equip_kwargs())
         except Exception as e:
             log.exception("process_pass_schedule (sample) failed")
             return fail(f"Failed to process sample: {e}", code=500)
@@ -199,6 +247,7 @@ def pass_schedule():
         result = process_pass_schedule(
             model_file, data_file,
             initial_cross_section, initial_length, cutting_length,
+            **_equip_kwargs(),
         )
     except Exception as e:
         log.exception("process_pass_schedule failed")
@@ -241,7 +290,7 @@ def upload_and_process():
 
         extra_folders = {}
 
-        if any((d is not None and "Simufact_particles_" in d) for d in selected_data):
+        if any((isinstance(d, str) and "Simufact_particles_" in d) for d in selected_data):
             sim_dir = os.path.join(tmpdir, "simufact")
             os.makedirs(sim_dir, exist_ok=True)
             for key, new_name in {"simufact_t": "t.csv", "simufact_s": "s.csv", "simufact_sr": "sr.csv"}.items():
@@ -250,7 +299,7 @@ def upload_and_process():
                 request.files[key].save(os.path.join(sim_dir, new_name))
             extra_folders["simufact"] = sim_dir
 
-        if any((d is not None and "DEFORM_particles_" in d) for d in selected_data):
+        if any((isinstance(d, str) and "DEFORM_particles_" in d) for d in selected_data):
             df_dir = os.path.join(tmpdir, "deform")
             os.makedirs(df_dir, exist_ok=True)
             for key, new_name in {"deform_t": "t.dat", "deform_s": "s.dat", "deform_sr": "sr.dat"}.items():
@@ -342,6 +391,79 @@ def cv_for_strain():
             log.exception("collect_values_for_strain_api failed")
             return fail(f"collect_values_for_strain failed: {e}", code=500)
         return jsonify(result)
+
+
+@app.route("/api/processingmap/pinn", methods=["POST"])
+def pinn_surrogate():
+    sample_mode = _is_sample_request()
+    sample_path = resolve_sample("processing_map") if sample_mode else None
+    if sample_mode and not sample_path:
+        return fail("Sample processing-map dataset not available on server", code=500)
+
+    # Tame the knobs so a runaway request can't hog the server
+    try:
+        epochs = max(50, min(int(request.form.get("epochs") or 1000), 5000))
+        strain = max(0.0, min(float(request.form.get("strain") or 0.5), 1.0))
+        grid_n = max(20, min(int(request.form.get("grid_n") or 50), 80))
+    except (TypeError, ValueError):
+        return fail("epochs / strain / grid_n must be valid numbers")
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        if sample_mode:
+            import shutil
+            path = os.path.join(tmpdir, os.path.basename(sample_path))
+            shutil.copy(sample_path, path)
+        else:
+            try:
+                f = require_file("file")
+            except ValueError as e:
+                return fail(str(e))
+            path = os.path.join(tmpdir, f.filename)
+            f.save(path)
+
+        try:
+            res = train_processing_pinn(path, epochs=epochs, strain=strain, grid_n=grid_n)
+        except Exception as e:
+            log.exception("train_processing_pinn failed")
+            return fail(f"PINN training failed: {e}", code=500)
+
+        # Auto-detect the safe optimal operating window: highest η inside the
+        # stable region (ξ > 0). Mask unstable points before the argmax so the
+        # recommendation never lands on a flow-instability zone.
+        import numpy as np
+        eta = res["eta"]; xi = res["xi"]
+        T_axis = res["T_axis"]; u_axis = res["logSR_axis"]
+        safe_mask = xi > 0
+        if safe_mask.any():
+            eta_masked = np.where(safe_mask, eta, -np.inf)
+            i, j = np.unravel_index(np.argmax(eta_masked), eta.shape)
+            optimal = {
+                "found": True,
+                "T":        float(T_axis[i]),
+                "log_sr":   float(u_axis[j]),
+                "strain_rate": float(10.0 ** u_axis[j]),
+                "eta":      float(eta[i, j]),
+                "xi":       float(xi[i, j]),
+            }
+        else:
+            optimal = {"found": False}
+
+        # Strip the in-memory Keras model (not JSON serializable) and
+        # convert NumPy arrays to plain lists for the response.
+        payload = {
+            "status": "good",
+            "T_axis":      res["T_axis"].tolist(),
+            "logSR_axis":  res["logSR_axis"].tolist(),
+            "eta":         res["eta"].tolist(),
+            "xi":          res["xi"].tolist(),
+            "m":           res["m"].tolist(),
+            "rmse_logsigma": float(res["rmse_logsigma"]),
+            "optimal": optimal,
+            "epochs": epochs, "strain": strain, "grid_n": grid_n,
+        }
+        if sample_mode:
+            payload["used_sample"] = True
+        return jsonify(payload)
 
 
 if __name__ == "__main__":

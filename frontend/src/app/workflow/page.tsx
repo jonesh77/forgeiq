@@ -21,6 +21,9 @@ const DEFAULTS: WorkflowParams = {
   cutting_length: 800,
   target_astm: 6,
   weight_factor: 0.1,
+  pmap_strain: 0.5,
+  pmap_epochs: 500,
+  runProcessingMap: true,
   runCorrection: true,
   runPassSchedule: true,
   runPreform: true,
@@ -112,16 +115,26 @@ export default function WorkflowPage() {
             </Row>
           </Card>
 
-          <Card title="3. Pipeline stages" subtitle="Choose which stages to run" icon={<PiArrowsClockwise className="text-indigo-600" />}>
+          <Card title="3. Processing map (PINN)" subtitle="Auto-finds the safe (T, ε̇) optimum" icon={<span className="text-violet-600">🧠</span>}>
+            <Row label="Strain slice ε" help="Total strain at which to evaluate the η/ξ fields. Typical 0.3–0.7.">
+              <Input type="number" step={0.05} min={0} max={1} value={params.pmap_strain} onChange={(e) => set("pmap_strain", +e.target.value)} className="h-10 bg-slate-50" />
+            </Row>
+            <Row label="PINN epochs" help="More epochs = smoother surface, slower. 500 ≈ 10–20 s on CPU.">
+              <Input type="number" step={50} min={50} max={5000} value={params.pmap_epochs} onChange={(e) => set("pmap_epochs", +e.target.value)} className="h-10 bg-slate-50" />
+            </Row>
+          </Card>
+
+          <Card title="4. Pipeline stages" subtitle="Choose which stages to run" icon={<PiArrowsClockwise className="text-indigo-600" />}>
+            <StageToggle id="r0" label="Processing Map (PINN)" checked={params.runProcessingMap} onChange={(v) => set("runProcessingMap", v)} note="Auto-detect safe optimum (T, ε̇)" />
             <StageToggle id="r1" label="Train Data Correction" checked={params.runCorrection} onChange={(v) => set("runCorrection", v)} />
             <StageToggle id="r2" label="Pass Schedule" checked={params.runPassSchedule} onChange={(v) => set("runPassSchedule", v)} />
-            <StageToggle id="r3" label="3D Preform" checked={params.runPreform} onChange={(v) => set("runPreform", v)} note="~15–30 s on first run" />
+            <StageToggle id="r3" label="3D Preform" checked={params.runPreform} onChange={(v) => set("runPreform", v)} note="~15–30 s on first run · mesh-quality graded" />
           </Card>
 
           <div className="flex gap-2">
             <Button
               onClick={runPipeline}
-              disabled={running || (!params.runCorrection && !params.runPassSchedule && !params.runPreform)}
+              disabled={running || (!params.runProcessingMap && !params.runCorrection && !params.runPassSchedule && !params.runPreform)}
               className="flex-1 h-12 bg-slate-900 hover:bg-slate-800 cursor-pointer text-sm font-semibold"
             >
               {running ? (<><AiOutlineLoading className="animate-spin" />Running...</>) : (<><LuPlay />Run pipeline</>)}
@@ -168,9 +181,10 @@ function WorkflowHero() {
           <span className="text-indigo-300">Get a full design pass.</span>
         </h1>
         <p className="mt-3 text-sm md:text-base text-indigo-100/80 max-w-2xl">
-          Enter your workpiece dimensions and the grain-size target. The pipeline runs
-          training-data correction, pass-schedule optimisation, and 3D-preform generation in sequence —
-          surfacing a single result page you can iterate on.
+          Enter your workpiece dimensions and the grain-size target. The pipeline runs the
+          <strong> PINN processing-map surrogate</strong> (auto-detects the safe (T, ε̇)
+          optimum), training-data correction, pass-schedule optimisation, and a
+          <strong> mesh-graded 3D preform</strong> in sequence — one click, one result page.
         </p>
       </div>
     </section>
@@ -279,6 +293,31 @@ function ResultsPanel({ outcome, params }: { outcome: WorkflowOutcome; params: W
         )}
       </div>
 
+      {/* PINN auto-detected safe operating window — the "closed loop" insight */}
+      {m.optimalT !== undefined && (
+        <div className="mt-4 rounded-xl border border-emerald-300 bg-gradient-to-r from-emerald-50 to-teal-50 px-4 py-3 flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[10px] uppercase tracking-widest text-emerald-700 font-semibold">
+              ✓ Recommended operating window (PINN, ε={params.pmap_strain.toFixed(2)})
+            </div>
+            <div className="mt-1 text-sm font-mono text-slate-900 font-medium">
+              T = <span className="text-emerald-700">{m.optimalT.toFixed(0)} °C</span>
+              <span className="text-slate-400"> · </span>
+              ε̇ = <span className="text-emerald-700">{m.optimalStrainRate?.toExponential(2)} s⁻¹</span>
+              <span className="text-slate-400"> · </span>
+              η = <span className="text-emerald-700">{m.optimalEta?.toFixed(3)}</span>
+              <span className="text-slate-400"> · </span>
+              ξ = <span className="text-emerald-700">{m.optimalXi?.toFixed(3)}</span>
+            </div>
+          </div>
+          {m.pinnRmse !== undefined && (
+            <div className="text-[10px] text-emerald-700/70 max-w-[200px] text-right leading-tight">
+              Surrogate fit: RMSE log₁₀σ = {m.pinnRmse.toFixed(3)}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mt-5">
         {m.minVoidClosure !== undefined && <MetricChip label={METRIC_LABELS.minVoidClosure} value={`${m.minVoidClosure.toFixed(1)}%`} accent={m.minVoidClosure >= 95 ? "emerald" : m.minVoidClosure >= 80 ? "amber" : "red"} />}
         {m.avgVoidClosure !== undefined && <MetricChip label={METRIC_LABELS.avgVoidClosure} value={`${m.avgVoidClosure.toFixed(1)}%`} />}
@@ -288,6 +327,13 @@ function ResultsPanel({ outcome, params }: { outcome: WorkflowOutcome; params: W
         {m.numberOfRotation !== undefined && <MetricChip label={METRIC_LABELS.numberOfRotation} value={m.numberOfRotation.toFixed(2)} />}
         {m.preformVolume !== undefined && <MetricChip label={METRIC_LABELS.preformVolume} value={`${Math.round(m.preformVolume)} mm³`} accent="violet" />}
         {m.preformVolumeChange !== undefined && <MetricChip label={METRIC_LABELS.preformVolumeChange} value={`${m.preformVolumeChange.toFixed(2)}%`} accent="violet" />}
+        {m.preformGrade !== undefined && (
+          <MetricChip
+            label={METRIC_LABELS.preformGrade}
+            value={`${m.preformGrade}${m.preformScore !== undefined ? `  (${(m.preformScore * 100).toFixed(0)}%)` : ""}`}
+            accent={m.preformGrade === "A" ? "emerald" : m.preformGrade === "B" ? "default" : m.preformGrade === "C" ? "amber" : "red"}
+          />
+        )}
       </div>
 
       {passData?.pass_schedule && (
@@ -369,9 +415,11 @@ function IterationHistory({ iterations }: { iterations: Iteration[] }) {
               <th className="py-2 pr-3 font-medium">When</th>
               <th className="py-2 pr-3 font-medium">Cross / Len</th>
               <th className="py-2 pr-3 font-medium">Target ASTM</th>
+              <th className="py-2 pr-3 font-medium">Optimal T</th>
               <th className="py-2 pr-3 font-medium">Min void</th>
               <th className="py-2 pr-3 font-medium">Passes</th>
               <th className="py-2 pr-3 font-medium">Preform Δvol</th>
+              <th className="py-2 pr-3 font-medium">Grade</th>
             </tr>
           </thead>
           <tbody>
@@ -384,11 +432,15 @@ function IterationHistory({ iterations }: { iterations: Iteration[] }) {
                   <td className="py-2.5 pr-3 text-slate-500">{new Date(it.finishedAt).toLocaleTimeString()}</td>
                   <td className="py-2.5 pr-3">{it.params.initial_cross_section} / {it.params.initial_length}</td>
                   <td className="py-2.5 pr-3">{it.params.target_astm}</td>
+                  <td className="py-2.5 pr-3 font-mono text-emerald-700">
+                    {m.optimalT !== undefined ? `${m.optimalT.toFixed(0)} °C` : "—"}
+                  </td>
                   <td className={"py-2.5 pr-3 font-semibold " + (meets ? "text-emerald-700" : "text-amber-700")}>
                     {m.minVoidClosure !== undefined ? `${m.minVoidClosure.toFixed(1)}%` : "—"}
                   </td>
                   <td className="py-2.5 pr-3">{m.numPasses ?? "—"}</td>
                   <td className="py-2.5 pr-3">{m.preformVolumeChange !== undefined ? `${m.preformVolumeChange.toFixed(2)}%` : "—"}</td>
+                  <td className="py-2.5 pr-3 font-mono font-semibold">{m.preformGrade ?? "—"}</td>
                 </tr>
               );
             })}
