@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import { I18nProvider } from "@/lib/i18n";
 import { NotificationProvider } from "@/components/our/notification-context";
 import { AiAssistant } from "@/components/our/ai-assistant";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const publicsans = Public_Sans({
   variable: "--font-publicsans",
@@ -61,6 +62,7 @@ export default async function RootLayout({
           </ProvideUser>
           <Toaster position="bottom-right" richColors />
         </I18nProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
