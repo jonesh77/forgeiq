@@ -48,18 +48,18 @@ export async function sendWelcomeEmail(args: {
 
     const html = `
         <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#111">
-            <h2 style="color:#0b5fff;margin:0 0 16px">Xush kelibsiz, ${safeName}!</h2>
-            <p>${APP_NAME} platformasiga ro'yxatdan o'tganingiz uchun rahmat.</p>
-            <p>Quyida sizning kirish ma'lumotlaringiz:</p>
+            <h2 style="color:#0b5fff;margin:0 0 16px">Welcome to ${APP_NAME}, ${safeName}!</h2>
+            <p>Thank you for signing up for the ${APP_NAME} platform.</p>
+            <p>Here are your login credentials:</p>
             <table style="border-collapse:collapse;margin:16px 0">
                 <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Email</b></td>
                     <td style="padding:6px 12px;border:1px solid #e5e7eb">${safeEmail}</td></tr>
-                <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Parol</b></td>
+                <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Password</b></td>
                     <td style="padding:6px 12px;border:1px solid #e5e7eb"><code>${safePassword}</code></td></tr>
             </table>
-            <p>Saytga kirish: <a href="${APP_URL}">${APP_URL}</a></p>
+            <p>Sign in here: <a href="${APP_URL}">${APP_URL}</a></p>
             <p style="color:#6b7280;font-size:12px;margin-top:24px">
-                Xavfsizlik uchun parolingizni hech kim bilan baham ko'rmang. Agar bu ro'yxatdan o'tishni siz amalga oshirmagan bo'lsangiz, bu xabarni e'tiborsiz qoldiring.
+                For your security, do not share your password with anyone. If you did not create this account, please ignore this email.
             </p>
         </div>
     `;
@@ -67,12 +67,12 @@ export async function sendWelcomeEmail(args: {
     await transporter.sendMail({
         from: `"${APP_NAME}" <${from}>`,
         to: args.to,
-        subject: `${APP_NAME} — ro'yxatdan o'tganingiz uchun rahmat`,
+        subject: `${APP_NAME} — thank you for signing up`,
         text:
-            `Xush kelibsiz, ${args.name}!\n\n` +
-            `${APP_NAME} platformasiga ro'yxatdan o'tganingiz uchun rahmat.\n\n` +
-            `Email: ${args.to}\nParol: ${args.password}\n\n` +
-            `Saytga kirish: ${APP_URL}\n`,
+            `Welcome to ${APP_NAME}, ${args.name}!\n\n` +
+            `Thank you for signing up.\n\n` +
+            `Email: ${args.to}\nPassword: ${args.password}\n\n` +
+            `Sign in: ${APP_URL}\n`,
         html,
     });
 }
@@ -92,21 +92,21 @@ export async function sendPasswordResetEmail(args: {
 
     const html = `
         <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#111">
-            <h2 style="color:#0b5fff;margin:0 0 16px">Parolni tiklash — ${APP_NAME}</h2>
-            <p>Assalomu alaykum, ${safeName}!</p>
-            <p>Siz parolni tiklash so'rovini yubordingiz. Sizning hisobingiz uchun yangi vaqtinchalik parol yaratildi:</p>
+            <h2 style="color:#0b5fff;margin:0 0 16px">Password reset — ${APP_NAME}</h2>
+            <p>Hello, ${safeName}!</p>
+            <p>You requested a password reset. A new temporary password has been generated for your account:</p>
             <table style="border-collapse:collapse;margin:16px 0">
                 <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Email</b></td>
                     <td style="padding:6px 12px;border:1px solid #e5e7eb">${safeEmail}</td></tr>
-                <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Yangi parol</b></td>
+                <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>New password</b></td>
                     <td style="padding:6px 12px;border:1px solid #e5e7eb"><code>${safePassword}</code></td></tr>
             </table>
-            <p>Saytga kirish: <a href="${APP_URL}/auth/login">${APP_URL}/auth/login</a></p>
+            <p>Sign in here: <a href="${APP_URL}/auth/login">${APP_URL}/auth/login</a></p>
             <p style="color:#b45309;font-size:13px;margin-top:16px">
-                ⚠️ Xavfsizlik uchun kirgandan keyin profilingizdan parolni o'zgartirishni tavsiya etamiz.
+                ⚠️ For security, please change your password from your profile after signing in.
             </p>
             <p style="color:#6b7280;font-size:12px;margin-top:24px">
-                Agar bu so'rovni siz yubormagan bo'lsangiz, ushbu xabarni e'tiborsiz qoldiring va biz bilan bog'laning — kimdir sizning emailingiz bilan tiklashga urinmoqda.
+                If you did not request this reset, please ignore this email and contact us — someone may be trying to access your account.
             </p>
         </div>
     `;
@@ -114,13 +114,13 @@ export async function sendPasswordResetEmail(args: {
     await transporter.sendMail({
         from: `"${APP_NAME}" <${from}>`,
         to: args.to,
-        subject: `${APP_NAME} — parolni tiklash`,
+        subject: `${APP_NAME} — password reset`,
         text:
-            `Assalomu alaykum, ${args.name}!\n\n` +
-            `Parolni tiklash so'rovingiz qabul qilindi. Yangi vaqtinchalik parolingiz:\n\n` +
-            `Email: ${args.to}\nYangi parol: ${args.newPassword}\n\n` +
-            `Saytga kirish: ${APP_URL}/auth/login\n\n` +
-            `Xavfsizlik uchun kirgandan keyin parolingizni o'zgartiring.\n`,
+            `Hello, ${args.name}!\n\n` +
+            `Your password reset request was processed. Your new temporary password:\n\n` +
+            `Email: ${args.to}\nNew password: ${args.newPassword}\n\n` +
+            `Sign in: ${APP_URL}/auth/login\n\n` +
+            `For security, please change your password after signing in.\n`,
         html,
     });
 }
@@ -144,13 +144,13 @@ export async function sendAdminNewUserEmail(args: {
 
     const html = `
         <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#111">
-            <h2 style="margin:0 0 16px">${APP_NAME} — yangi foydalanuvchi</h2>
+            <h2 style="margin:0 0 16px">${APP_NAME} — new user</h2>
             <table style="border-collapse:collapse;margin:8px 0">
-                <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Ism</b></td>
+                <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Name</b></td>
                     <td style="padding:6px 12px;border:1px solid #e5e7eb">${safeName}</td></tr>
                 <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Email</b></td>
                     <td style="padding:6px 12px;border:1px solid #e5e7eb">${safeEmail}</td></tr>
-                <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Vaqt</b></td>
+                <tr><td style="padding:6px 12px;background:#f5f7fb;border:1px solid #e5e7eb"><b>Time</b></td>
                     <td style="padding:6px 12px;border:1px solid #e5e7eb">${new Date().toISOString()}</td></tr>
             </table>
         </div>
@@ -159,8 +159,8 @@ export async function sendAdminNewUserEmail(args: {
     await transporter.sendMail({
         from: `"${APP_NAME}" <${from}>`,
         to: adminTo,
-        subject: `${APP_NAME} — yangi foydalanuvchi: ${args.name}`,
-        text: `Yangi foydalanuvchi ro'yxatdan o'tdi.\n\nIsm: ${args.name}\nEmail: ${args.email}\nVaqt: ${new Date().toISOString()}\n`,
+        subject: `${APP_NAME} — new user: ${args.name}`,
+        text: `A new user signed up.\n\nName: ${args.name}\nEmail: ${args.email}\nTime: ${new Date().toISOString()}\n`,
         html,
     });
 }
