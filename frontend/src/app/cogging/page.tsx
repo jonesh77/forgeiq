@@ -51,7 +51,7 @@ function ProgramNav() {
     const pathname = usePathname() || "";
     const { t } = useT();
     return (
-        <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+        <nav className="flex items-center gap-0.5 sm:gap-1 overflow-x-auto no-scrollbar w-full">
             {PROGRAM_NAV.map((item) => {
                 const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
                 return (
@@ -59,7 +59,7 @@ function ProgramNav() {
                         key={item.href}
                         href={item.href}
                         className={
-                            "shrink-0 inline-flex items-center gap-1.5 px-3 h-9 rounded-md text-sm font-medium transition-colors " +
+                            "shrink-0 inline-flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 lg:px-3 h-7 sm:h-8 lg:h-9 rounded-md text-[11px] sm:text-xs lg:text-sm font-medium transition-colors " +
                             (isActive
                                 ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
                                 : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-transparent")

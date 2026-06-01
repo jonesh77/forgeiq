@@ -116,8 +116,8 @@ export default function Display3DModel () {
 
 
     return (
-    <div className="flex gap-x-12 p-5 py-2.5">
-        <form className="flex-[2] border-r pr-10" onSubmit={handleSubmit}>
+    <div className="flex flex-col lg:flex-row gap-6 lg:gap-x-12 p-4 sm:p-5 py-2.5">
+        <form className="w-full lg:flex-[2] lg:border-r lg:pr-10" onSubmit={handleSubmit}>
             <div className="flex items-center justify-between gap-x-4 flex-wrap gap-y-3">
                 <div className="flex items-center gap-x-3">
                     <h1 className="text-2xl font-semibold tracking-tight text-slate-900">3D Model</h1>
@@ -164,7 +164,7 @@ export default function Display3DModel () {
                 }</Button>
             </div>
         </form>
-        <div className="flex-[6]">
+        <div className="w-full lg:flex-[6]">
             {loading && (
                 <Skeleton className="w-full aspect-[2] flex flex-col gap-2 items-center justify-center text-slate-700">
                   <div className="flex items-center gap-3">

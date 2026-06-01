@@ -64,8 +64,8 @@ export default function PlotValuesAgainstStrainGUI () {
     };
 
     return (
-        <div className="flex gap-x-12 p-5 py-2.5">
-            <form className="flex-[2] border-r pr-10" onSubmit={handleSubmit}>
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-x-12 p-4 sm:p-5 py-2.5">
+            <form className="w-full lg:flex-[2] lg:border-r lg:pr-10" onSubmit={handleSubmit}>
                 <div className="flex items-center justify-between gap-x-3 flex-wrap gap-y-3">
                     <div className="flex items-center gap-x-3">
                         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Plot values against strain</h1>
@@ -150,7 +150,7 @@ export default function PlotValuesAgainstStrainGUI () {
                 }</Button>
             </div>
             </form>
-            <div className="flex-[7]">
+            <div className="w-full lg:flex-[7]">
                 {loading && (
                     <Skeleton className="w-full aspect-[2] flex gap-x-3 items-center justify-center"><AiOutlineLoading className="animate-spin" /><p>Loading...</p></Skeleton>
                 )}

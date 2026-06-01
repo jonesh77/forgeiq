@@ -114,8 +114,8 @@ export default function MainGraphGUI ({ states, setStates }) {
   let submitDisabled = loading || (simufactState.opened && Object.values(simufactState.files).some(v => v === null))
 
   return (
-    <div className="flex gap-x-12 p-5 py-2.5">
-      <form className="flex-1 border-r pr-10 relative" onSubmit={handleSubmit}>
+    <div className="flex flex-col lg:flex-row gap-6 lg:gap-x-12 p-4 sm:p-5 py-2.5">
+      <form className="w-full lg:flex-1 lg:border-r lg:pr-10 relative" onSubmit={handleSubmit}>
         <div className="flex items-center justify-between gap-x-3 flex-wrap gap-y-3">
           <div className="flex items-center gap-x-3">
             <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Main Graph</h1>
@@ -191,7 +191,7 @@ export default function MainGraphGUI ({ states, setStates }) {
           }</Button>
       </div>
       </form>
-      <div className="flex-[5]">
+      <div className="w-full lg:flex-[5]">
           {loading && (
             <Skeleton className="w-full aspect-[2] flex gap-x-3 items-center justify-center"><AiOutlineLoading className="animate-spin" /><p>Loading...</p></Skeleton>
           )}

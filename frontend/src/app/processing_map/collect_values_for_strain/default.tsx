@@ -54,8 +54,8 @@ export default function CollectValuesForStrain () {
     }
 
     return (
-        <div className="flex gap-x-12 p-5 py-2.5">
-            <form className="flex-1 border-r pr-10" onSubmit={handleSubmit}>
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-x-12 p-4 sm:p-5 py-2.5">
+            <form className="w-full lg:flex-1 lg:border-r lg:pr-10" onSubmit={handleSubmit}>
                 <div className="flex items-center justify-between gap-x-3 flex-wrap gap-y-3">
                     <div className="flex items-center gap-x-3">
                         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Collect Values for Strain</h1>
@@ -88,7 +88,7 @@ export default function CollectValuesForStrain () {
                 }</Button>
                 </div>
             </form>
-            <div className="flex-[5]">
+            <div className="w-full lg:flex-[5]">
                 {data && (
                     <div className="max-w-[380px]">
                         <div className='flex items-center gap-x-3 text-slate-800'><GoGear className='text-base' /><h2 className='text-sm font-medium'>Generated Excel file</h2></div>
