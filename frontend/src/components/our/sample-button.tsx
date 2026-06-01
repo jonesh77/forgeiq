@@ -46,7 +46,7 @@ export function SampleButtons({
         disabled={busy || disabled}
         variant="secondary"
         className="cursor-pointer h-8 px-3 text-xs bg-gradient-to-br from-amber-100 to-amber-200 hover:from-amber-200 hover:to-amber-300 text-amber-900 border border-amber-300"
-        title="Run this form with built-in sample data"
+        title={t("sample.try_tooltip")}
       >
         {busy ? (
           <><AiOutlineLoading className="animate-spin" />{t("sample.loading")}</>
@@ -63,7 +63,7 @@ export function SampleButtons({
               href={d.url}
               download={d.filename || true}
               className="cursor-pointer h-8 px-2.5 text-xs inline-flex items-center gap-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200"
-              title={`Download ${d.label}`}
+              title={`${t("sample.download_prefix")} ${d.label}`}
             >
               <MdOutlineFileDownload />{d.label}
             </a>

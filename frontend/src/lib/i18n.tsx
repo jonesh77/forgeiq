@@ -25,6 +25,8 @@ const dict = {
     "sample.try": "Try with sample",
     "sample.loading": "Loading sample...",
     "sample.first_run_3d": "Sample run uses a 218 MB U-Net model — first call may take 30-60s.",
+    "sample.try_tooltip": "Run this form with built-in sample data",
+    "sample.download_prefix": "Download",
 
     // Welcome
     "welcome.title": "Welcome to ForgeIQ",
@@ -157,6 +159,8 @@ const dict = {
     // Program hero — shared
     "hero.hide": "Hide",
     "hero.show": "Show intro",
+    "hero.collapse_tooltip": "Collapse hero",
+    "hero.expand_tooltip": "Expand hero",
 
     // Hero — Cogging
     "hero.cogging.badge": "Program 01 · Cogging",
@@ -203,6 +207,24 @@ const dict = {
     "bookmark.loaded": "Bookmark loaded",
     "bookmark.deleted": "Bookmark deleted",
     "bookmark.apply": "Apply",
+    "bookmark.delete": "Delete",
+    "bookmark.save_confirm": "Save",
+    "bookmark.failed": "Failed",
+
+    // AI Assistant
+    "ai.title": "AI Assistant",
+    "ai.subtitle": "Quick help about the platform",
+    "ai.close": "Close",
+    "ai.close_title": "Close (Esc)",
+    "ai.thinking": "Thinking...",
+    "ai.placeholder": "Ask a question...",
+    "ai.offline_answer": "offline answer",
+    "ai.error_generic": "Sorry, something went wrong. Try again.",
+    "ai.greeting": "Hi! I can answer quick questions about the platform — Cogging, Processing Map, 3D Preform, samples, bookmarks, and so on. What can I help with?",
+    "ai.sugg_train_cogging": "How do I train a cogging model?",
+    "ai.sugg_pmap_columns": "What columns does processing map need?",
+    "ai.sugg_3d_slow": "Why is sample run slow on 3D Preform?",
+    "ai.sugg_export_pdf": "How do I export results to PDF?",
 
     // PDF
     "pdf.export": "Export PDF",
@@ -914,6 +936,8 @@ const dict = {
     "sample.try": "Namuna bilan sinash",
     "sample.loading": "Namuna yuklanmoqda...",
     "sample.first_run_3d": "Namuna 218 MB U-Net modelini ishlatadi — birinchi marta 30-60s ketadi.",
+    "sample.try_tooltip": "Bu formani namuna ma'lumotlar bilan ishga tushiring",
+    "sample.download_prefix": "Yuklab olish",
 
     "welcome.title": "ForgeIQ ga xush kelibsiz",
     "welcome.subtitle": "Boshlash uchun qisqacha qo'llanma. Buni yordam menyusidan qayta ochishingiz mumkin.",
@@ -1039,6 +1063,8 @@ const dict = {
 
     "hero.hide": "Yashirish",
     "hero.show": "Kirish so'zini ko'rsatish",
+    "hero.collapse_tooltip": "Hero'ni yig'ish",
+    "hero.expand_tooltip": "Hero'ni ochish",
 
     "hero.cogging.badge": "01-Dastur · Cogging",
     "hero.cogging.title1": "O'qitish. Tuzatish.",
@@ -1081,6 +1107,23 @@ const dict = {
     "bookmark.loaded": "Bookmark yuklandi",
     "bookmark.deleted": "Bookmark o'chirildi",
     "bookmark.apply": "Qo'llash",
+    "bookmark.delete": "O'chirish",
+    "bookmark.save_confirm": "Saqlash",
+    "bookmark.failed": "Xato",
+
+    "ai.title": "AI Yordamchi",
+    "ai.subtitle": "Platforma haqida tezkor yordam",
+    "ai.close": "Yopish",
+    "ai.close_title": "Yopish (Esc)",
+    "ai.thinking": "O'ylanyapti...",
+    "ai.placeholder": "Savol bering...",
+    "ai.offline_answer": "oflayn javob",
+    "ai.error_generic": "Kechirasiz, xato yuz berdi. Yana urinib ko'ring.",
+    "ai.greeting": "Salom! Men platforma haqida savollaringizga javob bera olaman — Cogging, Processing Map, 3D Preform, namunalar, bookmarklar va h.k. Nima haqida yordam kerak?",
+    "ai.sugg_train_cogging": "Cogging modelni qanday o'qitsam bo'ladi?",
+    "ai.sugg_pmap_columns": "Processing map uchun qanday ustunlar kerak?",
+    "ai.sugg_3d_slow": "Nega 3D Preform namunasi sekin ishlaydi?",
+    "ai.sugg_export_pdf": "Natijalarni PDF ga qanday eksport qilsam bo'ladi?",
 
     "pdf.export": "PDF eksport",
     "pdf.exporting": "PDF yaratilmoqda...",
@@ -1785,6 +1828,8 @@ const dict = {
     "sample.try": "샘플로 시도",
     "sample.loading": "샘플 로딩 중...",
     "sample.first_run_3d": "샘플은 218MB U-Net 모델을 사용합니다 — 첫 호출은 30-60초 소요됩니다.",
+    "sample.try_tooltip": "내장 샘플 데이터로 이 양식을 실행",
+    "sample.download_prefix": "다운로드",
 
     "welcome.title": "ForgeIQ에 오신 것을 환영합니다",
     "welcome.subtitle": "시작을 위한 간단한 가이드입니다. 도움말 메뉴에서 다시 열 수 있습니다.",
@@ -1910,6 +1955,8 @@ const dict = {
 
     "hero.hide": "숨기기",
     "hero.show": "소개 보기",
+    "hero.collapse_tooltip": "히어로 접기",
+    "hero.expand_tooltip": "히어로 펼치기",
 
     "hero.cogging.badge": "프로그램 01 · 코깅",
     "hero.cogging.title1": "학습. 보정.",
@@ -1952,6 +1999,23 @@ const dict = {
     "bookmark.loaded": "북마크 불러옴",
     "bookmark.deleted": "북마크 삭제됨",
     "bookmark.apply": "적용",
+    "bookmark.delete": "삭제",
+    "bookmark.save_confirm": "저장",
+    "bookmark.failed": "실패",
+
+    "ai.title": "AI 도우미",
+    "ai.subtitle": "플랫폼에 대한 빠른 도움말",
+    "ai.close": "닫기",
+    "ai.close_title": "닫기 (Esc)",
+    "ai.thinking": "생각 중...",
+    "ai.placeholder": "질문을 입력하세요...",
+    "ai.offline_answer": "오프라인 답변",
+    "ai.error_generic": "죄송합니다, 문제가 발생했습니다. 다시 시도해 주세요.",
+    "ai.greeting": "안녕하세요! 플랫폼에 대한 빠른 질문에 답해 드릴 수 있어요 — 코깅, 프로세싱 맵, 3D 프리폼, 샘플, 북마크 등. 무엇을 도와드릴까요?",
+    "ai.sugg_train_cogging": "코깅 모델을 어떻게 학습시키나요?",
+    "ai.sugg_pmap_columns": "프로세싱 맵에 어떤 열이 필요한가요?",
+    "ai.sugg_3d_slow": "3D 프리폼 샘플 실행이 왜 느린가요?",
+    "ai.sugg_export_pdf": "결과를 PDF로 어떻게 내보내나요?",
 
     "pdf.export": "PDF 내보내기",
     "pdf.exporting": "PDF 생성 중...",

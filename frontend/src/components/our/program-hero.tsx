@@ -45,7 +45,7 @@ export function ProgramHero({ variant }: { variant: Variant }) {
         type="button"
         onClick={toggle}
         className="absolute top-3 right-4 z-10 flex items-center gap-1 px-2 h-7 rounded-md bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/20 text-white/90 text-[11px] cursor-pointer"
-        title={open ? "Collapse hero" : "Expand hero"}
+        title={open ? t("hero.collapse_tooltip") : t("hero.expand_tooltip")}
       >
         {open ? <><LuChevronUp />{t("hero.hide")}</> : <><LuChevronDown />{t("hero.show")}</>}
       </button>

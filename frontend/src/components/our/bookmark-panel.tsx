@@ -57,7 +57,7 @@ export function BookmarkPanel({
       setName(""); setNaming(false);
       void refresh();
     } else {
-      toast.error(r.error || "Failed");
+      toast.error(r.error || t("bookmark.failed"));
     }
   };
 
@@ -104,7 +104,7 @@ export function BookmarkPanel({
                 type="button"
                 onClick={(e) => { e.stopPropagation(); void doDelete(b._id); }}
                 className="opacity-50 hover:opacity-100 hover:text-red-600 cursor-pointer"
-                title="Delete"
+                title={t("bookmark.delete")}
               >
                 <MdDelete />
               </button>
@@ -123,7 +123,7 @@ export function BookmarkPanel({
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void doSave(); } if (e.key === "Escape") setNaming(false); }}
           />
-          <Button type="button" size="sm" disabled={busy || !name.trim()} onClick={doSave} className="h-8 cursor-pointer">Save</Button>
+          <Button type="button" size="sm" disabled={busy || !name.trim()} onClick={doSave} className="h-8 cursor-pointer">{t("bookmark.save_confirm")}</Button>
           <Button type="button" variant="ghost" size="sm" onClick={() => { setName(""); setNaming(false); }} className="h-8 cursor-pointer">×</Button>
         </div>
       ) : (

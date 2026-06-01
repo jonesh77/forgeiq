@@ -1,21 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { askAssistant } from "@/lib/ai-assistant";
 import { HiSparkles } from "react-icons/hi2";
 import { IoMdSend } from "react-icons/io";
 import { LuX } from "react-icons/lu";
 import { AiOutlineLoading } from "react-icons/ai";
 import { useUser } from "@/lib/user";
+import { useT } from "@/lib/i18n";
 
 type Msg = { from: "user" | "assistant"; text: string; source?: "ai" | "faq" };
-
-const SUGGESTIONS = [
-  "How do I train a cogging model?",
-  "What columns does processing map need?",
-  "Why is sample run slow on 3D Preform?",
-  "How do I export results to PDF?",
-];
 
 const EVENT_OPEN = "forgeiq:open-ai-assistant";
 const EVENT_TOGGLE = "forgeiq:toggle-ai-assistant";
@@ -34,16 +28,21 @@ export function toggleAiAssistant() {
  */
 export function AiAssistant() {
   const user = useUser();
+  const { t } = useT();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    {
-      from: "assistant",
-      text: "Hi! I can answer quick questions about the platform — Cogging, Processing Map, 3D Preform, samples, bookmarks, and so on. What can I help with?",
-    },
+    { from: "assistant", text: t("ai.greeting") },
   ]);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const suggestions = useMemo(() => [
+    t("ai.sugg_train_cogging"),
+    t("ai.sugg_pmap_columns"),
+    t("ai.sugg_3d_slow"),
+    t("ai.sugg_export_pdf"),
+  ], [t]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -79,7 +78,7 @@ export function AiAssistant() {
       const r = await askAssistant({ question: q, history: priorHistory.slice(-8) });
       setMessages((m) => [...m, { from: "assistant", text: r.answer, source: r.source === "ai" ? "ai" : "faq" }]);
     } catch {
-      setMessages((m) => [...m, { from: "assistant", text: "Sorry, something went wrong. Try again." }]);
+      setMessages((m) => [...m, { from: "assistant", text: t("ai.error_generic") }]);
     } finally {
       setBusy(false);
     }
@@ -112,15 +111,15 @@ export function AiAssistant() {
               <HiSparkles className="text-sm" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-slate-900 leading-tight">AI Assistant</div>
-              <div className="text-[10px] text-slate-500">Quick help about the platform</div>
+              <div className="text-sm font-semibold text-slate-900 leading-tight">{t("ai.title")}</div>
+              <div className="text-[10px] text-slate-500">{t("ai.subtitle")}</div>
             </div>
           </div>
           <button
             type="button"
             onClick={() => setOpen(false)}
-            aria-label="Close"
-            title="Close (Esc)"
+            aria-label={t("ai.close")}
+            title={t("ai.close_title")}
             className="w-8 h-8 rounded-md hover:bg-white/60 flex items-center justify-center text-slate-500 hover:text-slate-900 cursor-pointer"
           >
             <LuX />
@@ -132,7 +131,7 @@ export function AiAssistant() {
           {busy && (
             <div className="flex justify-start">
               <div className="bg-slate-100 text-slate-500 rounded-2xl rounded-bl-sm px-3 py-2 text-xs flex items-center gap-2">
-                <AiOutlineLoading className="animate-spin" />Thinking...
+                <AiOutlineLoading className="animate-spin" />{t("ai.thinking")}
               </div>
             </div>
           )}
@@ -141,7 +140,7 @@ export function AiAssistant() {
 
         {messages.length === 1 && (
           <div className="px-3 pb-2 flex flex-wrap gap-1.5">
-            {SUGGESTIONS.map((s, i) => (
+            {suggestions.map((s, i) => (
               <button
                 key={i}
                 type="button"
@@ -160,7 +159,7 @@ export function AiAssistant() {
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void send(); } }}
-              placeholder="Ask a question..."
+              placeholder={t("ai.placeholder")}
               className="flex-1 text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 h-10 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
             />
             <button
@@ -179,6 +178,7 @@ export function AiAssistant() {
 }
 
 function Bubble({ msg }: { msg: Msg }) {
+  const { t } = useT();
   if (msg.from === "user") {
     return (
       <div className="flex justify-end">
@@ -191,7 +191,7 @@ function Bubble({ msg }: { msg: Msg }) {
       <div className="max-w-[85%] bg-slate-100 text-slate-800 rounded-2xl rounded-bl-sm px-3.5 py-2 text-sm leading-relaxed whitespace-pre-wrap">
         {msg.text}
         {msg.source === "faq" && (
-          <div className="text-[9px] text-slate-400 mt-1 uppercase tracking-wider">offline answer</div>
+          <div className="text-[9px] text-slate-400 mt-1 uppercase tracking-wider">{t("ai.offline_answer")}</div>
         )}
       </div>
     </div>
