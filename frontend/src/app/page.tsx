@@ -6,6 +6,7 @@ import logo from "../../public/logo.png";
 import { useUser } from "@/lib/user";
 import { NsmLogo } from "@/components/our/nsm-logo";
 import { LangSwitcher } from "@/components/our/lang-switcher";
+import { useT } from "@/lib/i18n";
 import { logout } from "./auth/lib/actions";
 import { toggleAiAssistant } from "@/components/our/ai-assistant";
 import {
@@ -348,6 +349,7 @@ export default function LandingPage() {
 /* ---------- helpers ---------- */
 
 function UserMenu({ name, email }: { name: string; email: string }) {
+  const { t } = useT();
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -364,7 +366,7 @@ function UserMenu({ name, email }: { name: string; email: string }) {
         )}
         <Link href="/history"><DropdownMenuItem className="cursor-pointer">History</DropdownMenuItem></Link>
         <Link href="/message"><DropdownMenuItem className="cursor-pointer">Messages</DropdownMenuItem></Link>
-        <Link href="/settings"><DropdownMenuItem className="cursor-pointer">Settings</DropdownMenuItem></Link>
+        <Link href="/settings"><DropdownMenuItem className="cursor-pointer">{t("nav.settings")}</DropdownMenuItem></Link>
         <DropdownMenuItem
           className="cursor-pointer text-red-600 focus:text-red-700"
           onSelect={(e) => { e.preventDefault(); void logout(); }}

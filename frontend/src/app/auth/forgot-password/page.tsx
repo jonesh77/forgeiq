@@ -8,12 +8,14 @@ import { requestPasswordReset } from "../lib/actions";
 import { useActionState } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { LangSwitcher } from "@/components/our/lang-switcher";
+import { useT } from "@/lib/i18n";
 import { PiCompassTool, PiCube } from "react-icons/pi";
 import { TbChartArea } from "react-icons/tb";
 
 export default function ForgotPasswordPage() {
     const initialState = { message: "", success: false };
     const [formState, formAction, isPending] = useActionState(requestPasswordReset, initialState);
+    const { t } = useT();
 
     return (
         <div className="w-screen h-screen flex font-public bg-white">
@@ -30,7 +32,7 @@ export default function ForgotPasswordPage() {
                         Forge<span className="text-indigo-300">IQ</span>
                     </h1>
                     <p className="mt-5 text-slate-300 text-sm leading-relaxed max-w-md">
-                        Parolni tikladingizmi? Hech qisi yo'q — emailingizni kiriting, sizga yangi vaqtinchalik parol yuboramiz.
+                        {t("auth.forgot.brand_desc")}
                     </p>
 
                     <div className="mt-10 space-y-5 max-w-md">
@@ -53,14 +55,14 @@ export default function ForgotPasswordPage() {
                         <NsmLogo variant="light" />
                     </div>
 
-                    <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Parolni unutdingizmi?</h2>
+                    <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">{t("auth.forgot.title")}</h2>
                     <p className="text-sm text-slate-500 mt-1">
-                        Emailingizni kiriting — yangi vaqtinchalik parol jo'natamiz.
+                        {t("auth.forgot.subtitle")}
                     </p>
 
                     <form action={formAction} className="mt-8 space-y-4">
                         <div>
-                            <label className="text-xs font-medium text-slate-700 mb-1.5 block">Email</label>
+                            <label className="text-xs font-medium text-slate-700 mb-1.5 block">{t("common.email")}</label>
                             <Input
                                 type="email"
                                 name="email"
@@ -85,18 +87,18 @@ export default function ForgotPasswordPage() {
 
                         {isPending ? (
                             <Button type="button" disabled className="w-full h-11 bg-slate-900 cursor-not-allowed">
-                                <AiOutlineLoading className="animate-spin" />Yuborilmoqda...
+                                <AiOutlineLoading className="animate-spin" />{t("auth.forgot.sending")}
                             </Button>
                         ) : (
                             <Button type="submit" className="w-full h-11 bg-slate-900 hover:bg-slate-800 cursor-pointer text-white font-medium">
-                                Yangi parol yuborish
+                                {t("auth.forgot.submit")}
                             </Button>
                         )}
                     </form>
 
                     <div className="mt-6 text-center text-sm space-x-3">
                         <Link className="font-medium text-indigo-600 hover:text-indigo-700" href="/auth/login">
-                            ← Kirish sahifasiga qaytish
+                            {t("common.back_to_login")}
                         </Link>
                     </div>
                 </div>

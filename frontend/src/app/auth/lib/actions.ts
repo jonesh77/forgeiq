@@ -97,7 +97,7 @@ export async function changePassword(
     try {
         const session = await getSession();
         if (!session.isSignedIn || !session.userid) {
-            return { message: "Avval tizimga kirishingiz kerak", success: false };
+            return { message: "You must be signed in", success: false };
         }
 
         const currentPassword = String(formData.get("currentPassword") || "");
@@ -105,22 +105,22 @@ export async function changePassword(
         const confirmPassword = String(formData.get("confirmPassword") || "");
 
         if (!currentPassword || !newPassword || !confirmPassword) {
-            return { message: "Hamma maydon to'ldirilishi shart", success: false };
+            return { message: "All fields are required", success: false };
         }
         if (newPassword.length < MIN_PASSWORD_LEN) {
-            return { message: `Yangi parol kamida ${MIN_PASSWORD_LEN} ta belgi bo'lishi kerak`, success: false };
+            return { message: `New password must be at least ${MIN_PASSWORD_LEN} characters`, success: false };
         }
         if (newPassword !== confirmPassword) {
-            return { message: "Yangi parol va tasdiq bir xil emas", success: false };
+            return { message: "New password and confirmation do not match", success: false };
         }
         if (newPassword === currentPassword) {
-            return { message: "Yangi parol eski paroldan farq qilishi kerak", success: false };
+            return { message: "New password must be different from the current one", success: false };
         }
 
         const users = await getCollection("users");
         const user = await users.findOne({ _id: new ObjectId(session.userid) });
         if (!user) {
-            return { message: "Foydalanuvchi topilmadi", success: false };
+            return { message: "User not found", success: false };
         }
 
         const storedPassword: string = user.password || "";
@@ -131,7 +131,7 @@ export async function changePassword(
             valid = storedPassword === currentPassword;
         }
         if (!valid) {
-            return { message: "Joriy parol noto'g'ri", success: false };
+            return { message: "Current password is incorrect", success: false };
         }
 
         const newHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
@@ -140,10 +140,10 @@ export async function changePassword(
             { $set: { password: newHash, passwordChangedAt: new Date() } },
         );
 
-        return { message: "Parol muvaffaqiyatli o'zgartirildi", success: true };
+        return { message: "Password changed successfully", success: true };
     } catch (e) {
         console.error("changePassword failed:", e);
-        return { message: "Server xatosi, qaytadan urinib ko'ring", success: false };
+        return { message: "Server error, please try again", success: false };
     }
 }
 
@@ -154,7 +154,7 @@ export async function requestPasswordReset(
     try {
         const email = String(formData.get("email") || "").trim().toLowerCase();
         if (!email || !EMAIL_RE.test(email)) {
-            return { message: "Iltimos to'g'ri email kiriting", success: false };
+            return { message: "Please enter a valid email", success: false };
         }
 
         const users = await getCollection("users");
@@ -162,7 +162,7 @@ export async function requestPasswordReset(
 
         // Generic response — don't leak whether email exists
         const genericOk = {
-            message: "Agar shu email ro'yxatda bo'lsa, yangi parol jo'natildi. Pochtangizni tekshiring.",
+            message: "If that email is registered, a new password has been sent. Please check your inbox.",
             success: true,
         };
 
@@ -178,13 +178,13 @@ export async function requestPasswordReset(
         try {
             await sendPasswordResetEmail({
                 to: email,
-                name: user.name || "foydalanuvchi",
+                name: user.name || "user",
                 newPassword,
             });
         } catch (e) {
             console.error("[requestPasswordReset] email failed:", e);
             return {
-                message: "Parol tiklandi, lekin email yuborib bo'lmadi. Admin bilan bog'laning.",
+                message: "Password was reset but email could not be sent. Please contact admin.",
                 success: false,
             };
         }
@@ -192,7 +192,7 @@ export async function requestPasswordReset(
         return genericOk;
     } catch (e) {
         console.error("requestPasswordReset failed:", e);
-        return { message: "Server xatosi, qaytadan urinib ko'ring", success: false };
+        return { message: "Server error, please try again", success: false };
     }
 }
 

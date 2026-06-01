@@ -108,7 +108,7 @@ export default function LoginPage() {
 
                     <div className="mt-4 text-center text-sm">
                         <Link className="font-medium text-indigo-600 hover:text-indigo-700" href="/auth/forgot-password">
-                            Parolni unutdingizmi?
+                            {t("common.forgot_password")}
                         </Link>
                     </div>
 
