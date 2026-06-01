@@ -4,8 +4,15 @@
 @custom-variant dark (&:is(.dark *));
 
 html {
-  font-size: 115%; /* everything becomes ~10% bigger */
+  font-size: 115%; /* desktop default — ~10% bigger */
 }
+/* Mobile: scale down the base font so layouts stop overflowing */
+@media (max-width: 768px) { html { font-size: 100%; } }
+@media (max-width: 480px) { html { font-size: 92%; } }
+
+/* Prevent the page from horizontally scrolling on phones — a single rogue
+ * fixed-width child should not make the whole viewport pan sideways. */
+body { overflow-x: hidden; }
 
 /* Hide scrollbar while keeping scroll behaviour — used by ProgramNav */
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

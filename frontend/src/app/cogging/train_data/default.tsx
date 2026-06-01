@@ -112,8 +112,8 @@ function ModelTrainer ({ state, setState }) {
   const runSample = () => submitWith(sampleFormData());
 
   return (
-    <div className='w-full bg-white border border-slate-200 rounded-2xl p-8 py-7 flex items-stretch shadow-sm'>
-      <form className='flex-1/3 flex flex-col justify-between relative' onSubmit={handleSubmit}>
+    <div className='w-full bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 lg:p-8 lg:py-7 flex flex-col lg:flex-row lg:items-stretch gap-6 lg:gap-0 shadow-sm'>
+      <form className='w-full lg:flex-1/3 flex flex-col justify-between relative' onSubmit={handleSubmit}>
         <div>
           <div className='inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-semibold uppercase tracking-wider mb-2'>Step 1</div>
           <div className="flex items-center gap-2">
@@ -136,8 +136,8 @@ function ModelTrainer ({ state, setState }) {
           <FaGears />Generate model
         </Button>
       </form>
-      <div className='w-px bg-slate-200 mx-8'></div>
-      <div className='flex-2/3 min-h-[400px]'>
+      <div className='hidden lg:block w-px bg-slate-200 mx-8'></div>
+      <div className='w-full lg:flex-2/3 min-h-[300px] lg:min-h-[400px]'>
         {state.status == "steady" ? (
           <div className="h-full w-full rounded-2xl bg-slate-50 border border-dashed border-slate-300 flex items-center justify-center">
             <div className='text-center text-slate-500'>
@@ -268,8 +268,8 @@ function TrainDataCorrection ({ state, setState }) {
   }
 
   return (
-    <div className='w-full bg-white border border-slate-200 rounded-2xl p-8 py-7 flex items-stretch shadow-sm'>
-      <form ref={formRef2} className='flex-1/3 flex flex-col justify-between relative' onSubmit={handleSubmit}>
+    <div className='w-full bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 lg:p-8 lg:py-7 flex flex-col lg:flex-row lg:items-stretch gap-6 lg:gap-0 shadow-sm'>
+      <form ref={formRef2} className='w-full lg:flex-1/3 flex flex-col justify-between relative' onSubmit={handleSubmit}>
         <div className='pb-6'>
           <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
             <div className='inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-semibold uppercase tracking-wider'>Cogging</div>
@@ -311,8 +311,8 @@ function TrainDataCorrection ({ state, setState }) {
         </div>
         <Button type="submit" className='cursor-pointer h-11 mt-6 bg-slate-900 hover:bg-slate-800 font-medium' disabled={state.status === "loading"}>Generate</Button>
       </form>
-      <div className='w-px bg-slate-200 mx-8'></div>
-      <div className='flex-2/3 min-h-[400px]'>
+      <div className='hidden lg:block w-px bg-slate-200 mx-8'></div>
+      <div className='w-full lg:flex-2/3 min-h-[300px] lg:min-h-[400px]'>
         {state.status == "steady" ? (
           <div className="h-full w-full rounded-2xl bg-slate-50 border border-dashed border-slate-300 flex items-center justify-center">
             <div className='flex items-center gap-x-3 text-slate-500 text-sm'><LuFileInput /><p>Fill in the parameters and press Generate</p></div>

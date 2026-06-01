@@ -93,9 +93,9 @@ export default function GradientBoostingForm() {
   };
 
   return (
-    <div className="w-full bg-white border border-slate-200 rounded-2xl p-8 py-7 flex items-stretch shadow-sm">
+    <div className="w-full bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 lg:p-8 lg:py-7 flex flex-col lg:flex-row lg:items-stretch gap-6 lg:gap-0 shadow-sm">
       {/* LEFT — form */}
-      <form className="flex-1/3 flex flex-col justify-between relative" onSubmit={handleSubmit}>
+      <form className="w-full lg:flex-1/3 flex flex-col justify-between relative" onSubmit={handleSubmit}>
         <div>
           <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-semibold uppercase tracking-wider mb-2">
             Modern · Tree-based
@@ -141,10 +141,10 @@ export default function GradientBoostingForm() {
         </Button>
       </form>
 
-      <div className="w-px bg-slate-200 mx-8"></div>
+      <div className="hidden lg:block w-px bg-slate-200 mx-8"></div>
 
       {/* RIGHT — results */}
-      <div className="flex-2/3 min-h-[400px]">
+      <div className="w-full lg:flex-2/3 min-h-[300px] lg:min-h-[400px]">
         {state.status === "steady" && (
           <div className="h-full w-full rounded-2xl bg-slate-50 border border-dashed border-slate-300 flex items-center justify-center">
             <div className="text-center text-slate-500">
