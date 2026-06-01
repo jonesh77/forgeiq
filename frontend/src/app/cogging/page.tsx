@@ -105,6 +105,7 @@ export function Header({ minimize = false, first, second }) {
                                 <NotifBadge count={counts.isSuper ? counts.pendingMessages : counts.unreadReplies} />
                             </DropdownMenuItem>
                         </Link>
+                        <Link href={"/settings"}><DropdownMenuItem className="cursor-pointer">Settings</DropdownMenuItem></Link>
                         <DropdownMenuItem
                             className="cursor-pointer text-red-600 focus:text-red-700"
                             onSelect={(e) => {

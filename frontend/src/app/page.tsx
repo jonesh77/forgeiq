@@ -364,6 +364,7 @@ function UserMenu({ name, email }: { name: string; email: string }) {
         )}
         <Link href="/history"><DropdownMenuItem className="cursor-pointer">History</DropdownMenuItem></Link>
         <Link href="/message"><DropdownMenuItem className="cursor-pointer">Messages</DropdownMenuItem></Link>
+        <Link href="/settings"><DropdownMenuItem className="cursor-pointer">Settings</DropdownMenuItem></Link>
         <DropdownMenuItem
           className="cursor-pointer text-red-600 focus:text-red-700"
           onSelect={(e) => { e.preventDefault(); void logout(); }}

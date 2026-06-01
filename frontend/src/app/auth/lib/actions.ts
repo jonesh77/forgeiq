@@ -2,10 +2,21 @@
 
 import { getCollection } from "@/lib/db";
 import { getSession } from "@/lib/getSession";
+import { sendAdminNewUserEmail, sendPasswordResetEmail, sendWelcomeEmail } from "@/lib/email";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+
+function generateTempPassword(length = 10): string {
+    // url-safe alphanumeric (no confusing 0/O, 1/l/I)
+    const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    const bytes = crypto.randomBytes(length);
+    let out = "";
+    for (let i = 0; i < length; i++) out += alphabet[bytes[i] % alphabet.length];
+    return out;
+}
 
 const BCRYPT_ROUNDS = 10;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -55,6 +66,16 @@ export async function register(_message_obj: { message?: string }, formData: For
             return { message: "Unable to create account, please try again" };
         }
 
+        // Fire-and-forget notifications — email failure must not block sign-up
+        Promise.allSettled([
+            sendWelcomeEmail({ to: email, name, password }),
+            sendAdminNewUserEmail({ name, email }),
+        ]).then((results) => {
+            for (const r of results) {
+                if (r.status === "rejected") console.error("[register email]", r.reason);
+            }
+        });
+
         const session = await getSession();
         session.email = email;
         session.isSignedIn = true;
@@ -67,6 +88,112 @@ export async function register(_message_obj: { message?: string }, formData: For
         return { message: "Server error: " + (e as any)?.message };
     }
     redirect("/");
+}
+
+export async function changePassword(
+    _state: { message?: string; success?: boolean },
+    formData: FormData,
+): Promise<{ message: string; success: boolean }> {
+    try {
+        const session = await getSession();
+        if (!session.isSignedIn || !session.userid) {
+            return { message: "Avval tizimga kirishingiz kerak", success: false };
+        }
+
+        const currentPassword = String(formData.get("currentPassword") || "");
+        const newPassword = String(formData.get("newPassword") || "");
+        const confirmPassword = String(formData.get("confirmPassword") || "");
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return { message: "Hamma maydon to'ldirilishi shart", success: false };
+        }
+        if (newPassword.length < MIN_PASSWORD_LEN) {
+            return { message: `Yangi parol kamida ${MIN_PASSWORD_LEN} ta belgi bo'lishi kerak`, success: false };
+        }
+        if (newPassword !== confirmPassword) {
+            return { message: "Yangi parol va tasdiq bir xil emas", success: false };
+        }
+        if (newPassword === currentPassword) {
+            return { message: "Yangi parol eski paroldan farq qilishi kerak", success: false };
+        }
+
+        const users = await getCollection("users");
+        const user = await users.findOne({ _id: new ObjectId(session.userid) });
+        if (!user) {
+            return { message: "Foydalanuvchi topilmadi", success: false };
+        }
+
+        const storedPassword: string = user.password || "";
+        let valid = false;
+        if (storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$") || storedPassword.startsWith("$2y$")) {
+            valid = await bcrypt.compare(currentPassword, storedPassword);
+        } else {
+            valid = storedPassword === currentPassword;
+        }
+        if (!valid) {
+            return { message: "Joriy parol noto'g'ri", success: false };
+        }
+
+        const newHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+        await users.updateOne(
+            { _id: user._id },
+            { $set: { password: newHash, passwordChangedAt: new Date() } },
+        );
+
+        return { message: "Parol muvaffaqiyatli o'zgartirildi", success: true };
+    } catch (e) {
+        console.error("changePassword failed:", e);
+        return { message: "Server xatosi, qaytadan urinib ko'ring", success: false };
+    }
+}
+
+export async function requestPasswordReset(
+    _state: { message?: string; success?: boolean },
+    formData: FormData,
+): Promise<{ message: string; success: boolean }> {
+    try {
+        const email = String(formData.get("email") || "").trim().toLowerCase();
+        if (!email || !EMAIL_RE.test(email)) {
+            return { message: "Iltimos to'g'ri email kiriting", success: false };
+        }
+
+        const users = await getCollection("users");
+        const user = await users.findOne({ email });
+
+        // Generic response — don't leak whether email exists
+        const genericOk = {
+            message: "Agar shu email ro'yxatda bo'lsa, yangi parol jo'natildi. Pochtangizni tekshiring.",
+            success: true,
+        };
+
+        if (!user) return genericOk;
+
+        const newPassword = generateTempPassword(10);
+        const newHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+        await users.updateOne(
+            { _id: user._id },
+            { $set: { password: newHash, passwordResetAt: new Date() } },
+        );
+
+        try {
+            await sendPasswordResetEmail({
+                to: email,
+                name: user.name || "foydalanuvchi",
+                newPassword,
+            });
+        } catch (e) {
+            console.error("[requestPasswordReset] email failed:", e);
+            return {
+                message: "Parol tiklandi, lekin email yuborib bo'lmadi. Admin bilan bog'laning.",
+                success: false,
+            };
+        }
+
+        return genericOk;
+    } catch (e) {
+        console.error("requestPasswordReset failed:", e);
+        return { message: "Server xatosi, qaytadan urinib ko'ring", success: false };
+    }
 }
 
 export async function login(_message_obj: { message?: string }, formData: FormData) {

@@ -63,7 +63,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="relative text-xs text-slate-500">
-                    © {new Date().getFullYear()} ForgeIQ · Developed by Y. Alibek · NSMLab · Sogang University
+                    © {new Date().getFullYear()} ForgeIQ · by NSMLab · Sogang University
                 </div>
             </aside>
 
@@ -106,7 +106,13 @@ export default function LoginPage() {
                         )}
                     </form>
 
-                    <div className="mt-6 text-center text-sm">
+                    <div className="mt-4 text-center text-sm">
+                        <Link className="font-medium text-indigo-600 hover:text-indigo-700" href="/auth/forgot-password">
+                            Parolni unutdingizmi?
+                        </Link>
+                    </div>
+
+                    <div className="mt-3 text-center text-sm">
                         <span className="text-slate-500">{t("common.dont_have_account")}? </span>
                         <Link className="font-medium text-indigo-600 hover:text-indigo-700" href="/auth/register">{t("common.register")}</Link>
                     </div>
