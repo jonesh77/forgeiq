@@ -20,7 +20,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "ForgeIQ · by NSMLab",
+  title: "ForgeIQ",
   description: "ForgeIQ — intelligence for forging design. Cogging optimization, processing maps, and 3D preform prediction in one workbench. Built by NSMLab, Sogang University.",
 };
 
