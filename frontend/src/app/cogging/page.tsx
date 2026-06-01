@@ -1,7 +1,8 @@
 "use client";
 
-import { PiCompassTool } from "react-icons/pi";
+import { PiCompassTool, PiCube } from "react-icons/pi";
 import { MdOutlineUnfoldMore } from "react-icons/md";
+import { TbChartArea, TbArrowsCross } from "react-icons/tb";
 import TrainDataForm from "./train_data/default";
 import { useState } from "react";
 import PassSchedule from "./pass_schedule/default";
@@ -15,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "../../../public/logo.png"
 import { FaUserCircle } from "react-icons/fa";
@@ -37,6 +39,41 @@ const tabs: [string, (states: any, setStates: any) => React.ReactNode][] = [
     ["svc.pass_schedule", () => (<PassSchedule />)],
 ]
 
+const PROGRAM_NAV: { href: string; key: string; icon: React.ReactNode }[] = [
+    { href: "/workflow",       key: "nav.auto_pipeline",  icon: <HiSparkles className="text-amber-500" /> },
+    { href: "/cogging",        key: "nav.cogging",        icon: <PiCompassTool /> },
+    { href: "/processing_map", key: "nav.processing_map", icon: <TbChartArea /> },
+    { href: "/3d_preform",     key: "nav.preform_3d",     icon: <PiCube /> },
+    { href: "/compare",        key: "nav.compare",        icon: <TbArrowsCross /> },
+];
+
+function ProgramNav() {
+    const pathname = usePathname() || "";
+    const { t } = useT();
+    return (
+        <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+            {PROGRAM_NAV.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                return (
+                    <Link
+                        key={item.href}
+                        href={item.href}
+                        className={
+                            "shrink-0 inline-flex items-center gap-1.5 px-3 h-9 rounded-md text-sm font-medium transition-colors " +
+                            (isActive
+                                ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                                : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-transparent")
+                        }
+                    >
+                        <span className={isActive ? "text-indigo-600" : "text-slate-500"}>{item.icon}</span>
+                        <span className="whitespace-nowrap">{t(item.key as any)}</span>
+                    </Link>
+                );
+            })}
+        </nav>
+    );
+}
+
 export function Header({ minimize = false, first, second }) {
     let user = useUser()
     const { t } = useT();
@@ -44,19 +81,10 @@ export function Header({ minimize = false, first, second }) {
     const totalUnread = counts.unreadReplies + (counts.isSuper ? counts.pendingMessages : 0);
 
     return (
-        <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-                <Link href={"/"} className="flex items-center">{first}</Link>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>{second}</DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="font-public min-w-[220px]">
-                        <DropdownMenuItem className="cursor-pointer"><Link href={"/workflow"} className="w-full flex items-center gap-2"><HiSparkles className="text-amber-500" />Auto Pipeline</Link></DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer"><Link href={"/cogging"} className="w-full">{t("nav.cogging")}</Link></DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer"><Link href={"/processing_map"} className="w-full">{t("nav.processing_map")}</Link></DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer"><Link href={"/3d_preform"} className="w-full">{t("nav.preform_3d")}</Link></DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer"><Link href={"/compare"} className="w-full">{t("nav.compare")}</Link></DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+        <div className="flex justify-between items-center gap-4">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+                <Link href={"/"} className="flex items-center shrink-0">{first}</Link>
+                <ProgramNav />
             </div>
             <div className="flex items-center font-public gap-x-2">
                 <LangSwitcher />
