@@ -94,11 +94,11 @@ export function Header({ minimize = false, first, second }) {
                 <button
                     type="button"
                     onClick={toggleAiAssistant}
-                    title="Ask AI"
+                    title={t("home.nav.ask_ai")}
                     className="cursor-pointer flex items-center gap-1.5 px-2.5 md:px-3 h-9 rounded-md text-sm font-medium transition-all bg-gradient-to-br from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 text-indigo-700 border border-indigo-200/60"
                 >
                     <HiSparkles className="text-amber-500" />
-                    <span className="hidden md:inline">Ask AI</span>
+                    <span className="hidden md:inline">{t("home.nav.ask_ai")}</span>
                 </button>
                 {!minimize && (
                     <>

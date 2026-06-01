@@ -27,7 +27,7 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 <div className="relative">
-                    <div className="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70">by NSMLab</div>
+                    <div className="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70">{t("auth.brand.by_nsmlab")}</div>
                     <h1 className="text-5xl font-montserrat font-bold tracking-tight leading-none">
                         Forge<span className="text-indigo-300">IQ</span>
                     </h1>
@@ -36,14 +36,14 @@ export default function ForgotPasswordPage() {
                     </p>
 
                     <div className="mt-10 space-y-5 max-w-md">
-                        <Feature icon={<PiCompassTool />} title="Cogging Program" desc="Neural-network predictor + 7-pass schedule optimizer." />
-                        <Feature icon={<TbChartArea />} title="Processing Map" desc="2D / 3D dissipation & instability maps with FEM overlays." />
-                        <Feature icon={<PiCube />} title="3D Preform" desc="U-Net voxel prediction → smoothed STL geometry." />
+                        <Feature icon={<PiCompassTool />} title={t("auth.brand.feat_cogging_title")} desc={t("auth.brand.feat_cogging_desc")} />
+                        <Feature icon={<TbChartArea />} title={t("auth.brand.feat_pmap_title")} desc={t("auth.brand.feat_pmap_desc")} />
+                        <Feature icon={<PiCube />} title={t("auth.brand.feat_preform_title")} desc={t("auth.brand.feat_preform_desc")} />
                     </div>
                 </div>
 
                 <div className="relative text-xs text-slate-500">
-                    © {new Date().getFullYear()} ForgeIQ · by NSMLab · Sogang University
+                    © {new Date().getFullYear()} {t("auth.brand.footer_suffix")}
                 </div>
             </aside>
 

@@ -35,6 +35,7 @@ import {
 
 
 export default function PassSchedule () {
+    const { t } = useT();
     let [state, setState] = useState({ status: "steady", obj: {} })
     let [mode, setMode] = useState<FormMode>("quick");
     const formRef = useRef<HTMLFormElement | null>(null);
@@ -64,10 +65,10 @@ export default function PassSchedule () {
         const r = await postToBackend1("/api/cogging/passschedule", fd);
         if (r.ok) {
             setState({ status: "filled", obj: r.data });
-            toast.success(r.data?.used_sample ? "Sample pass schedule computed" : "Pass schedule computed");
+            toast.success(r.data?.used_sample ? t("cog.ps.toast_sample_ok") : t("cog.ps.toast_ok"));
             recordHistory({
                 service: "cogging.pass_schedule",
-                title: r.data?.used_sample ? "Pass Schedule (sample)" : "Pass Schedule",
+                title: r.data?.used_sample ? t("cog.ps.history_sample") : t("cog.ps.history"),
                 params: {
                     initial_cross_section: fd.get("initial_cross_section")?.toString(),
                     initial_length: fd.get("initial_length")?.toString(),
@@ -93,44 +94,44 @@ export default function PassSchedule () {
             <form ref={formRef} onSubmit={handleSubmit}>
                 <div className="flex items-center justify-between gap-x-5 flex-wrap gap-y-3">
                     <div className="flex items-center gap-x-3">
-                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Pass Schedule Program</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{t("cog.ps.title")}</h1>
                         <Info />
                     </div>
                     <ModeToggle mode={mode} setMode={setMode} />
                 </div>
-                <p className="mt-1 text-sm text-slate-500">{mode === "quick" ? "Enter your workpiece dimensions and we compute the optimal 7-pass schedule using a built-in reference model." : "Upload your trained model and dataset for a project-specific schedule."}</p>
+                <p className="mt-1 text-sm text-slate-500">{mode === "quick" ? t("cog.ps.subtitle_quick") : t("cog.ps.subtitle_adv")}</p>
                 <ModeBanner mode={mode} />
                 <div className="flex flex-wrap items-end gap-x-8 gap-y-4 mt-7">
                     {mode === "advanced" && (
                         <>
                             <div>
-                                <h5 className='font-medium text-xs text-slate-700'>Excel data</h5>
+                                <h5 className='font-medium text-xs text-slate-700'>{t("cog.ps.excel_data")}</h5>
                                 <Input accept=".xlsx" type='file' name='data' className='bg-slate-50 border-slate-200 mt-1.5 h-10 cursor-pointer' required />
                             </div>
                             <div>
-                                <h5 className='font-medium text-xs text-slate-700'>.h5 Model</h5>
+                                <h5 className='font-medium text-xs text-slate-700'>{t("cog.ps.h5_model")}</h5>
                                 <Input accept=".h5" type='file' name='model' className='bg-slate-50 border-slate-200 mt-1.5 h-10 cursor-pointer' required />
                             </div>
                         </>
                     )}
                     <div>
                         <div className="flex gap-x-2 items-center">
-                            <h5 className='font-medium text-xs'>Initial Cross Section (mm)</h5>
-                            <ParamHelp>Initial diameter (round) or side length (square) of the workpiece before forging, in millimetres. Typical: 80–150 mm.</ParamHelp>
+                            <h5 className='font-medium text-xs'>{t("cog.ps.cross_section")}</h5>
+                            <ParamHelp>{t("cog.ps.cross_section_hint")}</ParamHelp>
                         </div>
                         <Input type='number' placeholder="e.g. 110" name='initial_cross_section' className='bg-white mt-1.5 w-[260px] placeholder:text-xs' required />
                     </div>
                     <div>
                         <div className="flex gap-x-2 items-center">
-                            <h5 className='font-medium text-xs'>Initial Length (mm)</h5>
-                            <ParamHelp>Length of the workpiece before forging, in millimetres. Typical: 1000–2000 mm.</ParamHelp>
+                            <h5 className='font-medium text-xs'>{t("cog.ps.length")}</h5>
+                            <ParamHelp>{t("cog.ps.length_hint")}</ParamHelp>
                         </div>
                         <Input type='number' placeholder="e.g. 1500" name='initial_length' className='bg-white mt-1.5 w-[260px] placeholder:text-xs' required />
                     </div>
                     <div>
                         <div className="flex gap-x-2 items-center">
-                            <h5 className='font-medium text-xs'>Cutting Length (mm)</h5>
-                            <ParamHelp>Maximum length per cut piece. If the forged length exceeds this, the program splits the workpiece. Typical: 600–1000 mm.</ParamHelp>
+                            <h5 className='font-medium text-xs'>{t("cog.ps.cutting")}</h5>
+                            <ParamHelp>{t("cog.ps.cutting_hint")}</ParamHelp>
                         </div>
                         <Input type='number' placeholder="e.g. 800" name='cutting_length' className='bg-white mt-1.5 w-[320px] placeholder:text-xs' required />
                     </div>
@@ -140,35 +141,35 @@ export default function PassSchedule () {
                 <details className="mt-5 group" open>
                   <summary className="cursor-pointer text-xs font-semibold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                     <span className="w-1 h-1 rounded-full bg-amber-500 group-open:bg-emerald-500"></span>
-                    Equipment limits (optional)
-                    <span className="text-[10px] font-normal text-slate-400 normal-case tracking-normal">— flags passes that exceed your press / temperature window</span>
+                    {t("cog.ps.equip_title")}
+                    <span className="text-[10px] font-normal text-slate-400 normal-case tracking-normal">{t("cog.ps.equip_subtitle")}</span>
                   </summary>
                   <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     <div>
                       <div className="flex gap-x-2 items-center">
-                        <h5 className='font-medium text-xs'>Max press force (tons)</h5>
-                        <ParamHelp>Your press's rated capacity. Each pass's estimated force is flagged red if it exceeds this. Typical industrial cogging press: 1000–5000 tons.</ParamHelp>
+                        <h5 className='font-medium text-xs'>{t("cog.ps.max_press")}</h5>
+                        <ParamHelp>{t("cog.ps.max_press_hint")}</ParamHelp>
                       </div>
                       <Input type='number' defaultValue={3000} name='max_press_force_tons' className='bg-white mt-1.5 placeholder:text-xs' />
                     </div>
                     <div>
                       <div className="flex gap-x-2 items-center">
-                        <h5 className='font-medium text-xs'>Initial temperature (°C)</h5>
-                        <ParamHelp>Workpiece temperature out of the furnace, before pass 1. Typical: 1150–1250 °C for low-alloy steel.</ParamHelp>
+                        <h5 className='font-medium text-xs'>{t("cog.ps.init_temp")}</h5>
+                        <ParamHelp>{t("cog.ps.init_temp_hint")}</ParamHelp>
                       </div>
                       <Input type='number' defaultValue={1200} name='initial_temp_C' className='bg-white mt-1.5 placeholder:text-xs' />
                     </div>
                     <div>
                       <div className="flex gap-x-2 items-center">
-                        <h5 className='font-medium text-xs'>Temp drop / pass (°C)</h5>
-                        <ParamHelp>Heat lost per pass to anvils and air (no inter-pass reheating). Typical worst case: 30–80 °C.</ParamHelp>
+                        <h5 className='font-medium text-xs'>{t("cog.ps.temp_drop")}</h5>
+                        <ParamHelp>{t("cog.ps.temp_drop_hint")}</ParamHelp>
                       </div>
                       <Input type='number' defaultValue={50} name='temp_drop_per_pass_C' className='bg-white mt-1.5 placeholder:text-xs' />
                     </div>
                     <div>
                       <div className="flex gap-x-2 items-center">
-                        <h5 className='font-medium text-xs'>Min hot temp (°C)</h5>
-                        <ParamHelp>Below this, the steel is too cold for hot working — flow stress spikes and grain refinement stops. Typical: 850–900 °C.</ParamHelp>
+                        <h5 className='font-medium text-xs'>{t("cog.ps.min_temp")}</h5>
+                        <ParamHelp>{t("cog.ps.min_temp_hint")}</ParamHelp>
                       </div>
                       <Input type='number' defaultValue={900} name='min_temp_C' className='bg-white mt-1.5 placeholder:text-xs' />
                     </div>
@@ -185,14 +186,14 @@ export default function PassSchedule () {
                   />
                   {mode === "advanced" && (
                     <>
-                      <a href={sampleDownloadUrl(1, "cogging_data")} download="cogging_data.xlsx" className="text-xs px-2.5 h-8 inline-flex items-center gap-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer">↓ Sample .xlsx</a>
-                      <a href={sampleDownloadUrl(1, "pretrained_cogging_model")} download="pretrained_cogging_model.h5" className="text-xs px-2.5 h-8 inline-flex items-center gap-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer">↓ Sample .h5</a>
+                      <a href={sampleDownloadUrl(1, "cogging_data")} download="cogging_data.xlsx" className="text-xs px-2.5 h-8 inline-flex items-center gap-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer">{t("cog.ps.sample_xlsx")}</a>
+                      <a href={sampleDownloadUrl(1, "pretrained_cogging_model")} download="pretrained_cogging_model.h5" className="text-xs px-2.5 h-8 inline-flex items-center gap-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer">{t("cog.ps.sample_h5")}</a>
                     </>
                   )}
                 </div>
                 <Button type="submit" className="mt-4 w-[220px] h-11 cursor-pointer bg-slate-900 hover:bg-slate-800 font-medium" disabled={state.status == "loading"}>{
-                    state.status == "loading" ? (<><AiOutlineLoading className="animate-spin" />Computing...</>)
-                    : (<><PiComputerTower />Compute passes</> )
+                    state.status == "loading" ? (<><AiOutlineLoading className="animate-spin" />{t("cog.ps.computing")}</>)
+                    : (<><PiComputerTower />{t("cog.ps.compute_button")}</> )
                 }</Button>
             </form>
             {state.status == "filled" && (
@@ -222,6 +223,7 @@ import { useRef } from "react";
 import { PassSchedulePdfButton } from "@/components/our/pass-schedule-pdf";
 import { ModeToggle, ModeBanner, FormMode } from "@/components/our/mode-toggle";
 import { PassScheduleResult } from "@/components/our/pass-schedule-result";
+import { useT } from "@/lib/i18n";
 
 function MechanicalCard ({ label, value, img_src }) {
     let [showImage, setShowImage] = useState(false);
@@ -270,7 +272,7 @@ function MechanicalCard ({ label, value, img_src }) {
 
 type MaterialPreset = {
   id: string;
-  name: string;
+  nameKey: string;
   // Void-closure polynomial V(ε) = 1 + B·ε + C·ε² + D·ε³
   void_B: number;
   void_C: number;
@@ -278,41 +280,42 @@ type MaterialPreset = {
   // Flow stress σ(T) = base + slope·(1200 − T)   MPa
   flow_stress_base_MPa: number;
   flow_stress_slope: number;
-  note: string;
+  noteKey: string;
 };
 
 const MATERIAL_PRESETS: MaterialPreset[] = [
   {
     id: "aisi4340",
-    name: "AISI 4340 (low-alloy steel) — default",
+    nameKey: "cog.mat.aisi4340_name",
     void_B: -1.521351466, void_C: 0.818014592, void_D: -0.145775097,
     flow_stress_base_MPa: 80,  flow_stress_slope: 0.6,
-    note: "Original NSMLab calibration. Cr-Ni-Mo low-alloy steel, typical heavy-section forging.",
+    noteKey: "cog.mat.aisi4340_note",
   },
   {
     id: "aisi1045",
-    name: "AISI 1045 (medium-carbon steel)",
+    nameKey: "cog.mat.aisi1045_name",
     void_B: -1.32, void_C: 0.74, void_D: -0.12,
     flow_stress_base_MPa: 70,  flow_stress_slope: 0.55,
-    note: "Plain medium-carbon steel — softer than 4340 at the same temperature.",
+    noteKey: "cog.mat.aisi1045_note",
   },
   {
     id: "inconel718",
-    name: "Inconel 718 (nickel superalloy)",
+    nameKey: "cog.mat.inconel718_name",
     void_B: -1.80, void_C: 1.05, void_D: -0.20,
     flow_stress_base_MPa: 220, flow_stress_slope: 0.8,
-    note: "Hard, hot-resistant nickel alloy. Requires much larger press force than steel at the same dimensions.",
+    noteKey: "cog.mat.inconel718_note",
   },
   {
     id: "custom",
-    name: "Custom — enter coefficients yourself",
+    nameKey: "cog.mat.custom_name",
     void_B: -1.521351466, void_C: 0.818014592, void_D: -0.145775097,
     flow_stress_base_MPa: 80,  flow_stress_slope: 0.6,
-    note: "Use this if you have your own fitted void-closure constants and flow-stress model.",
+    noteKey: "cog.mat.custom_note",
   },
 ];
 
 function MaterialPicker({ formRef }: { formRef: React.RefObject<HTMLFormElement | null> }) {
+  const { t } = useT();
   const [selectedId, setSelectedId] = useState<string>("aisi4340");
   const preset = MATERIAL_PRESETS.find((m) => m.id === selectedId) || MATERIAL_PRESETS[0];
   const isCustom = selectedId === "custom";
@@ -338,31 +341,31 @@ function MaterialPicker({ formRef }: { formRef: React.RefObject<HTMLFormElement 
     <details className="mt-5 group" open>
       <summary className="cursor-pointer text-xs font-semibold text-slate-700 uppercase tracking-wider flex items-center gap-2">
         <span className="w-1 h-1 rounded-full bg-indigo-500"></span>
-        Material model
-        <span className="text-[10px] font-normal text-slate-400 normal-case tracking-normal">— preset constants for void closure & flow stress</span>
+        {t("cog.mat.title")}
+        <span className="text-[10px] font-normal text-slate-400 normal-case tracking-normal">{t("cog.mat.subtitle")}</span>
       </summary>
       <div className="mt-3 space-y-3">
         <div>
-          <label className="block text-xs font-medium text-slate-700 mb-1.5">Preset</label>
+          <label className="block text-xs font-medium text-slate-700 mb-1.5">{t("cog.mat.preset")}</label>
           <select
             value={selectedId}
             onChange={(e) => applyPreset(e.target.value)}
             className="w-full bg-white border border-slate-200 rounded-md h-10 px-3 text-sm cursor-pointer"
           >
             {MATERIAL_PRESETS.map((m) => (
-              <option key={m.id} value={m.id}>{m.name}</option>
+              <option key={m.id} value={m.id}>{t(m.nameKey as any)}</option>
             ))}
           </select>
-          <p className="text-[10px] text-slate-500 mt-1.5 leading-relaxed">{preset.note}</p>
+          <p className="text-[10px] text-slate-500 mt-1.5 leading-relaxed">{t(preset.noteKey as any)}</p>
         </div>
 
         {/* Hidden fields submitted with the form. For "custom" we expose number inputs. */}
         <div className={"grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 " + (isCustom ? "" : "hidden")}>
-          <CoeffInput name="void_B" label="Void B"  defaultValue={preset.void_B}  hint="ε¹ coefficient in V(ε) = 1 + B·ε + C·ε² + D·ε³" />
-          <CoeffInput name="void_C" label="Void C"  defaultValue={preset.void_C}  hint="ε² coefficient" />
-          <CoeffInput name="void_D" label="Void D"  defaultValue={preset.void_D}  hint="ε³ coefficient" />
-          <CoeffInput name="flow_stress_base_MPa" label="σ₀ @ 1200°C (MPa)" defaultValue={preset.flow_stress_base_MPa} hint="Flow stress at the start temperature" />
-          <CoeffInput name="flow_stress_slope"    label="σ slope (MPa/°C)"  defaultValue={preset.flow_stress_slope}    hint="Per-°C rise in flow stress as T drops" />
+          <CoeffInput name="void_B" label="Void B"  defaultValue={preset.void_B}  hint={t("cog.mat.void_b_hint")} />
+          <CoeffInput name="void_C" label="Void C"  defaultValue={preset.void_C}  hint={t("cog.mat.void_c_hint")} />
+          <CoeffInput name="void_D" label="Void D"  defaultValue={preset.void_D}  hint={t("cog.mat.void_d_hint")} />
+          <CoeffInput name="flow_stress_base_MPa" label="σ₀ @ 1200°C (MPa)" defaultValue={preset.flow_stress_base_MPa} hint={t("cog.mat.flow_base_hint")} />
+          <CoeffInput name="flow_stress_slope"    label="σ slope (MPa/°C)"  defaultValue={preset.flow_stress_slope}    hint={t("cog.mat.flow_slope_hint")} />
         </div>
         {!isCustom && (
           <>

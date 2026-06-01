@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useT } from "@/lib/i18n";
 
 /**
  * Scientific lab-style frame for Processing Map plots.
@@ -18,6 +19,7 @@ export function ScientificFrame({
   children: ReactNode;
   className?: string;
 }) {
+  const { t } = useT();
   return (
     <div className={"relative " + className}>
       {/* Outer glow (animated emerald to teal) */}
@@ -85,9 +87,9 @@ export function ScientificFrame({
         <div className="px-6 py-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 uppercase tracking-widest">
           <span className="flex items-center gap-1.5">
             <span className="w-1 h-1 rounded-full bg-emerald-500"></span>
-            Live plot
+            {t("pmap.common.live_plot")}
           </span>
-          <span className="font-mono normal-case">⌖ scientific render</span>
+          <span className="font-mono normal-case">⌖ {t("pmap.common.scientific_render")}</span>
         </div>
       </div>
     </div>

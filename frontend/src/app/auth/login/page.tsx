@@ -35,35 +35,35 @@ export default function LoginPage() {
                 </div>
 
                 <div className="relative">
-                    <div className="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70">by NSMLab</div>
+                    <div className="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70">{t("auth.brand.by_nsmlab")}</div>
                     <h1 className="text-5xl font-montserrat font-bold tracking-tight leading-none">
                         Forge<span className="text-indigo-300">IQ</span>
                     </h1>
                     <p className="mt-5 text-slate-300 text-sm leading-relaxed max-w-md">
-                        Intelligence for forging design. Train cogging models, explore processing maps, and generate 3D preforms — a single workbench for hot-working research and production.
+                        {t("auth.brand.tagline")}
                     </p>
 
                     <div className="mt-10 space-y-5 max-w-md">
                         <Feature
                             icon={<PiCompassTool />}
-                            title="Cogging Program"
-                            desc="Neural-network predictor + 7-pass schedule optimizer."
+                            title={t("auth.brand.feat_cogging_title")}
+                            desc={t("auth.brand.feat_cogging_desc")}
                         />
                         <Feature
                             icon={<TbChartArea />}
-                            title="Processing Map"
-                            desc="2D / 3D dissipation & instability maps with FEM overlays."
+                            title={t("auth.brand.feat_pmap_title")}
+                            desc={t("auth.brand.feat_pmap_desc")}
                         />
                         <Feature
                             icon={<PiCube />}
-                            title="3D Preform"
-                            desc="U-Net voxel prediction → smoothed STL geometry."
+                            title={t("auth.brand.feat_preform_title")}
+                            desc={t("auth.brand.feat_preform_desc")}
                         />
                     </div>
                 </div>
 
                 <div className="relative text-xs text-slate-500">
-                    © {new Date().getFullYear()} ForgeIQ · by NSMLab · Sogang University
+                    © {new Date().getFullYear()} {t("auth.brand.footer_suffix")}
                 </div>
             </aside>
 
@@ -77,7 +77,7 @@ export default function LoginPage() {
                     </div>
 
                     <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">{t("common.login_creds")}</h2>
-                    <p className="text-sm text-slate-500 mt-1">Sign in to continue to your workbench.</p>
+                    <p className="text-sm text-slate-500 mt-1">{t("auth.login.subtitle")}</p>
 
                     <form action={formAction} className="mt-8 space-y-4">
                         <div>

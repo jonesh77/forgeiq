@@ -35,24 +35,24 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="relative">
-                    <div className="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70">Join ForgeIQ</div>
+                    <div className="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70">{t("auth.reg.join")}</div>
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-xs text-indigo-200 mb-4">
-                        <HiSparkles /> Free for researchers
+                        <HiSparkles /> {t("auth.reg.free_chip")}
                     </div>
                     <h1 className="text-4xl font-montserrat font-bold tracking-tight leading-tight">
-                        Get started in<br />
-                        <span className="text-indigo-300">under a minute</span>
+                        {t("auth.reg.hero_pre")}<br />
+                        <span className="text-indigo-300">{t("auth.reg.hero_post")}</span>
                     </h1>
                     <p className="mt-4 text-slate-300 text-sm leading-relaxed max-w-md">
-                        Create an account to save your computation history, bookmark parameter sets, and access all three programs of the ForgeIQ workbench.
+                        {t("auth.reg.tagline")}
                     </p>
 
                     <ul className="mt-10 space-y-3 max-w-md">
-                        <Perk text="Try every service with built-in sample data" />
-                        <Perk text="Save bookmarks of your favourite parameter sets" />
-                        <Perk text="Full history of every run — re-open or compare any time" />
-                        <Perk text="Export Pass Schedule results to PDF" />
-                        <Perk text="Multi-language: English, O'zbekcha, 한국어" />
+                        <Perk text={t("auth.reg.perk_sample")} />
+                        <Perk text={t("auth.reg.perk_bookmark")} />
+                        <Perk text={t("auth.reg.perk_history")} />
+                        <Perk text={t("auth.reg.perk_pdf")} />
+                        <Perk text={t("auth.reg.perk_lang")} />
                     </ul>
                 </div>
 
@@ -71,12 +71,12 @@ export default function RegisterPage() {
                     </div>
 
                     <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">{t("common.create_account")}</h2>
-                    <p className="text-sm text-slate-500 mt-1">It takes less than 30 seconds.</p>
+                    <p className="text-sm text-slate-500 mt-1">{t("auth.reg.subtitle")}</p>
 
                     <form action={formAction} className="mt-8 space-y-4">
                         <div>
                             <label className="text-xs font-medium text-slate-700 mb-1.5 block">{t("common.name")}</label>
-                            <Input type="text" name="name" required placeholder="Jane Doe" className="h-11 bg-slate-50 border-slate-200 focus-visible:bg-white focus-visible:border-indigo-400 focus-visible:ring-indigo-100" />
+                            <Input type="text" name="name" required placeholder={t("auth.reg.name_placeholder")} className="h-11 bg-slate-50 border-slate-200 focus-visible:bg-white focus-visible:border-indigo-400 focus-visible:ring-indigo-100" />
                         </div>
                         <div>
                             <label className="text-xs font-medium text-slate-700 mb-1.5 block">{t("common.email")}</label>
@@ -84,7 +84,7 @@ export default function RegisterPage() {
                         </div>
                         <div>
                             <label className="text-xs font-medium text-slate-700 mb-1.5 block">{t("common.password")}</label>
-                            <PasswordInput name="password" required placeholder="At least 6 characters" className="h-11 bg-slate-50 border-slate-200 focus-visible:bg-white focus-visible:border-indigo-400 focus-visible:ring-indigo-100" />
+                            <PasswordInput name="password" required placeholder={t("auth.reg.pass_placeholder")} className="h-11 bg-slate-50 border-slate-200 focus-visible:bg-white focus-visible:border-indigo-400 focus-visible:ring-indigo-100" />
                         </div>
 
                         {(formState.message != "" && showMessage) && (

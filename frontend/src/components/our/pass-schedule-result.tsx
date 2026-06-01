@@ -12,6 +12,7 @@ import { PiCheckBold, PiInfo } from "react-icons/pi";
 import { MdTrendingDown, MdSpeed } from "react-icons/md";
 import { TbArrowsMaximize, TbCircleDot, TbStack3 } from "react-icons/tb";
 import { ForgingBanner } from "@/components/our/forging-banner";
+import { useT } from "@/lib/i18n";
 
 export interface PassFeasibility {
   max_press_force_tons: number;
@@ -41,6 +42,7 @@ export interface PassScheduleData {
 }
 
 export function PassScheduleResult({ data }: { data: PassScheduleData }) {
+  const { t } = useT();
   const minVoid = Math.min(...data.void_closure);
   const avgVoid = data.void_closure.reduce((a, b) => a + b, 0) / data.void_closure.length;
   const finalLength = data.length_changes[data.length_changes.length - 1];
@@ -53,11 +55,11 @@ export function PassScheduleResult({ data }: { data: PassScheduleData }) {
 
       {/* Quick metrics strip */}
       <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-wrap items-center justify-around gap-4 shadow-sm">
-        <Metric icon={<TbStack3 />} label="Total passes" value={data.pass_schedule.length} />
+        <Metric icon={<TbStack3 />} label={t("cog.res.total_passes")} value={data.pass_schedule.length} />
         <div className="hidden sm:block w-px h-10 bg-slate-200"></div>
-        <Metric icon={<MdTrendingDown />} label="Min void closure" value={`${minVoid.toFixed(1)}%`} />
+        <Metric icon={<MdTrendingDown />} label={t("cog.res.min_void")} value={`${minVoid.toFixed(1)}%`} />
         <div className="hidden sm:block w-px h-10 bg-slate-200"></div>
-        <Metric icon={<MdSpeed />} label="Avg void closure" value={`${avgVoid.toFixed(1)}%`} />
+        <Metric icon={<MdSpeed />} label={t("cog.res.avg_void")} value={`${avgVoid.toFixed(1)}%`} />
       </div>
 
       {/* Equipment-aware feasibility report */}
@@ -65,17 +67,17 @@ export function PassScheduleResult({ data }: { data: PassScheduleData }) {
 
       {/* 3 mechanical KPI cards (large) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <MechanicalCard label="Feed" value={data.feed} unit="mm" img={feed_png} accent="blue" icon={<TbArrowsMaximize />} />
-        <MechanicalCard label="Depth Schedule" value={data.depth_schedule} unit="ratio" img={depth_png} accent="indigo" icon={<TbCircleDot />} />
-        <MechanicalCard label="Number of Rotations" value={data.number_of_rotation} unit="turns" img={rotation_png} accent="violet" icon={<PiInfo />} />
+        <MechanicalCard label={t("cog.res.feed_label")} value={data.feed} unit={t("cog.res.unit_mm")} img={feed_png} accent="blue" icon={<TbArrowsMaximize />} />
+        <MechanicalCard label={t("cog.res.depth_label")} value={data.depth_schedule} unit={t("cog.res.unit_ratio")} img={depth_png} accent="indigo" icon={<TbCircleDot />} />
+        <MechanicalCard label={t("cog.res.rotation_label")} value={data.number_of_rotation} unit={t("cog.res.unit_turns")} img={rotation_png} accent="violet" icon={<PiInfo />} />
       </div>
 
       {/* Per-pass detailed cards (one big horizontal row of pass cards) */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-slate-900">Per-pass schedule</h3>
-            <p className="text-xs text-slate-500 mt-0.5">7 sequential passes — workpiece reduces from {initialLength} mm to {finalLength} mm</p>
+            <h3 className="text-lg font-semibold text-slate-900">{t("cog.res.per_pass_title")}</h3>
+            <p className="text-xs text-slate-500 mt-0.5">{t("cog.res.per_pass_sub_pre")} {initialLength} {t("cog.res.per_pass_sub_mid")} {finalLength} {t("cog.res.per_pass_sub_post")}</p>
           </div>
         </div>
 
@@ -98,13 +100,13 @@ export function PassScheduleResult({ data }: { data: PassScheduleData }) {
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-slate-900">Void closure progression</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Target: ≥ 95% defect closure. Each bar shows closure achieved by that pass.</p>
+            <h3 className="text-lg font-semibold text-slate-900">{t("cog.res.void_prog_title")}</h3>
+            <p className="text-xs text-slate-500 mt-0.5">{t("cog.res.void_prog_sub")}</p>
           </div>
           <div className="text-xs flex items-center gap-3">
-            <LegendDot color="bg-red-500" label="< 80%" />
-            <LegendDot color="bg-amber-500" label="80-95%" />
-            <LegendDot color="bg-emerald-500" label="≥ 95%" />
+            <LegendDot color="bg-red-500" label={t("cog.res.legend_low")} />
+            <LegendDot color="bg-amber-500" label={t("cog.res.legend_mid")} />
+            <LegendDot color="bg-emerald-500" label={t("cog.res.legend_high")} />
           </div>
         </div>
 
@@ -117,8 +119,8 @@ export function PassScheduleResult({ data }: { data: PassScheduleData }) {
 
       {/* Workpiece visualisation (cross-sections through passes) */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-slate-900">Cross-section evolution</h3>
-        <p className="text-xs text-slate-500 mt-0.5 mb-5">Workpiece thickness reducing across the 7 passes.</p>
+        <h3 className="text-lg font-semibold text-slate-900">{t("cog.res.cross_title")}</h3>
+        <p className="text-xs text-slate-500 mt-0.5 mb-5">{t("cog.res.cross_sub")}</p>
         <div className="flex items-end gap-3 h-32">
           {data.length_changes.map((_, i) => {
             const max = Math.max(...data.length_changes);
@@ -173,6 +175,7 @@ const ACCENT_TXT: Record<string, string> = {
 function MechanicalCard({ label, value, unit, img, accent, icon }: {
   label: string; value: number; unit: string; img: any; accent: "blue" | "indigo" | "violet"; icon: React.ReactNode;
 }) {
+  const { t } = useT();
   const [showImage, setShowImage] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -195,7 +198,7 @@ function MechanicalCard({ label, value, unit, img, accent, icon }: {
             </div>
           </div>
         </div>
-        <button onClick={copy} className="cursor-pointer p-1.5 rounded-md hover:bg-white/60" title="Copy value">
+        <button onClick={copy} className="cursor-pointer p-1.5 rounded-md hover:bg-white/60" title={t("cog.res.copy_value")}>
           {copied ? <PiCheckBold className="text-emerald-600 text-sm" /> : <FaCopy className="text-slate-500 text-xs" />}
         </button>
       </div>
@@ -209,7 +212,7 @@ function MechanicalCard({ label, value, unit, img, accent, icon }: {
         <Dialog>
           <DialogTrigger asChild>
             <button className="cursor-pointer text-[10px] flex items-center gap-1 text-slate-600 hover:text-slate-900 underline underline-offset-2">
-              <LuExpand />See diagram
+              <LuExpand />{t("cog.res.see_diagram")}
             </button>
           </DialogTrigger>
           <DialogContent className="!max-w-2xl">
@@ -225,21 +228,22 @@ function MechanicalCard({ label, value, unit, img, accent, icon }: {
 function PassCard({ n, passValue, forging, length, cutting, voidClosure }: {
   n: number; passValue: number; forging: string; length: number; cutting: string; voidClosure: number;
 }) {
+  const { t } = useT();
   const meet = voidClosure >= 95;
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-2.5 flex flex-col gap-1.5 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Pass {n}</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("cog.res.pass")} {n}</span>
         <span className={"w-2 h-2 rounded-full " + (meet ? "bg-emerald-500" : voidClosure >= 80 ? "bg-amber-500" : "bg-red-500")} />
       </div>
       <div className="text-lg font-bold font-montserrat text-slate-900 leading-none">{passValue.toFixed(3)}</div>
-      <div className="text-[9px] text-slate-400 uppercase tracking-widest">reduction</div>
+      <div className="text-[9px] text-slate-400 uppercase tracking-widest">{t("cog.res.reduction")}</div>
 
       <div className="border-t border-slate-100 pt-1.5 mt-0.5 space-y-1">
-        <Row label="Forge" value={forging} />
-        <Row label="Length" value={`${length} mm`} />
-        <Row label="Cut" value={cutting} />
-        <Row label="Void" value={`${Math.floor(voidClosure)}%`} accent={meet ? "emerald" : voidClosure >= 80 ? "amber" : "red"} />
+        <Row label={t("cog.res.row_forge")} value={forging} />
+        <Row label={t("cog.res.row_length")} value={`${length} mm`} />
+        <Row label={t("cog.res.row_cut")} value={cutting} />
+        <Row label={t("cog.res.row_void")} value={`${Math.floor(voidClosure)}%`} accent={meet ? "emerald" : voidClosure >= 80 ? "amber" : "red"} />
       </div>
     </div>
   );
@@ -259,13 +263,14 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
 }
 
 function VoidBar({ pass, value }: { pass: number; value: number }) {
+  const { t } = useT();
   const pct = Math.min(100, Math.max(0, value));
   const color = pct >= 95 ? "bg-emerald-500" : pct >= 80 ? "bg-amber-500" : "bg-red-500";
   const txtColor = pct >= 95 ? "text-emerald-700" : pct >= 80 ? "text-amber-700" : "text-red-700";
   return (
     <div>
       <div className="flex items-baseline justify-between mb-1">
-        <span className="text-[10px] font-medium text-slate-500">Pass {pass}</span>
+        <span className="text-[10px] font-medium text-slate-500">{t("cog.res.pass")} {pass}</span>
         <span className={"text-sm font-bold " + txtColor}>{Math.floor(value)}%</span>
       </div>
       <div className="relative h-24 w-full bg-slate-100 rounded-md overflow-hidden">
@@ -292,33 +297,34 @@ function LegendDot({ color, label }: { color: string; label: string }) {
 
 /* ----------------------- Equipment-aware feasibility ----------------------- */
 function FeasibilityPanel({ f }: { f: PassFeasibility }) {
+  const { t } = useT();
   const ok = f.all_passes_feasible;
   const borderColor = ok ? "border-emerald-200" : "border-amber-300";
   const bgColor = ok ? "from-emerald-50 to-teal-50" : "from-amber-50 to-rose-50";
   const headerIcon = ok ? "✓" : "⚠";
-  const headerLabel = ok ? "All 7 passes feasible on your equipment" : "Some passes exceed your equipment limits";
+  const headerLabel = ok ? t("cog.res.feas_ok_label") : t("cog.res.feas_bad_label");
 
   return (
     <div className={"rounded-2xl border bg-gradient-to-r p-5 shadow-sm " + borderColor + " " + bgColor}>
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="text-[10px] uppercase tracking-widest font-semibold text-slate-700">
-            Equipment feasibility · slab-method estimate
+            {t("cog.res.feas_eyebrow")}
           </div>
           <h3 className={"text-lg font-semibold mt-0.5 " + (ok ? "text-emerald-800" : "text-amber-900")}>
             {headerIcon} {headerLabel}
           </h3>
           <p className="text-xs text-slate-600 mt-1">
-            Limits: ≤ <strong>{f.max_press_force_tons.toLocaleString()} t</strong> ·
-            T from <strong>{f.initial_temp_C.toFixed(0)} °C</strong> dropping
-            <strong> {f.temp_drop_per_pass_C.toFixed(0)} °C/pass</strong>, min hot
+            {t("cog.res.feas_limits_pre")} <strong>{f.max_press_force_tons.toLocaleString()} {t("cog.res.feas_limits_t")}</strong>{" "}
+            <strong>{f.initial_temp_C.toFixed(0)} {t("cog.res.feas_limits_dropping")}</strong>
+            <strong> {f.temp_drop_per_pass_C.toFixed(0)} {t("cog.res.feas_limits_per_pass")}</strong>
             <strong> {f.min_temp_C.toFixed(0)} °C</strong>
           </p>
         </div>
         <div className="text-xs flex items-center gap-2">
-          <LegendDot color="bg-emerald-500" label="OK" />
-          <LegendDot color="bg-amber-500" label="Near limit" />
-          <LegendDot color="bg-red-500" label="Exceeds" />
+          <LegendDot color="bg-emerald-500" label={t("cog.res.feas_legend_ok")} />
+          <LegendDot color="bg-amber-500" label={t("cog.res.feas_legend_near")} />
+          <LegendDot color="bg-red-500" label={t("cog.res.feas_legend_over")} />
         </div>
       </div>
 
@@ -338,7 +344,7 @@ function FeasibilityPanel({ f }: { f: PassFeasibility }) {
             : "text-emerald-800 bg-emerald-100 border-emerald-300";
           return (
             <div key={i} className="rounded-lg border border-slate-200 bg-white p-2 text-center">
-              <div className="text-[10px] uppercase tracking-widest text-slate-500 font-medium">Pass {i + 1}</div>
+              <div className="text-[10px] uppercase tracking-widest text-slate-500 font-medium">{t("cog.res.pass")} {i + 1}</div>
               <div className={"mt-1.5 rounded border px-1.5 py-0.5 text-[11px] font-mono font-semibold " + forceTone}>
                 {force.toFixed(0)} t
               </div>
@@ -352,9 +358,9 @@ function FeasibilityPanel({ f }: { f: PassFeasibility }) {
 
       {!ok && (
         <div className="mt-4 text-xs text-amber-900 bg-amber-100 border border-amber-300 rounded-md px-3 py-2 leading-relaxed">
-          <strong>Recommended action:</strong>{" "}
-          {f.any_force_overload && "Use a larger press, reduce the bite per pass, or pre-heat to a higher start temperature. "}
-          {f.any_temp_too_low && "Add an inter-pass re-heat between the flagged passes, or split the schedule across two heats."}
+          <strong>{t("cog.res.feas_rec_label")}</strong>{" "}
+          {f.any_force_overload && t("cog.res.feas_rec_force") + " "}
+          {f.any_temp_too_low && t("cog.res.feas_rec_temp")}
         </div>
       )}
     </div>

@@ -1,11 +1,14 @@
 "use client";
 
+import { useT } from "@/lib/i18n";
+
 /**
  * Animated industrial hero banner for Pass Schedule results.
  * SVG hammer striking a glowing ingot, sparks flying, gear & rivets.
  * Pure CSS animations — no canvas / no extra dependencies.
  */
 export function ForgingBanner({ numPasses, minVoid }: { numPasses: number; minVoid: number }) {
+  const { t } = useT();
   const meets = minVoid >= 95;
   const accent = meets ? "from-emerald-500 to-teal-500" : minVoid >= 80 ? "from-amber-500 to-orange-500" : "from-red-500 to-rose-500";
 
@@ -79,27 +82,27 @@ export function ForgingBanner({ numPasses, minVoid }: { numPasses: number; minVo
       <div className="relative px-8 py-10 md:py-12 max-w-2xl">
         <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-amber-500/20 border border-amber-400/30 text-[10px] font-bold uppercase tracking-widest text-amber-200">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-          Schedule generated · {numPasses} passes optimized
+          {t("cog.banner.eyebrow_pre")} {numPasses} {t("cog.banner.eyebrow_post")}
         </div>
 
         <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight font-montserrat text-white leading-[1.1]">
-          Your forging plan is{" "}
+          {t("cog.banner.title")}{" "}
           <span className={"bg-clip-text text-transparent bg-gradient-to-r " + accent}>
-            {meets ? "ready to ship" : minVoid >= 80 ? "almost there" : "needs tuning"}
+            {meets ? t("cog.banner.state_ok") : minVoid >= 80 ? t("cog.banner.state_close") : t("cog.banner.state_bad")}
           </span>
         </h2>
 
         <p className="mt-3 text-sm text-slate-400 max-w-md">
           {meets
-            ? "Minimum void closure exceeds the 95% target — the workpiece can move to production."
+            ? t("cog.banner.desc_ok")
             : minVoid >= 80
-              ? "Close, but minimum void closure is below the 95% target. Try slightly smaller cross-section."
-              : "Void closure is well below 95%. Consider increasing initial length or reducing cross-section."}
+              ? t("cog.banner.desc_close")
+              : t("cog.banner.desc_bad")}
         </p>
 
         <div className="mt-5 flex items-center gap-2 text-xs text-slate-300">
-          <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10">Min void: <strong className="text-white">{minVoid.toFixed(1)}%</strong></span>
-          <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10">Target: <strong className="text-white">≥ 95%</strong></span>
+          <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10">{t("cog.banner.chip_min")}: <strong className="text-white">{minVoid.toFixed(1)}%</strong></span>
+          <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10">{t("cog.banner.chip_target")}: <strong className="text-white">≥ 95%</strong></span>
         </div>
       </div>
     </div>

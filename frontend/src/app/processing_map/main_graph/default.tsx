@@ -22,6 +22,7 @@ const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 
 export default function MainGraphGUI ({ states, setStates }) {
+  const { t } = useT();
   const [plotData, setPlotData] = useState(null);
   let [loading, setLoading] = useState(false);
   let [plotKey, setPlotKey] = useState(0);
@@ -81,10 +82,10 @@ export default function MainGraphGUI ({ states, setStates }) {
     if (r.ok && Array.isArray(r.data) && r.data[0]) {
       setPlotData(r.data[0]);
       setPlotKey(plotKey + 1);
-      toast.success("Graph generated");
+      toast.success(t("pmap.common.toast_graph"));
       recordHistory({
         service: "processing_map.main_graph",
-        title: "Main Graph",
+        title: t("pmap.main.history"),
         params: { plot_type: fd.get("plot_type")?.toString(), steps: fd.get("steps")?.toString() },
       });
     } else {
@@ -99,10 +100,10 @@ export default function MainGraphGUI ({ states, setStates }) {
     if (r.ok && Array.isArray(r.data) && r.data[0]) {
       setPlotData(r.data[0]);
       setPlotKey(plotKey + 1);
-      toast.success("Sample graph generated");
+      toast.success(t("pmap.common.toast_sample_graph"));
       recordHistory({
         service: "processing_map.main_graph",
-        title: "Main Graph (sample)",
+        title: t("pmap.main.history_sample"),
         params: { plot_type: "2D", steps: "0.5" },
         used_sample: true,
       });
@@ -118,52 +119,52 @@ export default function MainGraphGUI ({ states, setStates }) {
       <form className="w-full lg:flex-1 lg:border-r lg:pr-10 relative" onSubmit={handleSubmit}>
         <div className="flex items-center justify-between gap-x-3 flex-wrap gap-y-3">
           <div className="flex items-center gap-x-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Main Graph</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{t("pmap.main.title")}</h1>
             <Info />
           </div>
           <ModeToggle mode={mode} setMode={setMode} />
         </div>
-        <p className="mt-1 text-sm text-slate-500">{mode === "quick" ? "Pick plot type + steps and we render the chart from a built-in stress-strain dataset (AISI 4340)." : "Upload your stress-strain Excel and optionally Simufact/DEFORM particle data."}</p>
+        <p className="mt-1 text-sm text-slate-500">{mode === "quick" ? t("pmap.main.subtitle_quick") : t("pmap.main.subtitle_adv")}</p>
         <ModeBanner mode={mode} />
         <div className="flex flex-col items-start gap-x-8 gap-y-4 mt-7">
           {mode === "advanced" && (
             <div>
-                <h5 className='font-medium text-xs text-slate-700'>Processing map data (.xlsx)</h5>
+                <h5 className='font-medium text-xs text-slate-700'>{t("pmap.common.pmap_data")}</h5>
                 <Input accept=".xlsx" type='file' name='file' className='bg-slate-50 border-slate-200 mt-1.5 h-10 cursor-pointer' required />
             </div>
           )}
           <div>
-              <h5 className='font-medium text-xs text-slate-700'>Plot Type</h5>
+              <h5 className='font-medium text-xs text-slate-700'>{t("pmap.main.plot_type")}</h5>
               <Select name="plot_type" defaultValue="2D" onValueChange={(v) => { setCurrentPlotType(v); }} required>
                 <SelectTrigger className="bg-slate-50 border-slate-200 mt-1.5 cursor-pointer w-[250px] h-10">
-                  <SelectValue placeholder="Select plot type" />
+                  <SelectValue placeholder={t("pmap.main.plot_type_ph")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="instability">Instability</SelectItem>
-                  <SelectItem value="dissipation">Dissipation</SelectItem>
-                  <SelectItem value="2D">2D</SelectItem>
+                  <SelectItem value="instability">{t("pmap.main.opt_instability")}</SelectItem>
+                  <SelectItem value="dissipation">{t("pmap.main.opt_dissipation")}</SelectItem>
+                  <SelectItem value="2D">{t("pmap.main.opt_2d")}</SelectItem>
                 </SelectContent>
               </Select>
           </div>
           <div>
               <div className="flex gap-x-2 items-center">
                   <h5 className='font-medium text-xs text-slate-700'>{
-                    currentPlotType == "2D" ? "Strain No." : "Steps (between 0.1 and 1.0)"
+                    currentPlotType == "2D" ? t("pmap.main.strain_no") : t("pmap.main.steps_range")
                   }</h5>
               </div>
               <Input type='number' step={"any"} defaultValue="0.5" name='steps' className='bg-slate-50 border-slate-200 mt-1.5 w-[260px] h-10 placeholder:text-xs' required />
           </div>
           {mode === "advanced" && (
             <div>
-                <h5 className='font-medium text-xs text-slate-700'>Which particles to include?</h5>
+                <h5 className='font-medium text-xs text-slate-700'>{t("pmap.main.particles_q")}</h5>
                 <div className="flex gap-x-5 mt-3">
                   <div className="flex gap-x-2 items-center text-sm ">
                     <Checkbox name="simufact" checked={simufactState.opened} onClick={() => { setSimufactState({ opened: !simufactState.opened, files: simufactState.files }) }} id="simufact" className="cursor-pointer" />
-                    <Label htmlFor="simufact" className="font-normal cursor-pointer text-xs">Simufact particles</Label>
+                    <Label htmlFor="simufact" className="font-normal cursor-pointer text-xs">{t("pmap.main.simufact")}</Label>
                   </div>
                   <div className="flex gap-x-2 items-center text-sm cursor-pointer">
                     <Checkbox name="deform" checked={deformState.opened} onClick={() => { setDeformState({ opened: !deformState.opened, files: deformState.files }) }} id="deform" className="cursor-pointer" />
-                    <Label htmlFor="deform" className="font-normal cursor-pointer text-xs">Deform particles</Label>
+                    <Label htmlFor="deform" className="font-normal cursor-pointer text-xs">{t("pmap.main.deform")}</Label>
                   </div>
                 </div>
             </div>
@@ -171,33 +172,33 @@ export default function MainGraphGUI ({ states, setStates }) {
           {mode === "advanced" && (simufactState.opened || deformState.opened) && (<div className="h-[0.5px] w-full bg-slate-200 mt-2 mb-1"></div>)}
           {mode === "advanced" && simufactState.opened && (
             <div className="w-full">
-              <h5 className='font-medium text-xs text-slate-700'>Simufact particles</h5>
+              <h5 className='font-medium text-xs text-slate-700'>{t("pmap.main.simufact")}</h5>
               <FileFolder state={simufactState.files} setState={(v) => { setSimufactState({ opened: simufactState.opened, files: v }) }} />
             </div>
           )}
           {mode === "advanced" && deformState.opened && (
             <div className="w-full">
-              <h5 className='font-medium text-xs text-slate-700'>Deform particles</h5>
+              <h5 className='font-medium text-xs text-slate-700'>{t("pmap.main.deform")}</h5>
               <FileFolder state={deformState.files} setState={(v) => { setDeformState({ opened: deformState.opened, files: v }) }} />
             </div>
           )}
           {mode === "advanced" && (
             <div className="w-full mt-2">
-              <a href={sampleDownloadUrl(1, "processing_map")} download="processing_map.xlsx" className="text-xs px-2.5 h-8 inline-flex items-center gap-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer">↓ Sample .xlsx</a>
+              <a href={sampleDownloadUrl(1, "processing_map")} download="processing_map.xlsx" className="text-xs px-2.5 h-8 inline-flex items-center gap-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer">{t("pmap.common.sample_xlsx")}</a>
             </div>
           )}
           <Button className="w-[300px] mt-3 h-11 bg-slate-900 hover:bg-slate-800 font-medium" type="submit" disabled={submitDisabled}>{
-            loading ? (<><AiOutlineLoading className="animate-spin" />Loading...</>) : (<><TbCube3dSphere />Generate graph</>)
+            loading ? (<><AiOutlineLoading className="animate-spin" />{t("pmap.common.loading")}</>) : (<><TbCube3dSphere />{t("pmap.common.gen_graph")}</>)
           }</Button>
       </div>
       </form>
       <div className="w-full lg:flex-[5]">
           {loading && (
-            <Skeleton className="w-full aspect-[2] flex gap-x-3 items-center justify-center"><AiOutlineLoading className="animate-spin" /><p>Loading...</p></Skeleton>
+            <Skeleton className="w-full aspect-[2] flex gap-x-3 items-center justify-center"><AiOutlineLoading className="animate-spin" /><p>{t("pmap.common.loading")}</p></Skeleton>
           )}
           {plotData && (
             <div className={" w-full " + (loading ? "hidden" : "block")}>
-              <ScientificFrame title="Processing map" subtitle="Power dissipation × Flow instability">
+              <ScientificFrame title={t("pmap.main.frame_title")} subtitle={t("pmap.main.frame_sub")}>
                 <div className="aspect-[1.8]">
                   <Plot key={plotKey} onInitialized={() => { setLoading(false); }} className="w-full h-full p-0" useResizeHandler={true}
                     style={{ width: "100%", height: "100%" }}
@@ -227,6 +228,7 @@ import { recordHistory } from "@/lib/history";
 import { ModeToggle, ModeBanner, FormMode } from "@/components/our/mode-toggle";
 import { themeData, themeLayout, PLOT_CONFIG } from "@/components/our/plotly-theme";
 import { ScientificFrame } from "@/components/our/scientific-frame";
+import { useT } from "@/lib/i18n";
 
 function FileFolder ({ state, setState }) {
   let inputRef = useRef<HTMLInputElement | null>(null);

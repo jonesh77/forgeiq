@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useT } from "@/lib/i18n";
 
 /**
  * Futuristic/holographic frame for the 3D Preform STL viewer.
@@ -18,6 +19,7 @@ export function HologramFrame({
   metrics?: { label: string; value: string }[];
   className?: string;
 }) {
+  const { t } = useT();
   return (
     <div className={"relative " + className}>
       {/* Outer animated glow ring */}
@@ -45,12 +47,12 @@ export function HologramFrame({
         <div className="relative bg-gradient-to-b from-slate-950 to-transparent text-violet-100 px-5 py-2 flex items-center justify-between text-[10px] font-mono uppercase tracking-widest border-b border-violet-500/20">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            STL Render · live
+            {t("holo.live")}
           </div>
           <div className="flex items-center gap-3 text-violet-300">
-            <span>fov 45°</span>
+            <span>{t("holo.fov")}</span>
             <span>·</span>
-            <span>orbit ready</span>
+            <span>{t("holo.orbit")}</span>
           </div>
         </div>
 

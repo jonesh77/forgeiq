@@ -9,6 +9,7 @@ import { RiScreenshot2Fill } from "react-icons/ri";
 import { TbRotate360, TbGrid4X4 } from "react-icons/tb";
 import { MdOutlineWbSunny, MdOutlineDarkMode } from "react-icons/md";
 import { LuMaximize2 } from "react-icons/lu";
+import { useT } from "@/lib/i18n";
 
 /**
  * Professional STL viewer:
@@ -20,6 +21,7 @@ import { LuMaximize2 } from "react-icons/lu";
  *  - Higher resolution rendering (devicePixelRatio aware)
  */
 export default function STLViewer({ stlBase64 }: { stlBase64: string }) {
+  const { t } = useT();
   const mountRef = useRef<HTMLDivElement | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
@@ -282,20 +284,20 @@ export default function STLViewer({ stlBase64 }: { stlBase64: string }) {
     >
       {/* Toolbar */}
       <div className="absolute top-4 right-4 flex flex-col gap-2">
-        <ToolButton onClick={handleDownloadSTL} dark={darkTheme} title="Download STL"><GoDownload /></ToolButton>
-        <ToolButton onClick={handleScreenshot} dark={darkTheme} title="Screenshot (PNG)"><RiScreenshot2Fill /></ToolButton>
+        <ToolButton onClick={handleDownloadSTL} dark={darkTheme} title={t("viewer.dl_stl")}><GoDownload /></ToolButton>
+        <ToolButton onClick={handleScreenshot} dark={darkTheme} title={t("viewer.screenshot")}><RiScreenshot2Fill /></ToolButton>
         <Divider dark={darkTheme} />
-        <ToolButton onClick={fitView} dark={darkTheme} title="Fit view"><LuMaximize2 /></ToolButton>
-        <ToolButton onClick={() => setAutoRotate((v) => !v)} active={autoRotate} dark={darkTheme} title="Auto-rotate"><TbRotate360 /></ToolButton>
-        <ToolButton onClick={() => setShowGrid((v) => !v)} active={showGrid} dark={darkTheme} title="Toggle grid"><TbGrid4X4 /></ToolButton>
-        <ToolButton onClick={() => setWireframe((v) => !v)} active={wireframe} dark={darkTheme} title="Wireframe overlay">
+        <ToolButton onClick={fitView} dark={darkTheme} title={t("viewer.fit_view")}><LuMaximize2 /></ToolButton>
+        <ToolButton onClick={() => setAutoRotate((v) => !v)} active={autoRotate} dark={darkTheme} title={t("viewer.auto_rotate")}><TbRotate360 /></ToolButton>
+        <ToolButton onClick={() => setShowGrid((v) => !v)} active={showGrid} dark={darkTheme} title={t("viewer.toggle_grid")}><TbGrid4X4 /></ToolButton>
+        <ToolButton onClick={() => setWireframe((v) => !v)} active={wireframe} dark={darkTheme} title={t("viewer.wireframe")}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M2 2L8 1L14 2L13 8L14 14L8 15L2 14L3 8L2 2Z M2 2L13 8 M14 2L3 8 M8 1L13 14 M2 14L14 14"
               stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
           </svg>
         </ToolButton>
         <Divider dark={darkTheme} />
-        <ToolButton onClick={() => setDarkTheme((v) => !v)} dark={darkTheme} title="Toggle theme">
+        <ToolButton onClick={() => setDarkTheme((v) => !v)} dark={darkTheme} title={t("viewer.toggle_theme")}>
           {darkTheme ? <MdOutlineWbSunny /> : <MdOutlineDarkMode />}
         </ToolButton>
       </div>
@@ -305,7 +307,7 @@ export default function STLViewer({ stlBase64 }: { stlBase64: string }) {
         "absolute bottom-4 left-4 px-3 py-1.5 rounded-md text-[11px] " +
         (darkTheme ? "bg-slate-800/70 text-slate-300 border border-slate-700" : "bg-white/70 text-slate-600 border border-slate-300")
       }>
-        Drag to rotate · Scroll to zoom · Right-drag to pan
+        {t("viewer.hint")}
       </div>
     </div>
   );

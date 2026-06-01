@@ -23,9 +23,11 @@ import { SampleButtons } from "@/components/our/sample-button";
 import { ModeToggle, ModeBanner, FormMode } from "@/components/our/mode-toggle";
 import { themeData, themeLayout, PLOT_CONFIG } from "@/components/our/plotly-theme";
 import { ScientificFrame } from "@/components/our/scientific-frame";
+import { useT } from "@/lib/i18n";
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 export default function PlotValuesAgainstStrainGUI () {
+    const { t } = useT();
     const [plotData, setPlotData] = useState(null);
     let [loading, setLoading] = useState(false);
     let [plotKey, setPlotKey] = useState(0);
@@ -44,7 +46,7 @@ export default function PlotValuesAgainstStrainGUI () {
         if (r.ok && Array.isArray(r.data) && r.data[0]) {
             setPlotData(r.data[0]);
             setPlotKey(plotKey + 1);
-            toast.success("Graph generated");
+            toast.success(t("pmap.common.toast_graph"));
         } else {
             setLoading(false);
         }
@@ -57,7 +59,7 @@ export default function PlotValuesAgainstStrainGUI () {
         if (r.ok && Array.isArray(r.data) && r.data[0]) {
             setPlotData(r.data[0]);
             setPlotKey(plotKey + 1);
-            toast.success("Sample graph generated");
+            toast.success(t("pmap.common.toast_sample_graph"));
         } else {
             setLoading(false);
         }
@@ -68,56 +70,56 @@ export default function PlotValuesAgainstStrainGUI () {
             <form className="w-full lg:flex-[2] lg:border-r lg:pr-10" onSubmit={handleSubmit}>
                 <div className="flex items-center justify-between gap-x-3 flex-wrap gap-y-3">
                     <div className="flex items-center gap-x-3">
-                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Plot values against strain</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{t("pmap.plot.title")}</h1>
                         <Info />
                     </div>
                     <ModeToggle mode={mode} setMode={setMode} />
                 </div>
-                <p className="mt-1 text-sm text-slate-500">{mode === "quick" ? "Pick a curve and we plot it from the built-in dataset." : "Upload your own stress-strain Excel."}</p>
+                <p className="mt-1 text-sm text-slate-500">{mode === "quick" ? t("pmap.plot.subtitle_quick") : t("pmap.plot.subtitle_adv")}</p>
                 <ModeBanner mode={mode} />
                 <div className="flex flex-col items-start gap-x-8 gap-y-4 mt-7">
                 {mode === "advanced" && (
                   <div>
-                      <h5 className='font-medium text-xs text-slate-700'>Processing map data (.xlsx)</h5>
+                      <h5 className='font-medium text-xs text-slate-700'>{t("pmap.common.pmap_data")}</h5>
                       <Input accept=".xlsx" type='file' name='file' className='bg-slate-50 border-slate-200 mt-1.5 h-10 cursor-pointer' required />
                   </div>
                 )}
                 <div>
                     <div className="flex gap-x-2 items-center">
-                        <h5 className='font-medium text-xs text-slate-700'>Steps</h5>
+                        <h5 className='font-medium text-xs text-slate-700'>{t("pmap.common.steps")}</h5>
                     </div>
                     <Input type='number' step={"any"} defaultValue="0.1" name='steps' className='bg-slate-50 border-slate-200 mt-1.5 w-[260px] h-10 placeholder:text-xs' required />
                 </div>
                 <div>
-                    <h5 className='font-medium text-xs text-slate-700'>Plot By</h5>
+                    <h5 className='font-medium text-xs text-slate-700'>{t("pmap.plot.plot_by")}</h5>
                     <Select name="plot_by" defaultValue="temperature" onValueChange={(v) => setCurrentPlotBy(v)} required>
                         <SelectTrigger className="bg-slate-50 border-slate-200 mt-1.5 cursor-pointer w-[250px] h-10">
-                            <SelectValue placeholder="Select plot by" />
+                            <SelectValue placeholder={t("pmap.plot.plot_by_ph")} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="temperature">Temperature</SelectItem>
-                            <SelectItem value="LOG10SR">LOG10SR</SelectItem>
+                            <SelectItem value="temperature">{t("pmap.plot.temperature")}</SelectItem>
+                            <SelectItem value="LOG10SR">{t("pmap.plot.log10sr")}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
                 <div>
-                    <h5 className='font-medium text-xs text-slate-700'>Value Type</h5>
+                    <h5 className='font-medium text-xs text-slate-700'>{t("pmap.plot.value_type")}</h5>
                     <Select name="value_type" defaultValue="instability" required>
                         <SelectTrigger className="bg-slate-50 border-slate-200 mt-1.5 cursor-pointer w-[250px] h-10">
-                            <SelectValue placeholder="Select value type" />
+                            <SelectValue placeholder={t("pmap.plot.value_type_ph")} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="instability">Instability</SelectItem>
-                            <SelectItem value="dissipation">Dissipation</SelectItem>
+                            <SelectItem value="instability">{t("pmap.main.opt_instability")}</SelectItem>
+                            <SelectItem value="dissipation">{t("pmap.main.opt_dissipation")}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
                 {currentPlotBy && (
                     <div>
-                        <h5 className='font-medium text-xs capitalize text-slate-700'>{currentPlotBy} Value</h5>
+                        <h5 className='font-medium text-xs text-slate-700'>{currentPlotBy === "temperature" ? t("pmap.plot.value_label_temperature") : t("pmap.plot.value_label_log10sr")}</h5>
                         <Select name="value" defaultValue={currentPlotBy === "temperature" ? "1200" : "1"} required>
                             <SelectTrigger className="bg-slate-50 border-slate-200 mt-1.5 cursor-pointer w-[250px] h-10">
-                                <SelectValue placeholder="Select value" />
+                                <SelectValue placeholder={t("pmap.plot.value_ph")} />
                             </SelectTrigger>
                             <SelectContent>
                                 {currentPlotBy == "temperature" ? (
@@ -142,21 +144,21 @@ export default function PlotValuesAgainstStrainGUI () {
 
                 {mode === "advanced" && (
                   <div className="w-full mt-2">
-                    <a href={sampleDownloadUrl(1, "processing_map")} download="processing_map.xlsx" className="text-xs px-2.5 h-8 inline-flex items-center gap-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer">↓ Sample .xlsx</a>
+                    <a href={sampleDownloadUrl(1, "processing_map")} download="processing_map.xlsx" className="text-xs px-2.5 h-8 inline-flex items-center gap-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer">{t("pmap.common.sample_xlsx")}</a>
                   </div>
                 )}
                 <Button className="w-[300px] mt-3 h-11 bg-slate-900 hover:bg-slate-800 font-medium" type="submit" disabled={loading}>{
-                    loading ? (<><AiOutlineLoading className="animate-spin" />Loading...</>) : (<><TbCube3dSphere />Generate graph</>)
+                    loading ? (<><AiOutlineLoading className="animate-spin" />{t("pmap.common.loading")}</>) : (<><TbCube3dSphere />{t("pmap.common.gen_graph")}</>)
                 }</Button>
             </div>
             </form>
             <div className="w-full lg:flex-[7]">
                 {loading && (
-                    <Skeleton className="w-full aspect-[2] flex gap-x-3 items-center justify-center"><AiOutlineLoading className="animate-spin" /><p>Loading...</p></Skeleton>
+                    <Skeleton className="w-full aspect-[2] flex gap-x-3 items-center justify-center"><AiOutlineLoading className="animate-spin" /><p>{t("pmap.common.loading")}</p></Skeleton>
                 )}
                 {plotData && (
                     <div className={" w-full " + (loading ? "hidden" : "block")}>
-                      <ScientificFrame title="Strain sweep" subtitle="Values plotted against strain">
+                      <ScientificFrame title={t("pmap.plot.frame_title")} subtitle={t("pmap.plot.frame_sub")}>
                         <div className="aspect-[1.8]">
                           <Plot key={plotKey} onInitialized={() => { setLoading(false); }} className="w-full h-full p-0" useResizeHandler={true}
                             style={{ width: "100%", height: "100%" }}

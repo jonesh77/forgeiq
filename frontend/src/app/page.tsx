@@ -20,6 +20,7 @@ import { FaGithub } from "react-icons/fa6";
 
 export default function LandingPage() {
   const user = useUser();
+  const { t } = useT();
 
   return (
     <div className="font-public min-h-screen bg-white text-slate-900 overflow-x-hidden">
@@ -30,21 +31,21 @@ export default function LandingPage() {
             <div className="text-xl font-bold text-slate-900 tracking-tight font-montserrat">
               Forge<span className="text-indigo-600">IQ</span>
             </div>
-            <div className="hidden md:block text-[10px] text-slate-500 ml-2 mt-1">by NSMLab</div>
+            <div className="hidden md:block text-[10px] text-slate-500 ml-2 mt-1">{t("home.nav.by_nsmlab")}</div>
           </Link>
           <div className="flex items-center gap-2">
-            <a href="#programs" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">Programs</a>
-            <a href="#capabilities" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">Capabilities</a>
-            <a href="#team" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">Team</a>
+            <a href="#programs" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.programs")}</a>
+            <a href="#capabilities" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.capabilities")}</a>
+            <a href="#team" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.team")}</a>
             <LangSwitcher />
             <button onClick={toggleAiAssistant} className="hidden md:flex items-center gap-1.5 cursor-pointer px-3 h-9 rounded-md text-sm font-medium bg-gradient-to-br from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 text-indigo-700 border border-indigo-200/60">
-              <HiSparkles className="text-amber-500" />Ask AI
+              <HiSparkles className="text-amber-500" />{t("home.nav.ask_ai")}
             </button>
             {user?.isSignedIn ? (
               <UserMenu name={user.name} email={user.email} />
             ) : (
               <Link href="/auth/login" className="inline-flex items-center gap-1 px-3 h-9 rounded-md text-sm font-medium bg-slate-900 hover:bg-slate-800 text-white">
-                Sign in <LuArrowRight />
+                {t("home.nav.sign_in")} <LuArrowRight />
               </Link>
             )}
           </div>
@@ -63,34 +64,33 @@ export default function LandingPage() {
           <div className="text-center max-w-4xl mx-auto animate-fade-up">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs text-indigo-200 mb-6">
               <HiSparkles className="text-amber-400" />
-              Built at NSMLab · Sogang University
+              {t("home.hero.badge")}
             </div>
-            <div className="mb-4 inline-block text-xs uppercase tracking-[0.3em] text-indigo-200/70">
-              ForgeIQ <span className="text-indigo-300/50">·</span> by NSMLab
-            </div>
+            <div
+              className="mb-4 inline-block text-xs uppercase tracking-[0.3em] text-indigo-200/70"
+              dangerouslySetInnerHTML={{ __html: t("home.hero.kicker") }}
+            />
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight font-montserrat leading-[1.05]">
-              The forging<br />
-              <span className="text-shimmer">workbench</span><br />
-              <span className="text-slate-300">re-imagined.</span>
+              {t("home.hero.title1")}<br />
+              <span className="text-shimmer">{t("home.hero.title2")}</span><br />
+              <span className="text-slate-300">{t("home.hero.title3")}</span>
             </h1>
             <p className="mt-8 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Three intelligent programs in one workbench — predict cogging energy,
-              map processing windows, and generate optimal 3D preforms in minutes
-              instead of weeks. <strong className="text-white">No data required to get started.</strong>
+              {t("home.hero.desc")} <strong className="text-white">{t("home.hero.desc_strong")}</strong>
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <a href="#programs" className="group inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all hover:scale-105">
-                Explore programs <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
+                {t("home.hero.cta_primary")} <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
               </a>
               <button onClick={toggleAiAssistant} className="cursor-pointer inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-medium text-sm transition-all">
-                <HiSparkles className="text-amber-400" />Ask the AI assistant
+                <HiSparkles className="text-amber-400" />{t("home.hero.cta_ai")}
               </button>
             </div>
 
             <div className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <Stat value="3" label="Programs" />
-              <Stat value="< 1 min" label="Time to first result" />
-              <Stat value="218 MB" label="Built-in U-Net model" />
+              <Stat value={t("home.hero.stat1_v")} label={t("home.hero.stat1_l")} />
+              <Stat value={t("home.hero.stat2_v")} label={t("home.hero.stat2_l")} />
+              <Stat value={t("home.hero.stat3_v")} label={t("home.hero.stat3_l")} />
             </div>
           </div>
         </div>
@@ -100,31 +100,30 @@ export default function LandingPage() {
       <section className="py-24 px-6 lg:px-10 bg-slate-50 border-y border-slate-200">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto">
-            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">Why this exists</p>
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.why.eyebrow")}</p>
             <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900 leading-tight">
-              Designing forging schedules<br />used to take <em className="text-indigo-600 not-italic">weeks</em>.
+              {t("home.why.title1")}<br />{t("home.why.title2")} <em className="text-indigo-600 not-italic">{t("home.why.title3")}</em>.
             </h2>
             <p className="mt-6 text-lg text-slate-600 leading-relaxed">
-              Manual calculation of pass schedules, hand-built processing maps, and trial-and-error preform design
-              consume thousands of engineer-hours every year. This platform compresses the loop into seconds.
+              {t("home.why.desc")}
             </p>
           </div>
 
           <div className="mt-16 grid md:grid-cols-3 gap-6">
             <BenefitCard
               icon={<PiBrain className="text-2xl" />}
-              title="ML-driven"
-              text="Pre-trained neural networks predict process outputs (ENE, preform geometry) from your design parameters. No fitting required."
+              title={t("home.why.b1_title")}
+              text={t("home.why.b1_text")}
             />
             <BenefitCard
               icon={<PiLightning className="text-2xl" />}
-              title="Quick mode"
-              text="Don't have your own dataset? Every program runs with built-in reference data — enter parameters, get results."
+              title={t("home.why.b2_title")}
+              text={t("home.why.b2_text")}
             />
             <BenefitCard
               icon={<PiFlask className="text-2xl" />}
-              title="Lab-grade physics"
-              text="Backed by validated models from the Net Shape Manufacturing Lab — published methods, real-world validated."
+              title={t("home.why.b3_title")}
+              text={t("home.why.b3_text")}
             />
           </div>
         </div>
@@ -134,12 +133,12 @@ export default function LandingPage() {
       <section id="programs" className="py-24 px-6 lg:px-10 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 max-w-3xl mx-auto">
-            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">Three programs · one workbench</p>
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.programs.eyebrow")}</p>
             <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900">
-              Pick your tool, run in seconds
+              {t("home.programs.title")}
             </h2>
             <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-              Each program is a self-contained workflow. Try one with sample data, or upload your own.
+              {t("home.programs.desc")}
             </p>
           </div>
 
@@ -149,30 +148,33 @@ export default function LandingPage() {
               accent="blue"
               order="01"
               icon={<PiCompassTool />}
-              title="Cogging Program"
-              tag="Process predictor"
-              desc="Train an ENE predictor on your cogging data, correct training rows toward a target grain size, and compute the optimal 7-pass schedule."
-              features={["7-pass optimizer", "Void closure %", "PDF export"]}
+              title={t("home.programs.cog.title")}
+              tag={t("home.programs.cog.tag")}
+              desc={t("home.programs.cog.desc")}
+              features={[t("home.programs.cog.f1"), t("home.programs.cog.f2"), t("home.programs.cog.f3")]}
+              openLabel={t("home.programs.open")}
             />
             <ProgramCard
               href="/processing_map"
               accent="emerald"
               order="02"
               icon={<TbChartArea />}
-              title="Processing Map"
-              tag="Hot-working window"
-              desc="2D and 3D power-dissipation and instability surfaces for any stress-strain dataset. Overlay Simufact / DEFORM particle trajectories."
-              features={["2D / 3D plots", "Prasad instability", "FEM overlays"]}
+              title={t("home.programs.pmap.title")}
+              tag={t("home.programs.pmap.tag")}
+              desc={t("home.programs.pmap.desc")}
+              features={[t("home.programs.pmap.f1"), t("home.programs.pmap.f2"), t("home.programs.pmap.f3")]}
+              openLabel={t("home.programs.open")}
             />
             <ProgramCard
               href="/3d_preform"
               accent="violet"
               order="03"
               icon={<PiCube />}
-              title="3D Preform"
-              tag="Voxel → STL"
-              desc="A U-Net predicts the optimal pre-forging geometry from your DEFORM input. Marching cubes + Taubin smoothing → printable STL."
-              features={["U-Net inference", "Smoothed mesh", "Volume report"]}
+              title={t("home.programs.pre.title")}
+              tag={t("home.programs.pre.tag")}
+              desc={t("home.programs.pre.desc")}
+              features={[t("home.programs.pre.f1"), t("home.programs.pre.f2"), t("home.programs.pre.f3")]}
+              openLabel={t("home.programs.open")}
             />
           </div>
         </div>
@@ -187,29 +189,28 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-indigo-200 text-[10px] font-bold uppercase tracking-widest text-indigo-700 mb-4">
-                <HiSparkles className="text-amber-500" />New · Auto Pipeline
+                <HiSparkles className="text-amber-500" />{t("home.pipeline.badge")}
               </div>
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900 leading-[1.05]">
-                Define your target.<br />
-                <span className="text-indigo-600">Press play.</span><br />
-                <span className="text-slate-500">Get a full design pass.</span>
+                {t("home.pipeline.title1")}<br />
+                <span className="text-indigo-600">{t("home.pipeline.title2")}</span><br />
+                <span className="text-slate-500">{t("home.pipeline.title3")}</span>
               </h2>
-              <p className="mt-5 text-lg text-slate-600 leading-relaxed">
-                Instead of running each program separately, the <strong>Auto Pipeline</strong> chains
-                training-data correction, pass-schedule optimisation, and 3D-preform generation in one
-                run — surfacing a single result page you can iterate on like a feedback loop.
-              </p>
+              <p
+                className="mt-5 text-lg text-slate-600 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: t("home.pipeline.desc") }}
+              />
               <ul className="mt-6 space-y-2 text-sm text-slate-700">
-                <PipelineStep n="1" title="Workpiece" desc="You enter the cross-section, length and cut limit." />
-                <PipelineStep n="2" title="Target" desc="You set the grain-size goal and weight." />
-                <PipelineStep n="3" title="Auto-run" desc="Correction → Pass Schedule → 3D Preform (sequential)." />
-                <PipelineStep n="4" title="Evaluate" desc="Aggregated KPIs: void closure %, passes, preform Δvolume." />
-                <PipelineStep n="5" title="Iterate" desc="Tweak dimensions or target, re-run; previous iterations stay in the table." />
+                <PipelineStep n="1" title={t("home.pipeline.s1_t")} desc={t("home.pipeline.s1_d")} />
+                <PipelineStep n="2" title={t("home.pipeline.s2_t")} desc={t("home.pipeline.s2_d")} />
+                <PipelineStep n="3" title={t("home.pipeline.s3_t")} desc={t("home.pipeline.s3_d")} />
+                <PipelineStep n="4" title={t("home.pipeline.s4_t")} desc={t("home.pipeline.s4_d")} />
+                <PipelineStep n="5" title={t("home.pipeline.s5_t")} desc={t("home.pipeline.s5_d")} />
               </ul>
 
               <div className="mt-8">
                 <Link href="/workflow" className="group inline-flex items-center gap-2 h-12 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition-all hover:scale-105">
-                  <LuPlay />Open the pipeline <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  <LuPlay />{t("home.pipeline.cta")} <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
@@ -225,17 +226,17 @@ export default function LandingPage() {
                     <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                   </span>
                 </div>
-                <FakeLog when="13:24:01" status="done" color="emerald" text="Correct training data" detail="BQI recomputed → ASTM=6 · 12 KB" />
-                <FakeLog when="13:24:03" status="done" color="emerald" text="Compute pass schedule" detail="7 passes · min void closure 96.1%" />
-                <FakeLog when="13:24:08" status="done" color="emerald" text="Generate 3D preform" detail="STL ready · Δvolume −1.03%" />
+                <FakeLog when="13:24:01" status="done" color="emerald" text={t("home.pipeline.log1")} detail={t("home.pipeline.log1_d")} />
+                <FakeLog when="13:24:03" status="done" color="emerald" text={t("home.pipeline.log2")} detail={t("home.pipeline.log2_d")} />
+                <FakeLog when="13:24:08" status="done" color="emerald" text={t("home.pipeline.log3")} detail={t("home.pipeline.log3_d")} />
                 <div className="mt-2 grid grid-cols-3 gap-2">
-                  <Kpi v="96.1%" l="void min" />
-                  <Kpi v="7" l="passes" />
-                  <Kpi v="✓" l="target" emerald />
+                  <Kpi v="96.1%" l={t("home.pipeline.k1")} />
+                  <Kpi v="7" l={t("home.pipeline.k2")} />
+                  <Kpi v="✓" l={t("home.pipeline.k3")} emerald />
                 </div>
                 <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
-                  <span>Iteration #1 · 7.4 s total</span>
-                  <span className="text-indigo-600 font-semibold flex items-center gap-1"><PiArrowsClockwise />Re-run with new target</span>
+                  <span>{t("home.pipeline.iter")}</span>
+                  <span className="text-indigo-600 font-semibold flex items-center gap-1"><PiArrowsClockwise />{t("home.pipeline.rerun")}</span>
                 </div>
               </div>
             </div>
@@ -248,21 +249,21 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-dots opacity-40"></div>
         <div className="relative max-w-7xl mx-auto">
           <div className="text-center mb-16 max-w-3xl mx-auto">
-            <p className="text-sm font-semibold text-indigo-300 uppercase tracking-widest">What's inside</p>
+            <p className="text-sm font-semibold text-indigo-300 uppercase tracking-widest">{t("home.cap.eyebrow")}</p>
             <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-white">
-              A workbench that respects<br />your time
+              {t("home.cap.title1")}<br />{t("home.cap.title2")}
             </h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Feat icon={<HiSparkles />} title="Quick mode" text="Run any program with bundled reference data." />
-            <Feat icon={<PiClockCounterClockwise />} title="History" text="Every run saved. Compare any two side-by-side." />
-            <Feat icon={<PiBookmarkSimple />} title="Bookmarks" text="Save parameter sets and reapply with one click." />
-            <Feat icon={<PiBookOpenText />} title="PDF export" text="One-page report for Pass Schedule results." />
-            <Feat icon={<LuMessagesSquare />} title="Live support" text="Chat directly with the team — real-time replies." />
-            <Feat icon={<PiBrain />} title="AI assistant" text="Quick answers about every feature, in-app." />
-            <Feat icon={<PiGlobeStand />} title="Trilingual" text="English · O'zbekcha · 한국어 interface." />
-            <Feat icon={<TbAtom2 />} title="Model caching" text="Heavy U-Net loaded once, reused across requests." />
+            <Feat icon={<HiSparkles />} title={t("home.cap.f1_t")} text={t("home.cap.f1_d")} />
+            <Feat icon={<PiClockCounterClockwise />} title={t("home.cap.f2_t")} text={t("home.cap.f2_d")} />
+            <Feat icon={<PiBookmarkSimple />} title={t("home.cap.f3_t")} text={t("home.cap.f3_d")} />
+            <Feat icon={<PiBookOpenText />} title={t("home.cap.f4_t")} text={t("home.cap.f4_d")} />
+            <Feat icon={<LuMessagesSquare />} title={t("home.cap.f5_t")} text={t("home.cap.f5_d")} />
+            <Feat icon={<PiBrain />} title={t("home.cap.f6_t")} text={t("home.cap.f6_d")} />
+            <Feat icon={<PiGlobeStand />} title={t("home.cap.f7_t")} text={t("home.cap.f7_d")} />
+            <Feat icon={<TbAtom2 />} title={t("home.cap.f8_t")} text={t("home.cap.f8_d")} />
           </div>
         </div>
       </section>
@@ -271,27 +272,25 @@ export default function LandingPage() {
       <section id="team" className="py-24 px-6 lg:px-10 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">Who built this</p>
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.team.eyebrow")}</p>
             <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900">
-              NSMLab · Sogang University
+              {t("home.team.title")}
             </h2>
             <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              The Net Shape Manufacturing Laboratory researches data-driven forging and forming processes.
-              This workbench is the operational front-end for years of published research on cogging optimization,
-              processing-map analysis, and preform prediction.
+              {t("home.team.desc")}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             <CreditCard
-              role="Research lead"
-              org="Net Shape Manufacturing Laboratory"
-              note="Sogang University · Republic of Korea"
+              role={t("home.team.role1")}
+              org={t("home.team.org1")}
+              note={t("home.team.note1")}
             />
             <CreditCard
-              role="Engineering & deployment"
-              org="Platform team"
-              note="Full-stack web + ML infrastructure"
+              role={t("home.team.role2")}
+              org={t("home.team.org2")}
+              note={t("home.team.note2")}
             />
           </div>
         </div>
@@ -302,21 +301,21 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-grid opacity-30"></div>
         <div className="relative max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight font-montserrat">
-            Open a program. See a result.<br />
-            <span className="text-indigo-200">It really is that fast.</span>
+            {t("home.cta.title1")}<br />
+            <span className="text-indigo-200">{t("home.cta.title2")}</span>
           </h2>
           <p className="mt-6 text-indigo-100 text-lg">
-            Sample data is bundled with every program — there's nothing to download before your first run.
+            {t("home.cta.desc")}
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link href="/cogging" className="inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all hover:scale-105">
-              <PiCompassTool />Start with Cogging
+              <PiCompassTool />{t("home.cta.start_cogging")}
             </Link>
             <Link href="/processing_map" className="inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 text-white font-medium text-sm">
-              <TbChartArea />Processing Map
+              <TbChartArea />{t("nav.processing_map")}
             </Link>
             <Link href="/3d_preform" className="inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 text-white font-medium text-sm">
-              <PiCube />3D Preform
+              <PiCube />{t("nav.preform_3d")}
             </Link>
           </div>
         </div>
@@ -336,9 +335,9 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="flex items-center gap-5">
-            <a href="#programs" className="hover:text-white">Programs</a>
-            <a href="#capabilities" className="hover:text-white">Capabilities</a>
-            <a href="#team" className="hover:text-white">Team</a>
+            <a href="#programs" className="hover:text-white">{t("home.nav.programs")}</a>
+            <a href="#capabilities" className="hover:text-white">{t("home.nav.capabilities")}</a>
+            <a href="#team" className="hover:text-white">{t("home.nav.team")}</a>
           </div>
         </div>
       </footer>
@@ -364,14 +363,14 @@ function UserMenu({ name, email }: { name: string; email: string }) {
             {email && <div className="text-xs text-slate-500 truncate">{email}</div>}
           </div>
         )}
-        <Link href="/history"><DropdownMenuItem className="cursor-pointer">History</DropdownMenuItem></Link>
-        <Link href="/message"><DropdownMenuItem className="cursor-pointer">Messages</DropdownMenuItem></Link>
+        <Link href="/history"><DropdownMenuItem className="cursor-pointer">{t("nav.history")}</DropdownMenuItem></Link>
+        <Link href="/message"><DropdownMenuItem className="cursor-pointer">{t("nav.messages")}</DropdownMenuItem></Link>
         <Link href="/settings"><DropdownMenuItem className="cursor-pointer">{t("nav.settings")}</DropdownMenuItem></Link>
         <DropdownMenuItem
           className="cursor-pointer text-red-600 focus:text-red-700"
           onSelect={(e) => { e.preventDefault(); void logout(); }}
         >
-          Logout
+          {t("nav.logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -406,10 +405,10 @@ const PROGRAM_ACCENT = {
 };
 
 function ProgramCard({
-  href, accent, order, icon, title, tag, desc, features,
+  href, accent, order, icon, title, tag, desc, features, openLabel,
 }: {
   href: string; accent: keyof typeof PROGRAM_ACCENT; order: string;
-  icon: React.ReactNode; title: string; tag: string; desc: string; features: string[];
+  icon: React.ReactNode; title: string; tag: string; desc: string; features: string[]; openLabel: string;
 }) {
   const a = PROGRAM_ACCENT[accent];
   return (
@@ -441,7 +440,7 @@ function ProgramCard({
       </div>
 
       <div className={"relative mt-7 inline-flex items-center gap-2 text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r " + a.bg + " group-hover:gap-3 transition-all"}>
-        Open program <LuArrowRight className="text-slate-700 group-hover:translate-x-1 transition-transform" />
+        {openLabel} <LuArrowRight className="text-slate-700 group-hover:translate-x-1 transition-transform" />
       </div>
     </Link>
   );

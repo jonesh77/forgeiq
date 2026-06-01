@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { SampleButtons } from "@/components/our/sample-button";
 import { recordHistory } from "@/lib/history";
 import Info from "./info";
+import { useT } from "@/lib/i18n";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -45,6 +46,7 @@ type State =
  * compression curves, then derives dense Prasad fields (η, ξ) via autodiff.
  */
 export default function PinnForm() {
+  const { t } = useT();
   const [state, setState] = useState<State>({ status: "steady" });
   const [epochs, setEpochs] = useState(1000);
   const [strain, setStrain] = useState(0.5);
@@ -58,10 +60,10 @@ export default function PinnForm() {
     const r = await postToBackend1<PinnResult & { used_sample?: boolean }>("/api/processingmap/pinn", fd);
     if (r.ok) {
       setState({ status: "filled", data: r.data });
-      toast.success(r.data.used_sample ? "PINN trained (sample)" : "PINN trained successfully");
+      toast.success(r.data.used_sample ? t("pmap.pinn.toast_sample_ok") : t("pmap.pinn.toast_ok"));
       recordHistory({
         service: "processing_map.pinn",
-        title: r.data.used_sample ? "PINN Surrogate (sample)" : "PINN Surrogate",
+        title: r.data.used_sample ? t("pmap.pinn.history_sample") : t("pmap.pinn.history"),
         params: { epochs, strain, grid_n: gridN, input_file: (fd.get("file") as File)?.name || "sample" },
         summary: `RMSE(log10 σ)=${r.data.rmse_logsigma.toFixed(4)} · η ∈ [${r.data.eta.flat().reduce((a, b) => Math.min(a, b), Infinity).toFixed(3)}, ${r.data.eta.flat().reduce((a, b) => Math.max(a, b), -Infinity).toFixed(3)}]`,
         used_sample: !!r.data.used_sample,
@@ -84,19 +86,17 @@ export default function PinnForm() {
       <form className="w-full lg:flex-1/3 lg:max-w-sm flex flex-col justify-between relative" onSubmit={handleSubmit}>
         <div>
           <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-violet-50 border border-violet-200 text-violet-700 text-[10px] font-semibold uppercase tracking-wider mb-2">
-            Modern · Physics-Informed
+            {t("pmap.pinn.badge")}
           </div>
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl text-slate-900 font-semibold tracking-tight">PINN Surrogate</h2>
+            <h2 className="text-2xl text-slate-900 font-semibold tracking-tight">{t("pmap.pinn.title")}</h2>
             <Info />
           </div>
           <h4 className="text-[13px] mt-1 text-slate-500 leading-relaxed">
-            A physics-informed neural network learns the flow-stress surface from your
-            sparse compression curves and derives dense η / ξ fields via autodiff.
-            Soft physics prior: m = ∂log σ / ∂log ε̇ ≥ 0.
+            {t("pmap.pinn.subtitle")}
           </h4>
 
-          <h5 className="mt-6 font-medium text-xs text-slate-700">Excel file (16 strain/stress columns)</h5>
+          <h5 className="mt-6 font-medium text-xs text-slate-700">{t("pmap.pinn.excel_file")}</h5>
           <Input
             accept=".xlsx"
             type="file"
@@ -106,29 +106,29 @@ export default function PinnForm() {
 
           <div className="grid grid-cols-2 gap-3 mt-4">
             <div>
-              <label className="font-medium text-xs text-slate-700">Epochs</label>
+              <label className="font-medium text-xs text-slate-700">{t("pmap.pinn.epochs")}</label>
               <Input
                 type="number" min={50} max={5000} step={50}
                 value={epochs}
                 onChange={(e) => setEpochs(Math.max(50, Math.min(5000, Number(e.target.value) || 1000)))}
                 className="bg-slate-50 border-slate-200 mt-1.5 h-10"
               />
-              <p className="text-[10px] text-slate-500 mt-1">~{Math.round(epochs / 60)} s on CPU</p>
+              <p className="text-[10px] text-slate-500 mt-1">{t("pmap.pinn.cpu_seconds_pre")}{Math.round(epochs / 60)}{t("pmap.pinn.cpu_seconds_post")}</p>
             </div>
             <div>
-              <label className="font-medium text-xs text-slate-700">Strain</label>
+              <label className="font-medium text-xs text-slate-700">{t("pmap.pinn.strain")}</label>
               <Input
                 type="number" min={0.0} max={1.0} step={0.05}
                 value={strain}
                 onChange={(e) => setStrain(Math.max(0, Math.min(1, Number(e.target.value) || 0.5)))}
                 className="bg-slate-50 border-slate-200 mt-1.5 h-10"
               />
-              <p className="text-[10px] text-slate-500 mt-1">Field slice</p>
+              <p className="text-[10px] text-slate-500 mt-1">{t("pmap.pinn.field_slice")}</p>
             </div>
           </div>
 
           <div className="mt-3">
-            <label className="font-medium text-xs text-slate-700">Grid resolution</label>
+            <label className="font-medium text-xs text-slate-700">{t("pmap.pinn.grid_res")}</label>
             <Input
               type="number" min={20} max={80} step={10}
               value={gridN}
@@ -141,12 +141,12 @@ export default function PinnForm() {
             <SampleButtons
               runSample={runSample}
               disabled={state.status === "loading"}
-              downloadUrls={[{ label: "Sample .xlsx", url: sampleDownloadUrl(1, "processing_map"), filename: "processing_map.xlsx" }]}
+              downloadUrls={[{ label: t("cog.tm.sample_xlsx"), url: sampleDownloadUrl(1, "processing_map"), filename: "processing_map.xlsx" }]}
             />
           </div>
         </div>
         <Button type="submit" className="cursor-pointer h-11 mt-6 bg-violet-700 hover:bg-violet-800 font-medium" disabled={state.status === "loading"}>
-          <TbBrain />Train PINN
+          <TbBrain />{t("pmap.pinn.train_button")}
         </Button>
       </form>
 
@@ -158,13 +158,12 @@ export default function PinnForm() {
           <div className="h-full w-full rounded-2xl bg-slate-50 border border-dashed border-slate-300 flex items-center justify-center">
             <div className="text-center text-slate-500">
               <LuFileInput className="text-3xl mx-auto text-slate-400" />
-              <p className="mt-3 text-sm font-medium text-slate-700">No PINN trained yet</p>
+              <p className="mt-3 text-sm font-medium text-slate-700">{t("pmap.pinn.placeholder_title")}</p>
               <p className="text-xs mt-1">
-                Upload an Excel file or click <span className="text-amber-700 font-medium">Try with sample</span>.
+                {t("pmap.pinn.placeholder_sub")} <span className="text-amber-700 font-medium">{t("sample.try")}</span>{t("pmap.pinn.placeholder_sub_after")}
               </p>
               <p className="text-[10px] mt-3 max-w-[300px] mx-auto leading-relaxed">
-                The network learns log₁₀(σ) = f(T, log ε̇, ε). Then m = ∂f/∂(log ε̇) by autodiff →
-                η = 2m/(m+1), ξ = ∂ln(m/(m+1))/∂ln ε̇ + m.
+                {t("pmap.pinn.placeholder_tip")}
               </p>
             </div>
           </div>
@@ -174,9 +173,9 @@ export default function PinnForm() {
           <Skeleton className="h-full w-full rounded-2xl bg-slate-100 flex items-center justify-center">
             <div className="flex flex-col items-center text-slate-600">
               <AiOutlineLoading className="animate-spin text-3xl text-violet-700" />
-              <p className="mt-5 text-sm font-medium text-slate-800">Training the PINN ({state.epochs} epochs)</p>
+              <p className="mt-5 text-sm font-medium text-slate-800">{t("pmap.pinn.loading_pre")}{state.epochs}{t("pmap.pinn.loading_post")}</p>
               <p className="text-xs mt-2 max-w-[320px] text-center leading-relaxed text-slate-500">
-                Optimizing data loss + physics prior. CPU-bound; expect ~{Math.round(state.epochs / 60)}s.
+                {t("pmap.pinn.loading_sub_pre")}{Math.round(state.epochs / 60)}{t("pmap.pinn.loading_sub_post")}
               </p>
             </div>
           </Skeleton>
@@ -185,8 +184,8 @@ export default function PinnForm() {
         {state.status === "error" && (
           <div className="h-full w-full rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center">
             <div className="text-center text-rose-700">
-              <p className="text-sm font-medium">PINN training failed</p>
-              <p className="text-xs mt-1">Check the file format (16 strain/stress columns required).</p>
+              <p className="text-sm font-medium">{t("pmap.pinn.error_title")}</p>
+              <p className="text-xs mt-1">{t("pmap.pinn.error_sub")}</p>
             </div>
           </div>
         )}
@@ -198,6 +197,7 @@ export default function PinnForm() {
 }
 
 function PinnPlots({ res }: { res: PinnResult }) {
+  const { t } = useT();
   // Heatmaps expect Z[y][x]; backend ships eta/xi indexed [temp_idx][logSR_idx]
   // which is [y][x] when y=T, x=logSR. Use logSR_axis as X, T_axis as Y.
   const xiZ = res.xi;
@@ -205,8 +205,8 @@ function PinnPlots({ res }: { res: PinnResult }) {
 
   const baseLayout = {
     margin: { l: 50, r: 10, t: 36, b: 40 },
-    xaxis: { title: { text: "log₁₀(strain rate)  [s⁻¹]" } },
-    yaxis: { title: { text: "Temperature [°C]" } },
+    xaxis: { title: { text: t("pmap.pinn.axis_x") } },
+    yaxis: { title: { text: t("pmap.pinn.axis_y") } },
     font: { family: "Public Sans, sans-serif", size: 11 },
     paper_bgcolor: "transparent",
     plot_bgcolor: "transparent",
@@ -220,7 +220,7 @@ function PinnPlots({ res }: { res: PinnResult }) {
           RMSE log₁₀σ = {res.rmse_logsigma.toFixed(4)}
         </span>
         <span className="px-2 py-1 rounded-md bg-slate-50 border border-slate-200 text-slate-700">
-          strain ε = {res.strain.toFixed(2)} · {res.epochs} epochs · {res.grid_n}×{res.grid_n} grid
+          {t("pmap.pinn.metric_strain")} {res.strain.toFixed(2)} · {res.epochs} {t("pmap.pinn.metric_epochs")} · {res.grid_n}×{res.grid_n} {t("pmap.pinn.metric_grid")}
         </span>
       </div>
 
@@ -229,7 +229,7 @@ function PinnPlots({ res }: { res: PinnResult }) {
         <div className="rounded-xl border border-emerald-300 bg-gradient-to-r from-emerald-50 to-teal-50 px-4 py-3 flex items-center justify-between gap-3">
           <div>
             <div className="text-[10px] uppercase tracking-widest text-emerald-700 font-semibold">
-              ✓ Auto-detected optimal window (max η, stable ξ &gt; 0)
+              {t("pmap.pinn.optimal_title")}
             </div>
             <div className="mt-1 text-sm font-mono text-slate-900 font-medium">
               T = <span className="text-emerald-700">{res.optimal.T.toFixed(0)} °C</span>
@@ -242,13 +242,12 @@ function PinnPlots({ res }: { res: PinnResult }) {
             </div>
           </div>
           <div className="text-[10px] text-emerald-700/70 max-w-[180px] text-right leading-tight">
-            Run forging at this (T, ε̇) for maximum favorable dissipation while staying safe.
+            {t("pmap.pinn.optimal_tip")}
           </div>
         </div>
       ) : (
         <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-          ⚠ No safe operating window detected (entire grid is in the unstable ξ ≤ 0 region).
-          Try a different strain or check the input data.
+          {t("pmap.pinn.no_window")}
         </div>
       )}
 
@@ -267,7 +266,7 @@ function PinnPlots({ res }: { res: PinnResult }) {
                 hovertemplate: "T=%{y:.0f} °C<br>log ε̇=%{x:.2f}<br>η=%{z:.3f}<extra></extra>",
               },
             ]}
-            layout={{ ...baseLayout, title: { text: "Power dissipation  η = 2m/(m+1)" } }}
+            layout={{ ...baseLayout, title: { text: t("pmap.pinn.plot_eta") } }}
             useResizeHandler
             style={{ width: "100%", height: "100%" }}
             config={{ displayModeBar: false, responsive: true }}
@@ -297,7 +296,7 @@ function PinnPlots({ res }: { res: PinnResult }) {
                 hovertemplate: "T=%{y:.0f} °C<br>log ε̇=%{x:.2f}<br>ξ=%{z:.3f}<extra></extra>",
               },
             ] as any}
-            layout={{ ...baseLayout, title: { text: "Instability ξ  (red = ξ ≤ 0, unsafe)" } }}
+            layout={{ ...baseLayout, title: { text: t("pmap.pinn.plot_xi") } }}
             useResizeHandler
             style={{ width: "100%", height: "100%" }}
             config={{ displayModeBar: false, responsive: true }}
