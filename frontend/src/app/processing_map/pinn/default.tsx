@@ -12,6 +12,7 @@ import { postToBackend1, sampleFormData, sampleDownloadUrl } from "@/lib/api";
 import { toast } from "sonner";
 import { SampleButtons } from "@/components/our/sample-button";
 import { recordHistory } from "@/lib/history";
+import Info from "./info";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -85,7 +86,10 @@ export default function PinnForm() {
           <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-violet-50 border border-violet-200 text-violet-700 text-[10px] font-semibold uppercase tracking-wider mb-2">
             Modern · Physics-Informed
           </div>
-          <h2 className="text-2xl text-slate-900 font-semibold tracking-tight">PINN Surrogate</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl text-slate-900 font-semibold tracking-tight">PINN Surrogate</h2>
+            <Info />
+          </div>
           <h4 className="text-[13px] mt-1 text-slate-500 leading-relaxed">
             A physics-informed neural network learns the flow-stress surface from your
             sparse compression curves and derives dense η / ξ fields via autodiff.

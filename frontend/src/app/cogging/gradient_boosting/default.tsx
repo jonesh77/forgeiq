@@ -12,6 +12,7 @@ import { postToBackend1, sampleFormData, sampleDownloadUrl } from "@/lib/api";
 import { toast } from "sonner";
 import { SampleButtons } from "@/components/our/sample-button";
 import { recordHistory } from "@/lib/history";
+import Info from "./info";
 
 type Metrics = {
   rmse_mean: number; rmse_std: number;
@@ -99,7 +100,10 @@ export default function GradientBoostingForm() {
           <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-semibold uppercase tracking-wider mb-2">
             Modern · Tree-based
           </div>
-          <h2 className="text-2xl text-slate-900 font-semibold tracking-tight">Train Model (Gradient Boosting)</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl text-slate-900 font-semibold tracking-tight">Train Model (Gradient Boosting)</h2>
+            <Info />
+          </div>
           <h4 className="text-[13px] mt-1 w-4/5 text-slate-500 leading-relaxed">
             Alternative to the MLP path. Uses XGBoost (or sklearn fallback) with honest
             k-fold cross-validation. Faster, more interpretable, often more accurate on small
