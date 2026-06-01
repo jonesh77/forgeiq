@@ -81,32 +81,35 @@ export function Header({ minimize = false, first, second }) {
     const totalUnread = counts.unreadReplies + (counts.isSuper ? counts.pendingMessages : 0);
 
     return (
+        <div className="flex flex-col gap-2 lg:gap-0">
         <div className="flex justify-between items-center gap-4">
-            <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="flex items-center gap-3 min-w-0 shrink-0">
                 <Link href={"/"} className="flex items-center shrink-0">{first}</Link>
-                <ProgramNav />
+                <div className="hidden lg:block min-w-0">
+                    <ProgramNav />
+                </div>
             </div>
-            <div className="flex items-center font-public gap-x-2">
+            <div className="flex items-center font-public gap-x-2 shrink-0">
                 <LangSwitcher />
                 <button
                     type="button"
                     onClick={toggleAiAssistant}
                     title="Ask AI"
-                    className="cursor-pointer flex items-center gap-1.5 px-3 h-9 rounded-md text-sm font-medium transition-all bg-gradient-to-br from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 text-indigo-700 border border-indigo-200/60"
+                    className="cursor-pointer flex items-center gap-1.5 px-2.5 md:px-3 h-9 rounded-md text-sm font-medium transition-all bg-gradient-to-br from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 text-indigo-700 border border-indigo-200/60"
                 >
                     <HiSparkles className="text-amber-500" />
-                    Ask AI
+                    <span className="hidden md:inline">Ask AI</span>
                 </button>
                 {!minimize && (
                     <>
                         <HelpHeader trigger={
-                            <button type="button" className="cursor-pointer flex items-center gap-1.5 text-slate-700 hover:text-slate-900 px-3 h-9 rounded-md hover:bg-slate-100 text-sm font-medium transition-colors">
+                            <button type="button" title={t("nav.help")} className="cursor-pointer flex items-center gap-1.5 text-slate-700 hover:text-slate-900 px-2.5 md:px-3 h-9 rounded-md hover:bg-slate-100 text-sm font-medium transition-colors">
                                 <IoMdHelp className="text-base" />
-                                {t("nav.help")}
+                                <span className="hidden md:inline">{t("nav.help")}</span>
                             </button>
                         } />
                         <LeaveMessage trigger={
-                            <button type="button" className="cursor-pointer flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3.5 h-9 rounded-md text-sm font-medium transition-colors">
+                            <button type="button" title={t("nav.leave_message")} className="cursor-pointer hidden sm:flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3.5 h-9 rounded-md text-sm font-medium transition-colors">
                                 {t("nav.leave_message")}
                             </button>
                         } />
@@ -147,6 +150,10 @@ export function Header({ minimize = false, first, second }) {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+        </div>
+        <div className="lg:hidden border-t border-slate-200 pt-2 -mx-6 lg:-mx-8 px-6 lg:px-8">
+            <ProgramNav />
+        </div>
         </div>
     )
 }
