@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 500" font-family="Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fafbfc"/>
+      <stop offset="1" stop-color="#eef1f5"/>
+    </linearGradient>
+    <filter id="sh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="500" fill="url(#bg2)"/>
+
+  <text x="700" y="50" text-anchor="middle" font-size="28" font-weight="bold" fill="#0f172a">Closed-Loop Workflow — One Click, Full Pipeline</text>
+  <text x="700" y="78" text-anchor="middle" font-size="14" fill="#64748b">Total: ~35 seconds · Compresses ~8 hours of manual work into one button click</text>
+
+  <!-- Step 1: PINN -->
+  <g filter="url(#sh)">
+    <rect x="50" y="140" width="280" height="200" rx="16" fill="white" stroke="#3b82f6" stroke-width="3"/>
+    <circle cx="190" cy="180" r="28" fill="#dbeafe"/>
+    <text x="190" y="188" text-anchor="middle" font-size="22" font-weight="bold" fill="#1e40af">1</text>
+    <text x="190" y="240" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">PINN Surrogate</text>
+    <text x="190" y="265" text-anchor="middle" font-size="13" fill="#475569">Auto-find optimal</text>
+    <text x="190" y="285" text-anchor="middle" font-size="13" fill="#475569">(T, ε̇, η)</text>
+    <text x="190" y="320" text-anchor="middle" font-size="14" font-weight="bold" fill="#3b82f6">⏱ ~4 seconds</text>
+  </g>
+
+  <!-- Arrow 1 → 2 -->
+  <line x1="335" y1="240" x2="385" y2="240" stroke="#0f172a" stroke-width="3" marker-end="url(#arrow2)"/>
+
+  <!-- Step 2: Train Correct -->
+  <g filter="url(#sh)">
+    <rect x="390" y="140" width="280" height="200" rx="16" fill="white" stroke="#10b981" stroke-width="3"/>
+    <circle cx="530" cy="180" r="28" fill="#d1fae5"/>
+    <text x="530" y="188" text-anchor="middle" font-size="22" font-weight="bold" fill="#065f46">2</text>
+    <text x="530" y="240" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">Train Data Correction</text>
+    <text x="530" y="265" text-anchor="middle" font-size="13" fill="#475569">Adjust toward target</text>
+    <text x="530" y="285" text-anchor="middle" font-size="13" fill="#475569">ASTM grain size (BQI)</text>
+    <text x="530" y="320" text-anchor="middle" font-size="14" font-weight="bold" fill="#10b981">⏱ ~0.3 seconds</text>
+  </g>
+
+  <!-- Arrow 2 → 3 -->
+  <line x1="675" y1="240" x2="725" y2="240" stroke="#0f172a" stroke-width="3" marker-end="url(#arrow2)"/>
+
+  <!-- Step 3: Pass Schedule -->
+  <g filter="url(#sh)">
+    <rect x="730" y="140" width="280" height="200" rx="16" fill="white" stroke="#f59e0b" stroke-width="3"/>
+    <circle cx="870" cy="180" r="28" fill="#fef3c7"/>
+    <text x="870" y="188" text-anchor="middle" font-size="22" font-weight="bold" fill="#92400e">3</text>
+    <text x="870" y="240" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">Pass Schedule</text>
+    <text x="870" y="265" text-anchor="middle" font-size="13" fill="#475569">7-pass plan + feasibility</text>
+    <text x="870" y="285" text-anchor="middle" font-size="13" fill="#475569">(force / temp / void %)</text>
+    <text x="870" y="320" text-anchor="middle" font-size="14" font-weight="bold" fill="#f59e0b">⏱ ~2 seconds</text>
+  </g>
+
+  <!-- Arrow 3 → 4 -->
+  <line x1="1015" y1="240" x2="1065" y2="240" stroke="#0f172a" stroke-width="3" marker-end="url(#arrow2)"/>
+
+  <!-- Step 4: 3D Preform -->
+  <g filter="url(#sh)">
+    <rect x="1070" y="140" width="280" height="200" rx="16" fill="white" stroke="#a855f7" stroke-width="3"/>
+    <circle cx="1210" cy="180" r="28" fill="#f3e8ff"/>
+    <text x="1210" y="188" text-anchor="middle" font-size="22" font-weight="bold" fill="#581c87">4</text>
+    <text x="1210" y="240" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">3D Preform</text>
+    <text x="1210" y="265" text-anchor="middle" font-size="13" fill="#475569">U-Net → voxel → STL</text>
+    <text x="1210" y="285" text-anchor="middle" font-size="13" fill="#475569">Grade A–D quality</text>
+    <text x="1210" y="320" text-anchor="middle" font-size="14" font-weight="bold" fill="#a855f7">⏱ ~28 seconds</text>
+  </g>
+
+  <!-- Output banner -->
+  <g filter="url(#sh)">
+    <rect x="350" y="390" width="700" height="80" rx="40" fill="#0f172a"/>
+    <text x="700" y="425" text-anchor="middle" font-size="16" font-weight="bold" fill="#f8fafc">Final Output</text>
+    <text x="700" y="450" text-anchor="middle" font-size="13" fill="#cbd5e1">Optimal (T, ε̇) · 7-pass schedule · 3D STL · KPIs (void closure, Δvol, grade)</text>
+  </g>
+</svg>

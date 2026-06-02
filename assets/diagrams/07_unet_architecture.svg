@@ -1,0 +1,248 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" font-family="Arial, sans-serif">
+  <defs>
+    <linearGradient id="encGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#1e40af"/>
+    </linearGradient>
+    <linearGradient id="decGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#7e22ce"/>
+    </linearGradient>
+    <linearGradient id="bottleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#b45309"/>
+    </linearGradient>
+    <filter id="sh7" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.2"/>
+    </filter>
+    <marker id="ar7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/>
+    </marker>
+    <marker id="skipAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="1100" fill="#fafbfc"/>
+
+  <text x="800" y="55" text-anchor="middle" font-size="34" font-weight="bold" fill="#0f172a">3D U-Net Architecture</text>
+  <text x="800" y="90" text-anchor="middle" font-size="18" fill="#64748b">Voxel-to-Voxel Segmentation · Input: 128³ voxels · Output: probability volume · Pre-trained on DEFORM data (~218 MB)</text>
+
+  <!-- Input -->
+  <g filter="url(#sh7)">
+    <rect x="40" y="350" width="130" height="140" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+    <text x="105" y="395" text-anchor="middle" font-size="20" font-weight="bold" fill="#0c4a6e">INPUT</text>
+    <text x="105" y="430" text-anchor="middle" font-size="16" fill="#075985">128³ voxels</text>
+    <text x="105" y="458" text-anchor="middle" font-size="13" fill="#0369a1">Target geometry</text>
+    <text x="105" y="478" text-anchor="middle" font-size="13" fill="#0369a1">(from DEFORM)</text>
+  </g>
+
+  <!-- Encoder blocks -->
+  <g>
+    <!-- Enc 1 -->
+    <rect x="210" y="330" width="100" height="180" rx="6" fill="url(#encGrad)" filter="url(#sh7)"/>
+    <text x="260" y="405" text-anchor="middle" font-size="16" fill="white" font-weight="bold">Conv3D ×2</text>
+    <text x="260" y="430" text-anchor="middle" font-size="15" fill="white">64 filters</text>
+    <text x="260" y="450" text-anchor="middle" font-size="14" fill="white">+ ReLU</text>
+    <text x="260" y="535" text-anchor="middle" font-size="15" font-weight="bold" fill="#475569">128³</text>
+
+    <line x1="310" y1="420" x2="350" y2="420" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar7)"/>
+    <text x="330" y="410" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">↓2</text>
+
+    <!-- Enc 2 -->
+    <rect x="350" y="350" width="100" height="160" rx="6" fill="url(#encGrad)" filter="url(#sh7)"/>
+    <text x="400" y="415" text-anchor="middle" font-size="16" fill="white" font-weight="bold">Conv3D ×2</text>
+    <text x="400" y="440" text-anchor="middle" font-size="15" fill="white">128 filters</text>
+    <text x="400" y="535" text-anchor="middle" font-size="15" font-weight="bold" fill="#475569">64³</text>
+
+    <line x1="450" y1="430" x2="490" y2="430" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar7)"/>
+    <text x="470" y="420" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">↓2</text>
+
+    <!-- Enc 3 -->
+    <rect x="490" y="370" width="100" height="140" rx="6" fill="url(#encGrad)" filter="url(#sh7)"/>
+    <text x="540" y="425" text-anchor="middle" font-size="16" fill="white" font-weight="bold">Conv3D ×2</text>
+    <text x="540" y="450" text-anchor="middle" font-size="15" fill="white">256 filters</text>
+    <text x="540" y="535" text-anchor="middle" font-size="15" font-weight="bold" fill="#475569">32³</text>
+
+    <line x1="590" y1="440" x2="630" y2="440" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar7)"/>
+    <text x="610" y="430" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">↓2</text>
+  </g>
+
+  <!-- Bottleneck -->
+  <g>
+    <rect x="630" y="400" width="130" height="110" rx="8" fill="url(#bottleGrad)" filter="url(#sh7)"/>
+    <text x="695" y="445" text-anchor="middle" font-size="16" fill="white" font-weight="bold">Bottleneck</text>
+    <text x="695" y="470" text-anchor="middle" font-size="15" fill="white">512 filters</text>
+    <text x="695" y="535" text-anchor="middle" font-size="15" font-weight="bold" fill="#475569">16³ (deep features)</text>
+  </g>
+
+  <!-- Decoder blocks -->
+  <g>
+    <line x1="760" y1="450" x2="800" y2="450" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar7)"/>
+    <text x="780" y="440" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">↑2</text>
+
+    <!-- Dec 3 -->
+    <rect x="800" y="370" width="100" height="140" rx="6" fill="url(#decGrad)" filter="url(#sh7)"/>
+    <text x="850" y="425" text-anchor="middle" font-size="16" fill="white" font-weight="bold">UpConv3D</text>
+    <text x="850" y="450" text-anchor="middle" font-size="15" fill="white">256 filters</text>
+    <text x="850" y="535" text-anchor="middle" font-size="15" font-weight="bold" fill="#475569">32³</text>
+
+    <line x1="900" y1="440" x2="940" y2="440" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar7)"/>
+    <text x="920" y="430" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">↑2</text>
+
+    <!-- Dec 2 -->
+    <rect x="940" y="350" width="100" height="160" rx="6" fill="url(#decGrad)" filter="url(#sh7)"/>
+    <text x="990" y="415" text-anchor="middle" font-size="16" fill="white" font-weight="bold">UpConv3D</text>
+    <text x="990" y="440" text-anchor="middle" font-size="15" fill="white">128 filters</text>
+    <text x="990" y="535" text-anchor="middle" font-size="15" font-weight="bold" fill="#475569">64³</text>
+
+    <line x1="1040" y1="430" x2="1080" y2="430" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar7)"/>
+    <text x="1060" y="420" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">↑2</text>
+
+    <!-- Dec 1 -->
+    <rect x="1080" y="330" width="100" height="180" rx="6" fill="url(#decGrad)" filter="url(#sh7)"/>
+    <text x="1130" y="395" text-anchor="middle" font-size="16" fill="white" font-weight="bold">UpConv3D</text>
+    <text x="1130" y="420" text-anchor="middle" font-size="15" fill="white">64 filters</text>
+    <text x="1130" y="445" text-anchor="middle" font-size="14" fill="white">+ Conv1×1</text>
+    <text x="1130" y="535" text-anchor="middle" font-size="15" font-weight="bold" fill="#475569">128³</text>
+  </g>
+
+  <!-- Output -->
+  <line x1="1180" y1="420" x2="1220" y2="420" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar7)"/>
+  <g filter="url(#sh7)">
+    <rect x="1220" y="350" width="160" height="140" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="1300" y="395" text-anchor="middle" font-size="18" font-weight="bold" fill="#78350f">OUTPUT</text>
+    <text x="1300" y="425" text-anchor="middle" font-size="14" fill="#92400e">P(voxel ∈ preform)</text>
+    <text x="1300" y="448" text-anchor="middle" font-size="13" fill="#92400e">128³ probabilities</text>
+    <text x="1300" y="471" text-anchor="middle" font-size="13" font-weight="bold" fill="#92400e">Threshold = 0.4</text>
+  </g>
+
+  <!-- Post-processing -->
+  <line x1="1380" y1="420" x2="1420" y2="420" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar7)"/>
+  <g filter="url(#sh7)">
+    <rect x="1420" y="350" width="160" height="140" rx="8" fill="#d1fae5" stroke="#059669" stroke-width="2"/>
+    <text x="1500" y="395" text-anchor="middle" font-size="18" font-weight="bold" fill="#064e3b">STL OUTPUT</text>
+    <text x="1500" y="425" text-anchor="middle" font-size="13" fill="#065f46">Marching cubes</text>
+    <text x="1500" y="448" text-anchor="middle" font-size="13" fill="#065f46">+ Taubin smoothing</text>
+    <text x="1500" y="471" text-anchor="middle" font-size="13" font-weight="bold" fill="#065f46">+ Grade A–D</text>
+  </g>
+
+  <!-- Skip connections -->
+  <g>
+    <path d="M 260,330 Q 260,200 1130,200 L 1130,330" fill="none" stroke="#16a34a" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#skipAr)"/>
+    <path d="M 400,350 Q 400,240 990,240 L 990,350" fill="none" stroke="#16a34a" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#skipAr)"/>
+    <path d="M 540,370 Q 540,280 850,280 L 850,370" fill="none" stroke="#16a34a" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#skipAr)"/>
+    <rect x="600" y="155" width="400" height="40" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+    <text x="800" y="183" text-anchor="middle" font-size="17" font-weight="bold" fill="#15803d">Skip Connections (preserve spatial detail)</text>
+  </g>
+
+  <!-- Labels above encoder/decoder -->
+  <text x="400" y="315" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e40af">ENCODER (downsample)</text>
+  <text x="990" y="315" text-anchor="middle" font-size="18" font-weight="bold" fill="#7e22ce">DECODER (upsample)</text>
+
+  <!-- LOSS FUNCTIONS SECTION -->
+  <g filter="url(#sh7)">
+    <rect x="40" y="610" width="1540" height="240" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+    <text x="810" y="650" text-anchor="middle" font-size="22" font-weight="bold" fill="#7c2d12">Training Loss Functions (used offline, baked into the .h5)</text>
+
+    <!-- Loss 1: Dice -->
+    <g>
+      <rect x="70" y="680" width="470" height="150" rx="8" fill="white" stroke="#fed7aa" stroke-width="1.5"/>
+      <text x="305" y="710" text-anchor="middle" font-size="17" font-weight="bold" fill="#9a3412">1. Dice Coefficient</text>
+      <!-- Formula with proper math -->
+      <g transform="translate(305, 760)" text-anchor="middle">
+        <text font-size="22" fill="#0f172a" font-style="italic">dice</text>
+        <text x="40" font-size="22" fill="#0f172a"> = </text>
+        <text x="85" font-size="22" fill="#0f172a">2 · Σ </text>
+        <text x="135" font-size="22" font-style="italic" fill="#0f172a">y</text>
+        <text x="148" font-size="22" fill="#0f172a"> · </text>
+        <text x="165" font-size="22" font-style="italic" fill="#0f172a">ŷ</text>
+        <text x="178" font-size="22" fill="#0f172a"> + ε</text>
+        <line x1="-65" y1="15" x2="220" y2="15" stroke="#0f172a" stroke-width="1.5"/>
+        <text x="85" y="45" font-size="22" fill="#0f172a">Σ </text>
+        <text x="100" y="45" font-size="22" font-style="italic" fill="#0f172a">y</text>
+        <text x="115" y="45" font-size="22" fill="#0f172a"> + Σ </text>
+        <text x="150" y="45" font-size="22" font-style="italic" fill="#0f172a">ŷ</text>
+        <text x="165" y="45" font-size="22" fill="#0f172a"> + ε</text>
+      </g>
+      <text x="305" y="820" text-anchor="middle" font-size="13" fill="#64748b" font-style="italic">Volume overlap metric · range [0, 1] · 1 = perfect match</text>
+    </g>
+
+    <!-- Loss 2: Voxel -->
+    <g>
+      <rect x="565" y="680" width="470" height="150" rx="8" fill="white" stroke="#fed7aa" stroke-width="1.5"/>
+      <text x="800" y="710" text-anchor="middle" font-size="17" font-weight="bold" fill="#9a3412">2. Voxel Loss</text>
+      <text x="800" y="765" text-anchor="middle" font-size="22" fill="#0f172a">
+        <tspan font-style="italic">L</tspan><tspan baseline-shift="sub" font-size="14">voxel</tspan>
+        <tspan> = (1 − </tspan><tspan font-style="italic">dice</tspan><tspan>) + BCE(</tspan>
+        <tspan font-style="italic">y</tspan><tspan>, </tspan><tspan font-style="italic">ŷ</tspan><tspan>)</tspan>
+      </text>
+      <text x="800" y="795" text-anchor="middle" font-size="14" fill="#475569">BCE = −[y · log(ŷ) + (1−y) · log(1−ŷ)]</text>
+      <text x="800" y="820" text-anchor="middle" font-size="13" fill="#64748b" font-style="italic">Dice + binary cross-entropy · balances volume + pixel-level accuracy</text>
+    </g>
+
+    <!-- Loss 3: Folding -->
+    <g>
+      <rect x="1060" y="680" width="495" height="150" rx="8" fill="white" stroke="#fed7aa" stroke-width="1.5"/>
+      <text x="1307" y="710" text-anchor="middle" font-size="17" font-weight="bold" fill="#9a3412">3. Folding Loss (Focal)</text>
+      <text x="1307" y="770" text-anchor="middle" font-size="22" fill="#0f172a">
+        <tspan font-style="italic">L</tspan><tspan baseline-shift="sub" font-size="14">fold</tspan>
+        <tspan> = α · (1 − </tspan><tspan font-style="italic">p</tspan><tspan baseline-shift="sub" font-size="14">t</tspan>
+        <tspan>)</tspan><tspan baseline-shift="super" font-size="14">γ</tspan>
+        <tspan> · −log(</tspan><tspan font-style="italic">p</tspan><tspan baseline-shift="sub" font-size="14">t</tspan>
+        <tspan> + ε)</tspan>
+      </text>
+      <text x="1307" y="820" text-anchor="middle" font-size="13" fill="#64748b" font-style="italic">α=0.25 · γ=2.0 · handles class imbalance (preform voxels rare)</text>
+    </g>
+  </g>
+
+  <!-- VARIABLE DEFINITIONS SECTION -->
+  <g filter="url(#sh7)">
+    <rect x="40" y="880" width="1540" height="190" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+    <text x="810" y="918" text-anchor="middle" font-size="22" font-weight="bold" fill="#1e40af">📖 What each variable means</text>
+
+    <g font-size="16" fill="#0f172a">
+      <!-- Column 1 -->
+      <g transform="translate(80, 950)">
+        <text font-weight="bold" font-style="italic" font-size="20" fill="#1e40af">y</text>
+        <text x="30">— Ground truth voxel (0 or 1, from DEFORM)</text>
+      </g>
+      <g transform="translate(80, 985)">
+        <text font-weight="bold" font-style="italic" font-size="20" fill="#1e40af">ŷ</text>
+        <text x="30">— Predicted probability from U-Net (0 to 1)</text>
+      </g>
+      <g transform="translate(80, 1020)">
+        <text font-weight="bold" font-size="20" fill="#1e40af">Σ</text>
+        <text x="30">— Sum over all 128³ voxels in the volume</text>
+      </g>
+
+      <!-- Column 2 -->
+      <g transform="translate(580, 950)">
+        <text font-weight="bold" font-size="20" fill="#1e40af">ε</text>
+        <text x="30">— Small smoothing constant (e.g. 1e-6) to avoid 0/0</text>
+      </g>
+      <g transform="translate(580, 985)">
+        <text font-weight="bold" font-style="italic" font-size="20" fill="#1e40af">p</text>
+        <text x="20" font-size="14" baseline-shift="sub" font-style="italic" fill="#1e40af">t</text>
+        <text x="30">— True-class probability: p_t = y·ŷ + (1−y)·(1−ŷ)</text>
+      </g>
+      <g transform="translate(580, 1020)">
+        <text font-weight="bold" font-size="20" fill="#1e40af">BCE</text>
+        <text x="50">— Binary cross-entropy (per-voxel classification loss)</text>
+      </g>
+
+      <!-- Column 3 -->
+      <g transform="translate(1140, 950)">
+        <text font-weight="bold" font-size="20" fill="#1e40af">α</text>
+        <text x="30">— Class weight (0.25) — boosts rare class</text>
+      </g>
+      <g transform="translate(1140, 985)">
+        <text font-weight="bold" font-size="20" fill="#1e40af">γ</text>
+        <text x="30">— Focusing parameter (2.0) — down-weights easy cases</text>
+      </g>
+      <g transform="translate(1140, 1020)">
+        <text font-weight="bold" font-size="20" fill="#1e40af">128³</text>
+        <text x="50">— 128 × 128 × 128 voxel grid = 2,097,152 voxels total</text>
+      </g>
+    </g>
+  </g>
+</svg>

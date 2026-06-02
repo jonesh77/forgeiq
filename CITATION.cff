@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+title: "ForgeIQ — AI Metallurgy Simulation Platform"
+message: "If you use ForgeIQ in academic work, please cite it as below."
+type: software
+authors:
+  - given-names: "Y."
+    family-names: "Alibek"
+    email: "alibekyuldoshev96@gmail.com"
+    affiliation: "NSMLab (Net Shape Manufacturing Laboratory), Sogang University"
+repository-code: "https://github.com/jonesh77/forgeiq"
+url: "https://forgeiq.dev"
+abstract: >-
+  ForgeIQ is a web-based AI metallurgy simulation platform for hot-forging and
+  cogging process design. It bundles neural surrogate models (MLP, Gradient
+  Boosting, Physics-Informed Neural Networks), an Attention U-Net voxel → STL
+  3D preform generator, equipment-aware pass-schedule optimisation, and a
+  closed-loop Auto Pipeline that replaces the slow inner loop of traditional
+  FEM-based design.
+keywords:
+  - "metallurgy"
+  - "hot forging"
+  - "cogging"
+  - "processing map"
+  - "physics-informed neural network"
+  - "PINN"
+  - "U-Net"
+  - "Attention U-Net"
+  - "3D preform"
+  - "surrogate modeling"
+  - "AI for manufacturing"
+license: "LicenseRef-Proprietary"
+license-url: "https://github.com/jonesh77/forgeiq/blob/main/LICENSE"
+version: "v0.1.0-beta"
+date-released: "2026-06-02"

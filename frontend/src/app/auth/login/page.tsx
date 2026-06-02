@@ -39,6 +39,7 @@ export default function LoginPage() {
                     <h1 className="text-5xl font-montserrat font-bold tracking-tight leading-none">
                         Forge<span className="text-indigo-300">IQ</span>
                     </h1>
+                    <div className="mt-3 text-sm font-semibold tracking-wide text-indigo-300/90 uppercase">{t("home.nav.tagline")}</div>
                     <p className="mt-5 text-slate-300 text-sm leading-relaxed max-w-md">
                         {t("auth.brand.tagline")}
                     </p>

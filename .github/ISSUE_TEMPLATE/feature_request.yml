@@ -1,0 +1,70 @@
+name: ✨ Feature request
+description: Suggest a new feature for ForgeIQ — AI Metallurgy Simulation Platform
+title: "[Feature] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a feature. Before submitting, please check the
+        [Roadmap](https://github.com/jonesh77/forgeiq/blob/main/ROADMAP.md) — your idea may already be planned.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the user / engineering problem in your own words. Avoid jumping straight to a solution.
+      placeholder: |
+        As a forging engineer I have to manually re-enter the same material parameters
+        for every Pass Schedule run, which slows down comparison studies.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How do you imagine ForgeIQ solving this?
+      placeholder: |
+        Add a "saved presets" panel in the Material Picker where I can store my own
+        (B, C, D, σ_base, σ_slope) sets next to AISI 4340 / 1045 / Inconel 718.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What workarounds exist today? Why are they not enough?
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area?
+      options:
+        - Cogging
+        - Processing Map
+        - Pass Schedule
+        - 3D Preform
+        - Auto Pipeline
+        - Compare
+        - Auth / Account
+        - AI Assistant
+        - History / Messages / Bookmarks
+        - i18n
+        - Deployment / Infrastructure
+        - New program / module
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How important is this for your work?
+      options:
+        - Nice to have
+        - Useful — would speed up my workflow
+        - Important — currently blocks a real use case
+    validations:
+      required: true

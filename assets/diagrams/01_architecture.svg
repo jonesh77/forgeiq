@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fafbfc"/>
+      <stop offset="1" stop-color="#eef1f5"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <text x="600" y="50" text-anchor="middle" font-size="32" font-weight="bold" fill="#0f172a">ForgeIQ System Architecture</text>
+  <text x="600" y="80" text-anchor="middle" font-size="16" fill="#64748b">Frontend on Vercel + Backends on Hetzner + MongoDB Atlas</text>
+
+  <!-- User -->
+  <g filter="url(#shadow)">
+    <rect x="500" y="120" width="200" height="80" rx="40" fill="#3b82f6"/>
+    <text x="600" y="155" text-anchor="middle" font-size="18" font-weight="bold" fill="white">👤 User</text>
+    <text x="600" y="180" text-anchor="middle" font-size="13" fill="white">Browser (Chrome / Firefox / Safari)</text>
+  </g>
+
+  <!-- HTTPS arrow -->
+  <line x1="600" y1="200" x2="600" y2="240" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="620" y="225" font-size="12" fill="#475569" font-style="italic">HTTPS</text>
+
+  <!-- Frontend -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="245" width="400" height="100" rx="12" fill="white" stroke="#0ea5e9" stroke-width="2"/>
+    <text x="600" y="278" text-anchor="middle" font-size="18" font-weight="bold" fill="#0c4a6e">🌐 forgeiq.dev</text>
+    <text x="600" y="302" text-anchor="middle" font-size="14" fill="#0369a1">Vercel · Next.js 15 + React 19</text>
+    <text x="600" y="325" text-anchor="middle" font-size="12" fill="#64748b">UI, auth, history, AI assistant</text>
+  </g>
+
+  <!-- MongoDB -->
+  <g filter="url(#shadow)">
+    <rect x="880" y="245" width="240" height="100" rx="12" fill="white" stroke="#10b981" stroke-width="2"/>
+    <text x="1000" y="278" text-anchor="middle" font-size="16" font-weight="bold" fill="#064e3b">🍃 MongoDB Atlas</text>
+    <text x="1000" y="302" text-anchor="middle" font-size="13" fill="#047857">M0 Free · Seoul region</text>
+    <text x="1000" y="325" text-anchor="middle" font-size="12" fill="#64748b">Users · History · Messages</text>
+  </g>
+  <line x1="800" y1="295" x2="878" y2="295" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="878" y1="305" x2="800" y2="305" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Split arrows -->
+  <line x1="500" y1="345" x2="350" y2="430" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="700" y1="345" x2="850" y2="430" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Backend 1 -->
+  <g filter="url(#shadow)">
+    <rect x="170" y="435" width="320" height="170" rx="12" fill="white" stroke="#f59e0b" stroke-width="2"/>
+    <text x="330" y="468" text-anchor="middle" font-size="16" font-weight="bold" fill="#78350f">🔧 api.forgeiq.dev</text>
+    <text x="330" y="490" text-anchor="middle" font-size="13" fill="#a16207">Backend 1 · Flask · Port 5000</text>
+    <line x1="200" y1="500" x2="460" y2="500" stroke="#fde68a" stroke-width="1"/>
+    <text x="330" y="520" text-anchor="middle" font-size="12" fill="#374151">Cogging MLP / Gradient Boosting</text>
+    <text x="330" y="540" text-anchor="middle" font-size="12" fill="#374151">Processing Map (analytical + PINN)</text>
+    <text x="330" y="560" text-anchor="middle" font-size="12" fill="#374151">Pass Schedule + feasibility</text>
+    <text x="330" y="580" text-anchor="middle" font-size="12" fill="#374151">Train data correction (BQI)</text>
+  </g>
+
+  <!-- Backend 2 -->
+  <g filter="url(#shadow)">
+    <rect x="710" y="435" width="320" height="170" rx="12" fill="white" stroke="#a855f7" stroke-width="2"/>
+    <text x="870" y="468" text-anchor="middle" font-size="16" font-weight="bold" fill="#581c87">🧊 api2.forgeiq.dev</text>
+    <text x="870" y="490" text-anchor="middle" font-size="13" fill="#7e22ce">Backend 2 · Flask · Port 5001</text>
+    <line x1="740" y1="500" x2="1000" y2="500" stroke="#e9d5ff" stroke-width="1"/>
+    <text x="870" y="520" text-anchor="middle" font-size="12" fill="#374151">TensorFlow + U-Net (218 MB)</text>
+    <text x="870" y="540" text-anchor="middle" font-size="12" fill="#374151">Voxel grid → 3D preform</text>
+    <text x="870" y="560" text-anchor="middle" font-size="12" fill="#374151">pymeshlab smoothing + STL</text>
+    <text x="870" y="580" text-anchor="middle" font-size="12" fill="#374151">Async job queue (background)</text>
+  </g>
+
+  <!-- Server box -->
+  <g filter="url(#shadow)">
+    <rect x="320" y="660" width="560" height="100" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+    <text x="600" y="693" text-anchor="middle" font-size="16" font-weight="bold" fill="white">🖥 Hetzner Cloud CPX22</text>
+    <text x="600" y="715" text-anchor="middle" font-size="12" fill="#cbd5e1">Falkenstein, Germany · 3 vCPU · 4 GB RAM · 4 GB swap</text>
+    <text x="600" y="735" text-anchor="middle" font-size="12" fill="#94a3b8">Caddy v2 (reverse proxy + Let's Encrypt SSL)</text>
+    <text x="600" y="752" text-anchor="middle" font-size="11" fill="#64748b" font-style="italic">~$10/month</text>
+  </g>
+  <line x1="330" y1="605" x2="490" y2="660" stroke="#475569" stroke-width="2" stroke-dasharray="4,4"/>
+  <line x1="870" y1="605" x2="710" y2="660" stroke="#475569" stroke-width="2" stroke-dasharray="4,4"/>
+</svg>

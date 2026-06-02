@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" font-family="Arial, sans-serif">
+  <defs>
+    <filter id="sh4" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="600" fill="#fafbfc"/>
+
+  <text x="600" y="50" text-anchor="middle" font-size="28" font-weight="bold" fill="#0f172a">Who is ForgeIQ for?</text>
+  <text x="600" y="80" text-anchor="middle" font-size="14" fill="#64748b">Three primary audiences — no programming or expensive licenses required</text>
+
+  <!-- Persona 1: Research scientist -->
+  <g filter="url(#sh4)">
+    <rect x="60" y="130" width="350" height="400" rx="16" fill="white" stroke="#3b82f6" stroke-width="2"/>
+    <circle cx="235" cy="200" r="40" fill="#dbeafe"/>
+    <text x="235" y="215" text-anchor="middle" font-size="40">🔬</text>
+    <text x="235" y="280" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e40af">Research Scientist</text>
+    <text x="235" y="305" text-anchor="middle" font-size="13" fill="#64748b">PhD students · postdocs · faculty</text>
+    <line x1="100" y1="330" x2="370" y2="330" stroke="#dbeafe" stroke-width="1"/>
+    <text x="235" y="360" text-anchor="middle" font-size="13" fill="#374151">✓ Design forging experiments</text>
+    <text x="235" y="385" text-anchor="middle" font-size="13" fill="#374151">✓ Test multiple materials</text>
+    <text x="235" y="410" text-anchor="middle" font-size="13" fill="#374151">✓ Reproducible results</text>
+    <text x="235" y="435" text-anchor="middle" font-size="13" fill="#374151">✓ Publication-ready figures</text>
+    <text x="235" y="460" text-anchor="middle" font-size="13" fill="#374151">✓ No DEFORM license needed</text>
+    <text x="235" y="500" text-anchor="middle" font-size="12" font-style="italic" fill="#3b82f6">"Free me from MATLAB scripts"</text>
+  </g>
+
+  <!-- Persona 2: Manufacturing engineer -->
+  <g filter="url(#sh4)">
+    <rect x="425" y="130" width="350" height="400" rx="16" fill="white" stroke="#10b981" stroke-width="2"/>
+    <circle cx="600" cy="200" r="40" fill="#d1fae5"/>
+    <text x="600" y="215" text-anchor="middle" font-size="40">⚙️</text>
+    <text x="600" y="280" text-anchor="middle" font-size="20" font-weight="bold" fill="#065f46">Manufacturing Engineer</text>
+    <text x="600" y="305" text-anchor="middle" font-size="13" fill="#64748b">Production · process · QA</text>
+    <line x1="465" y1="330" x2="735" y2="330" stroke="#d1fae5" stroke-width="1"/>
+    <text x="600" y="360" text-anchor="middle" font-size="13" fill="#374151">✓ Design real pass schedules</text>
+    <text x="600" y="385" text-anchor="middle" font-size="13" fill="#374151">✓ Validate preforms pre-machining</text>
+    <text x="600" y="410" text-anchor="middle" font-size="13" fill="#374151">✓ Check equipment limits</text>
+    <text x="600" y="435" text-anchor="middle" font-size="13" fill="#374151">✓ (force / temp constraints)</text>
+    <text x="600" y="460" text-anchor="middle" font-size="13" fill="#374151">✓ Quick what-if analysis</text>
+    <text x="600" y="500" text-anchor="middle" font-size="12" font-style="italic" fill="#10b981">"Cut iteration time by 90%"</text>
+  </g>
+
+  <!-- Persona 3: Students & instructors -->
+  <g filter="url(#sh4)">
+    <rect x="790" y="130" width="350" height="400" rx="16" fill="white" stroke="#a855f7" stroke-width="2"/>
+    <circle cx="965" cy="200" r="40" fill="#f3e8ff"/>
+    <text x="965" y="215" text-anchor="middle" font-size="40">🎓</text>
+    <text x="965" y="280" text-anchor="middle" font-size="20" font-weight="bold" fill="#581c87">Students &amp; Instructors</text>
+    <text x="965" y="305" text-anchor="middle" font-size="13" fill="#64748b">Undergrads · TAs · educators</text>
+    <line x1="830" y1="330" x2="1100" y2="330" stroke="#f3e8ff" stroke-width="1"/>
+    <text x="965" y="360" text-anchor="middle" font-size="13" fill="#374151">✓ Teach hot-working principles</text>
+    <text x="965" y="385" text-anchor="middle" font-size="13" fill="#374151">✓ Hands-on lab exercises</text>
+    <text x="965" y="410" text-anchor="middle" font-size="13" fill="#374151">✓ No software install</text>
+    <text x="965" y="435" text-anchor="middle" font-size="13" fill="#374151">✓ Interactive processing maps</text>
+    <text x="965" y="460" text-anchor="middle" font-size="13" fill="#374151">✓ Free for class use</text>
+    <text x="965" y="500" text-anchor="middle" font-size="12" font-style="italic" fill="#a855f7">"Skip lab IT setup, focus on physics"</text>
+  </g>
+</svg>

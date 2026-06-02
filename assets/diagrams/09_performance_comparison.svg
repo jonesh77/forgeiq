@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="Arial, sans-serif">
+  <defs>
+    <filter id="sh9" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="#fafbfc"/>
+
+  <text x="800" y="55" text-anchor="middle" font-size="32" font-weight="bold" fill="#0f172a">Pipeline Performance — Cold Start vs Cached</text>
+  <text x="800" y="90" text-anchor="middle" font-size="17" fill="#64748b">All times measured on Hetzner CPX22 · 3 vCPU · 4 GB RAM + 4 GB swap · CPU-only · Falkenstein, Germany</text>
+
+  <!-- Chart area -->
+  <!-- Y axis -->
+  <line x1="220" y1="150" x2="220" y2="640" stroke="#475569" stroke-width="2"/>
+  <!-- X axis -->
+  <line x1="220" y1="640" x2="1480" y2="640" stroke="#475569" stroke-width="2"/>
+
+  <!-- Y axis labels (linear scale) -->
+  <g font-size="14" fill="#475569" text-anchor="end">
+    <text x="210" y="155">60s</text>
+    <line x1="215" y1="150" x2="225" y2="150" stroke="#475569" stroke-width="1"/>
+    <text x="210" y="237">50s</text>
+    <line x1="215" y1="232" x2="225" y2="232" stroke="#475569" stroke-width="1"/>
+    <text x="210" y="319">40s</text>
+    <line x1="215" y1="314" x2="225" y2="314" stroke="#475569" stroke-width="1"/>
+    <text x="210" y="401">30s</text>
+    <line x1="215" y1="396" x2="225" y2="396" stroke="#475569" stroke-width="1"/>
+    <text x="210" y="483">20s</text>
+    <line x1="215" y1="478" x2="225" y2="478" stroke="#475569" stroke-width="1"/>
+    <text x="210" y="565">10s</text>
+    <line x1="215" y1="560" x2="225" y2="560" stroke="#475569" stroke-width="1"/>
+    <text x="210" y="645">0s</text>
+  </g>
+
+  <text x="110" y="395" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f172a" transform="rotate(-90, 110, 395)">Wall time (seconds, linear scale)</text>
+
+  <!-- Grid lines -->
+  <g stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,4">
+    <line x1="220" y1="150" x2="1480" y2="150"/>
+    <line x1="220" y1="232" x2="1480" y2="232"/>
+    <line x1="220" y1="314" x2="1480" y2="314"/>
+    <line x1="220" y1="396" x2="1480" y2="396"/>
+    <line x1="220" y1="478" x2="1480" y2="478"/>
+    <line x1="220" y1="560" x2="1480" y2="560"/>
+  </g>
+
+  <!-- Time scale: 60s at y=150, 0s at y=640. Each second = (640-150)/60 = 8.17 px -->
+  <!-- Bar pairs: cold (red) + cached (green), each 50px wide -->
+
+  <!-- 1. Cogging Train (10s cold, 2s cached) -->
+  <g>
+    <rect x="260" y="558" width="55" height="82" fill="#ef4444" filter="url(#sh9)"/>
+    <text x="287" y="548" text-anchor="middle" font-size="15" font-weight="bold" fill="#dc2626">10s</text>
+    <rect x="320" y="624" width="55" height="16" fill="#10b981" filter="url(#sh9)"/>
+    <text x="347" y="614" text-anchor="middle" font-size="15" font-weight="bold" fill="#059669">2s</text>
+    <text x="317" y="670" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">Cogging</text>
+    <text x="317" y="690" text-anchor="middle" font-size="12" fill="#64748b">Train Model</text>
+  </g>
+
+  <!-- 2. Pass Schedule (2s cold, 1s cached) -->
+  <g>
+    <rect x="430" y="624" width="55" height="16" fill="#ef4444" filter="url(#sh9)"/>
+    <text x="457" y="614" text-anchor="middle" font-size="15" font-weight="bold" fill="#dc2626">2s</text>
+    <rect x="490" y="632" width="55" height="8" fill="#10b981" filter="url(#sh9)"/>
+    <text x="517" y="622" text-anchor="middle" font-size="15" font-weight="bold" fill="#059669">1s</text>
+    <text x="487" y="670" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">Pass</text>
+    <text x="487" y="690" text-anchor="middle" font-size="12" fill="#64748b">Schedule</text>
+  </g>
+
+  <!-- 3. Pmap 2D (under 1s) -->
+  <g>
+    <rect x="600" y="634" width="55" height="6" fill="#ef4444" filter="url(#sh9)"/>
+    <text x="627" y="625" text-anchor="middle" font-size="14" font-weight="bold" fill="#dc2626">&lt;1s</text>
+    <rect x="660" y="634" width="55" height="6" fill="#10b981" filter="url(#sh9)"/>
+    <text x="687" y="625" text-anchor="middle" font-size="14" font-weight="bold" fill="#059669">&lt;1s</text>
+    <text x="657" y="670" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">Pmap 2D</text>
+    <text x="657" y="690" text-anchor="middle" font-size="12" fill="#64748b">Contour</text>
+  </g>
+
+  <!-- 4. Pmap 3D (3s cold, 1s cached) -->
+  <g>
+    <rect x="770" y="616" width="55" height="24" fill="#ef4444" filter="url(#sh9)"/>
+    <text x="797" y="606" text-anchor="middle" font-size="15" font-weight="bold" fill="#dc2626">3s</text>
+    <rect x="830" y="632" width="55" height="8" fill="#10b981" filter="url(#sh9)"/>
+    <text x="857" y="622" text-anchor="middle" font-size="15" font-weight="bold" fill="#059669">1s</text>
+    <text x="827" y="670" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">Pmap 3D</text>
+    <text x="827" y="690" text-anchor="middle" font-size="12" fill="#64748b">Surface</text>
+  </g>
+
+  <!-- 5. PINN (4s cold, 2s cached) -->
+  <g>
+    <rect x="940" y="608" width="55" height="32" fill="#ef4444" filter="url(#sh9)"/>
+    <text x="967" y="598" text-anchor="middle" font-size="15" font-weight="bold" fill="#dc2626">4s</text>
+    <rect x="1000" y="624" width="55" height="16" fill="#10b981" filter="url(#sh9)"/>
+    <text x="1027" y="614" text-anchor="middle" font-size="15" font-weight="bold" fill="#059669">2s</text>
+    <text x="997" y="670" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">PINN</text>
+    <text x="997" y="690" text-anchor="middle" font-size="12" fill="#64748b">Surrogate</text>
+  </g>
+
+  <!-- 6. 3D Preform (45s cold, 5s cached) -->
+  <g>
+    <rect x="1110" y="272" width="55" height="368" fill="#ef4444" filter="url(#sh9)"/>
+    <text x="1137" y="262" text-anchor="middle" font-size="16" font-weight="bold" fill="#dc2626">45s</text>
+    <rect x="1170" y="599" width="55" height="41" fill="#10b981" filter="url(#sh9)"/>
+    <text x="1197" y="589" text-anchor="middle" font-size="15" font-weight="bold" fill="#059669">5s</text>
+    <text x="1167" y="670" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">3D Preform</text>
+    <text x="1167" y="690" text-anchor="middle" font-size="12" fill="#64748b">U-Net inference</text>
+  </g>
+
+  <!-- 7. Workflow (35s cold, 10s cached) -->
+  <g>
+    <rect x="1280" y="354" width="55" height="286" fill="#ef4444" filter="url(#sh9)"/>
+    <text x="1307" y="344" text-anchor="middle" font-size="16" font-weight="bold" fill="#dc2626">35s</text>
+    <rect x="1340" y="558" width="55" height="82" fill="#10b981" filter="url(#sh9)"/>
+    <text x="1367" y="548" text-anchor="middle" font-size="15" font-weight="bold" fill="#059669">10s</text>
+    <text x="1337" y="670" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">Workflow</text>
+    <text x="1337" y="690" text-anchor="middle" font-size="12" fill="#64748b">(all 4 steps)</text>
+  </g>
+
+  <!-- Legend -->
+  <g filter="url(#sh9)">
+    <rect x="220" y="730" width="700" height="120" rx="10" fill="white" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="570" y="765" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">Legend</text>
+
+    <g transform="translate(245, 790)">
+      <rect width="28" height="28" fill="#ef4444" rx="3"/>
+      <text x="40" y="20" font-size="16" font-weight="bold" fill="#0f172a">First call (cold start)</text>
+      <text x="40" y="40" font-size="13" fill="#64748b">U-Net model loads into RAM (~218 MB)</text>
+      <text x="40" y="56" font-size="13" fill="#64748b">scikit-learn refits scaler &amp; selector</text>
+    </g>
+
+    <g transform="translate(560, 790)">
+      <rect width="28" height="28" fill="#10b981" rx="3"/>
+      <text x="40" y="20" font-size="16" font-weight="bold" fill="#0f172a">Cached (subsequent calls)</text>
+      <text x="40" y="40" font-size="13" fill="#64748b">Model + scaler kept in process memory</text>
+      <text x="40" y="56" font-size="13" fill="#64748b">Very fast — no I/O, no recompile</text>
+    </g>
+  </g>
+
+  <!-- Comparison with DEFORM -->
+  <g filter="url(#sh9)">
+    <rect x="940" y="730" width="540" height="120" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="1210" y="765" text-anchor="middle" font-size="18" font-weight="bold" fill="#78350f">vs DEFORM 3D simulation</text>
+
+    <text x="1210" y="795" text-anchor="middle" font-size="14" fill="#92400e">Same forging case in DEFORM:</text>
+    <text x="1210" y="817" text-anchor="middle" font-size="20" font-weight="bold" fill="#7c2d12">~30 minutes per case</text>
+    <text x="1210" y="843" text-anchor="middle" font-size="14" font-weight="bold" fill="#92400e">ForgeIQ workflow: 35s cold, 10s cached</text>
+    <text x="1210" y="862" text-anchor="middle" font-size="14" font-weight="bold" fill="#dc2626">→ 50 to 180× faster</text>
+  </g>
+</svg>

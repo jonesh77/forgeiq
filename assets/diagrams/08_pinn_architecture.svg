@@ -1,0 +1,293 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" font-family="Arial, sans-serif">
+  <defs>
+    <linearGradient id="pinnGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#06b6d4"/>
+      <stop offset="1" stop-color="#0e7490"/>
+    </linearGradient>
+    <filter id="sh8" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.2"/>
+    </filter>
+    <marker id="ar8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/>
+    </marker>
+    <marker id="arBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="1200" fill="#fafbfc"/>
+
+  <text x="800" y="55" text-anchor="middle" font-size="32" font-weight="bold" fill="#0f172a">PINN — Physics-Informed Neural Network</text>
+  <text x="800" y="90" text-anchor="middle" font-size="18" fill="#64748b">Processing Map Surrogate · Trained with BOTH experimental data AND Prasad equations · Auto-finds optimal (T, ε̇)</text>
+
+  <!-- Input layer -->
+  <g filter="url(#sh8)">
+    <rect x="60" y="400" width="180" height="200" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="150" y="445" text-anchor="middle" font-size="20" font-weight="bold" fill="#78350f">INPUTS</text>
+    <line x1="85" y1="460" x2="215" y2="460" stroke="#fde68a" stroke-width="1.5"/>
+
+    <text x="150" y="500" text-anchor="middle" font-size="22" font-weight="bold" fill="#92400e" font-style="italic">T</text>
+    <text x="150" y="525" text-anchor="middle" font-size="14" fill="#a16207">Temperature (°C, normalized)</text>
+
+    <text x="150" y="565" text-anchor="middle" font-size="24" font-weight="bold" fill="#92400e" font-style="italic">ε̇</text>
+    <text x="150" y="588" text-anchor="middle" font-size="14" fill="#a16207">Strain rate (s⁻¹, log)</text>
+  </g>
+
+  <line x1="240" y1="500" x2="295" y2="500" stroke="#0f172a" stroke-width="3" marker-end="url(#ar8)"/>
+
+  <!-- Neural network layers -->
+  <g filter="url(#sh8)">
+    <!-- Layer 1 -->
+    <rect x="305" y="370" width="110" height="260" rx="8" fill="url(#pinnGrad)"/>
+    <text x="360" y="410" text-anchor="middle" font-size="17" fill="white" font-weight="bold">Dense 32</text>
+    <text x="360" y="432" text-anchor="middle" font-size="14" fill="white">tanh</text>
+    <circle cx="360" cy="470" r="4" fill="white"/>
+    <circle cx="360" cy="495" r="4" fill="white"/>
+    <circle cx="360" cy="520" r="4" fill="white"/>
+    <circle cx="360" cy="545" r="4" fill="white"/>
+    <circle cx="360" cy="570" r="4" fill="white"/>
+    <circle cx="360" cy="595" r="4" fill="white"/>
+
+    <!-- Layer 2 -->
+    <rect x="435" y="370" width="110" height="260" rx="8" fill="url(#pinnGrad)"/>
+    <text x="490" y="410" text-anchor="middle" font-size="17" fill="white" font-weight="bold">Dense 64</text>
+    <text x="490" y="432" text-anchor="middle" font-size="14" fill="white">tanh</text>
+    <circle cx="490" cy="470" r="4" fill="white"/>
+    <circle cx="490" cy="495" r="4" fill="white"/>
+    <circle cx="490" cy="520" r="4" fill="white"/>
+    <circle cx="490" cy="545" r="4" fill="white"/>
+    <circle cx="490" cy="570" r="4" fill="white"/>
+    <circle cx="490" cy="595" r="4" fill="white"/>
+
+    <!-- Layer 3 -->
+    <rect x="565" y="370" width="110" height="260" rx="8" fill="url(#pinnGrad)"/>
+    <text x="620" y="410" text-anchor="middle" font-size="17" fill="white" font-weight="bold">Dense 64</text>
+    <text x="620" y="432" text-anchor="middle" font-size="14" fill="white">tanh</text>
+    <circle cx="620" cy="470" r="4" fill="white"/>
+    <circle cx="620" cy="495" r="4" fill="white"/>
+    <circle cx="620" cy="520" r="4" fill="white"/>
+    <circle cx="620" cy="545" r="4" fill="white"/>
+    <circle cx="620" cy="570" r="4" fill="white"/>
+    <circle cx="620" cy="595" r="4" fill="white"/>
+
+    <!-- Layer 4 -->
+    <rect x="695" y="370" width="110" height="260" rx="8" fill="url(#pinnGrad)"/>
+    <text x="750" y="410" text-anchor="middle" font-size="17" fill="white" font-weight="bold">Dense 32</text>
+    <text x="750" y="432" text-anchor="middle" font-size="14" fill="white">tanh</text>
+    <circle cx="750" cy="470" r="4" fill="white"/>
+    <circle cx="750" cy="495" r="4" fill="white"/>
+    <circle cx="750" cy="520" r="4" fill="white"/>
+    <circle cx="750" cy="545" r="4" fill="white"/>
+    <circle cx="750" cy="570" r="4" fill="white"/>
+    <circle cx="750" cy="595" r="4" fill="white"/>
+  </g>
+
+  <!-- Network connections (decorative) -->
+  <g stroke="#cbd5e1" stroke-width="0.6" opacity="0.5">
+    <line x1="415" y1="470" x2="435" y2="495"/>
+    <line x1="415" y1="495" x2="435" y2="470"/>
+    <line x1="415" y1="520" x2="435" y2="545"/>
+    <line x1="545" y1="470" x2="565" y2="520"/>
+    <line x1="545" y1="495" x2="565" y2="495"/>
+    <line x1="675" y1="520" x2="695" y2="470"/>
+    <line x1="675" y1="545" x2="695" y2="595"/>
+  </g>
+
+  <line x1="805" y1="500" x2="855" y2="500" stroke="#0f172a" stroke-width="3" marker-end="url(#ar8)"/>
+
+  <!-- Output layer -->
+  <g filter="url(#sh8)">
+    <rect x="865" y="380" width="200" height="240" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="965" y="425" text-anchor="middle" font-size="20" font-weight="bold" fill="#14532d">OUTPUTS</text>
+    <line x1="890" y1="440" x2="1040" y2="440" stroke="#bbf7d0" stroke-width="1.5"/>
+
+    <text x="965" y="480" text-anchor="middle" font-size="24" font-weight="bold" fill="#166534" font-style="italic">η</text>
+    <text x="965" y="500" text-anchor="middle" font-size="14" fill="#16a34a">power dissipation</text>
+
+    <text x="965" y="540" text-anchor="middle" font-size="24" font-weight="bold" fill="#166534" font-style="italic">ξ</text>
+    <text x="965" y="560" text-anchor="middle" font-size="14" fill="#16a34a">plastic instability</text>
+
+    <text x="965" y="595" text-anchor="middle" font-size="14" font-weight="bold" fill="#15803d">+ optimal (T*, ε̇*)</text>
+    <text x="965" y="612" text-anchor="middle" font-size="12" fill="#15803d" font-style="italic">via gradient search</text>
+  </g>
+
+  <!-- Data loss arrow up -->
+  <line x1="965" y1="380" x2="965" y2="320" stroke="#3b82f6" stroke-width="3" marker-end="url(#arBlue)"/>
+  <text x="985" y="355" font-size="14" font-weight="bold" fill="#3b82f6">compare</text>
+  <text x="985" y="372" font-size="14" fill="#3b82f6">to experiments</text>
+
+  <!-- Physics loss arrow down -->
+  <line x1="965" y1="620" x2="965" y2="690" stroke="#ef4444" stroke-width="3" marker-end="url(#arRed)"/>
+  <text x="985" y="655" font-size="14" font-weight="bold" fill="#ef4444">enforce</text>
+  <text x="985" y="672" font-size="14" fill="#ef4444">Prasad equations</text>
+
+  <!-- Data loss box -->
+  <g filter="url(#sh8)">
+    <rect x="700" y="200" width="530" height="110" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+    <text x="965" y="240" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e40af">📊 Data Loss — matches the 16-point experiment grid</text>
+    <text x="965" y="285" text-anchor="middle" font-size="22" fill="#0f172a">
+      <tspan font-style="italic">L</tspan><tspan baseline-shift="sub" font-size="14">data</tspan>
+      <tspan> = MSE(</tspan><tspan font-style="italic">η</tspan><tspan baseline-shift="sub" font-size="14">pred</tspan>
+      <tspan>, </tspan><tspan font-style="italic">η</tspan><tspan baseline-shift="sub" font-size="14">exp</tspan>
+      <tspan>) + MSE(</tspan><tspan font-style="italic">ξ</tspan><tspan baseline-shift="sub" font-size="14">pred</tspan>
+      <tspan>, </tspan><tspan font-style="italic">ξ</tspan><tspan baseline-shift="sub" font-size="14">exp</tspan>
+      <tspan>)</tspan>
+    </text>
+  </g>
+
+  <!-- Right arrow from output (after physics validation) -->
+  <line x1="1065" y1="500" x2="1265" y2="500" stroke="#0f172a" stroke-width="3" marker-end="url(#ar8)"/>
+  <text x="1165" y="490" text-anchor="middle" font-size="14" fill="#475569">prediction</text>
+
+  <!-- Recommended window -->
+  <g filter="url(#sh8)">
+    <rect x="1275" y="400" width="280" height="200" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+    <text x="1415" y="445" text-anchor="middle" font-size="18" font-weight="bold" fill="#7c2d12">🎯 Recommended Window</text>
+    <line x1="1295" y1="460" x2="1535" y2="460" stroke="#fed7aa" stroke-width="1.5"/>
+
+    <text x="1415" y="495" text-anchor="middle" font-size="16" fill="#9a3412">Optimal Temperature</text>
+    <text x="1415" y="520" text-anchor="middle" font-size="20" font-weight="bold" fill="#7c2d12" font-style="italic">T* = 1169 °C</text>
+
+    <text x="1415" y="555" text-anchor="middle" font-size="16" fill="#9a3412">Optimal Strain Rate</text>
+    <text x="1415" y="580" text-anchor="middle" font-size="20" font-weight="bold" fill="#7c2d12" font-style="italic">ε̇* = 0.01 s⁻¹</text>
+  </g>
+
+  <!-- PHYSICS LOSS DETAILED SECTION -->
+  <g filter="url(#sh8)">
+    <rect x="40" y="700" width="1540" height="250" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+    <text x="810" y="740" text-anchor="middle" font-size="22" font-weight="bold" fill="#991b1b">⚖️ Physics Loss — Prasad equations enforced as soft constraints</text>
+
+    <!-- Box 1: strain-rate sensitivity m -->
+    <g>
+      <rect x="70" y="770" width="350" height="160" rx="8" fill="white" stroke="#fecaca" stroke-width="1.5"/>
+      <text x="245" y="800" text-anchor="middle" font-size="17" font-weight="bold" fill="#7f1d1d">Strain-rate sensitivity</text>
+      <text x="245" y="850" text-anchor="middle" font-size="28" fill="#0f172a">
+        <tspan font-style="italic">m</tspan>
+        <tspan> = </tspan>
+        <tspan font-style="italic">∂ log σ</tspan>
+        <tspan> / </tspan>
+        <tspan font-style="italic">∂ log ε̇</tspan>
+      </text>
+      <text x="245" y="900" text-anchor="middle" font-size="13" fill="#64748b" font-style="italic">Slope of stress-strainrate curve</text>
+      <text x="245" y="918" text-anchor="middle" font-size="12" fill="#64748b">Computed via cubic-spline finite difference</text>
+    </g>
+
+    <!-- Box 2: dissipation eta -->
+    <g>
+      <rect x="445" y="770" width="350" height="160" rx="8" fill="white" stroke="#fecaca" stroke-width="1.5"/>
+      <text x="620" y="800" text-anchor="middle" font-size="17" font-weight="bold" fill="#7f1d1d">Power dissipation</text>
+      <text x="620" y="855" text-anchor="middle" font-size="32" fill="#0f172a">
+        <tspan font-style="italic">η</tspan>
+        <tspan> = 2</tspan>
+        <tspan font-style="italic">m</tspan>
+        <tspan> / (</tspan>
+        <tspan font-style="italic">m</tspan>
+        <tspan> + 1)</tspan>
+      </text>
+      <text x="620" y="900" text-anchor="middle" font-size="13" fill="#64748b" font-style="italic">Energy efficiency · η &gt; 0.4 = good</text>
+      <text x="620" y="918" text-anchor="middle" font-size="12" fill="#64748b">Higher η → more energy goes into microstructure</text>
+    </g>
+
+    <!-- Box 3: instability xi -->
+    <g>
+      <rect x="820" y="770" width="380" height="160" rx="8" fill="white" stroke="#fecaca" stroke-width="1.5"/>
+      <text x="1010" y="800" text-anchor="middle" font-size="17" font-weight="bold" fill="#7f1d1d">Plastic instability</text>
+      <text x="1010" y="852" text-anchor="middle" font-size="20" fill="#0f172a">
+        <tspan font-style="italic">ξ</tspan>
+        <tspan> = </tspan>
+        <tspan font-style="italic">∂ ln</tspan>
+        <tspan>[</tspan>
+        <tspan font-style="italic">m</tspan>
+        <tspan>/(</tspan>
+        <tspan font-style="italic">m</tspan>
+        <tspan>+1)] / </tspan>
+        <tspan font-style="italic">∂ ln ε̇</tspan>
+        <tspan> + </tspan>
+        <tspan font-style="italic">m</tspan>
+      </text>
+      <text x="1010" y="900" text-anchor="middle" font-size="13" fill="#64748b" font-style="italic">ξ &gt; 0 = stable · ξ ≤ 0 = unstable (avoid!)</text>
+      <text x="1010" y="918" text-anchor="middle" font-size="12" fill="#64748b">Cracks / flow localization risk zone</text>
+    </g>
+
+    <!-- Box 4: combined -->
+    <g>
+      <rect x="1225" y="770" width="330" height="160" rx="8" fill="white" stroke="#fecaca" stroke-width="1.5"/>
+      <text x="1390" y="800" text-anchor="middle" font-size="17" font-weight="bold" fill="#7f1d1d">Combined PINN loss</text>
+      <text x="1390" y="855" text-anchor="middle" font-size="24" fill="#0f172a">
+        <tspan font-style="italic">L</tspan><tspan baseline-shift="sub" font-size="14">total</tspan>
+        <tspan> = </tspan>
+        <tspan font-style="italic">L</tspan><tspan baseline-shift="sub" font-size="14">data</tspan>
+        <tspan> + λ · </tspan>
+        <tspan font-style="italic">L</tspan><tspan baseline-shift="sub" font-size="14">phys</tspan>
+      </text>
+      <text x="1390" y="900" text-anchor="middle" font-size="13" fill="#64748b" font-style="italic">λ = balance weight (typical 0.1–1.0)</text>
+      <text x="1390" y="918" text-anchor="middle" font-size="12" fill="#64748b">Higher λ → trusts physics more than experiments</text>
+    </g>
+  </g>
+
+  <!-- VARIABLE DEFINITIONS -->
+  <g filter="url(#sh8)">
+    <rect x="40" y="980" width="1540" height="200" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+    <text x="810" y="1018" text-anchor="middle" font-size="22" font-weight="bold" fill="#1e40af">📖 What each symbol means</text>
+
+    <g font-size="16" fill="#0f172a">
+      <!-- Column 1 -->
+      <g transform="translate(80, 1055)">
+        <text font-weight="bold" font-size="22" font-style="italic" fill="#1e40af">T</text>
+        <text x="30">— Temperature (°C) · input to PINN</text>
+      </g>
+      <g transform="translate(80, 1090)">
+        <text font-weight="bold" font-size="24" font-style="italic" fill="#1e40af">ε̇</text>
+        <text x="30">— Strain rate (s⁻¹) · how fast you deform</text>
+      </g>
+      <g transform="translate(80, 1125)">
+        <text font-weight="bold" font-size="22" font-style="italic" fill="#1e40af">σ</text>
+        <text x="30">— Flow stress (MPa) · measured in compression test</text>
+      </g>
+      <g transform="translate(80, 1160)">
+        <text font-weight="bold" font-size="22" font-style="italic" fill="#1e40af">m</text>
+        <text x="30">— Strain-rate sensitivity · slope log(σ) vs log(ε̇)</text>
+      </g>
+
+      <!-- Column 2 -->
+      <g transform="translate(620, 1055)">
+        <text font-weight="bold" font-size="22" font-style="italic" fill="#1e40af">η</text>
+        <text x="30">— Power dissipation efficiency (range 0 to 1)</text>
+      </g>
+      <g transform="translate(620, 1090)">
+        <text font-weight="bold" font-size="22" font-style="italic" fill="#1e40af">ξ</text>
+        <text x="30">— Plastic instability parameter (sign matters)</text>
+      </g>
+      <g transform="translate(620, 1125)">
+        <text font-weight="bold" font-size="22" font-style="italic" fill="#1e40af">η</text>
+        <text x="20" font-size="16" baseline-shift="sub" font-style="italic" fill="#1e40af">exp</text>
+        <text x="55">— Experimental η (from 16-point test grid)</text>
+      </g>
+      <g transform="translate(620, 1160)">
+        <text font-weight="bold" font-size="22" font-style="italic" fill="#1e40af">η</text>
+        <text x="20" font-size="16" baseline-shift="sub" font-style="italic" fill="#1e40af">pred</text>
+        <text x="60">— Predicted η (from PINN output)</text>
+      </g>
+
+      <!-- Column 3 -->
+      <g transform="translate(1180, 1055)">
+        <text font-weight="bold" font-size="22" fill="#1e40af">λ</text>
+        <text x="30">— Loss balance weight (data vs physics)</text>
+      </g>
+      <g transform="translate(1180, 1090)">
+        <text font-weight="bold" font-size="20" fill="#1e40af">MSE</text>
+        <text x="55">— Mean Squared Error</text>
+      </g>
+      <g transform="translate(1180, 1125)">
+        <text font-weight="bold" font-size="20" fill="#1e40af">tanh</text>
+        <text x="55">— Hyperbolic tangent activation</text>
+      </g>
+      <g transform="translate(1180, 1160)">
+        <text font-weight="bold" font-size="22" fill="#1e40af">∂</text>
+        <text x="30">— Partial derivative</text>
+      </g>
+    </g>
+  </g>
+</svg>

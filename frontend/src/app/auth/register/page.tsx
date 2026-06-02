@@ -43,6 +43,7 @@ export default function RegisterPage() {
                         {t("auth.reg.hero_pre")}<br />
                         <span className="text-indigo-300">{t("auth.reg.hero_post")}</span>
                     </h1>
+                    <div className="mt-3 text-xs font-semibold tracking-wide text-indigo-300/90 uppercase">{t("home.nav.tagline")}</div>
                     <p className="mt-4 text-slate-300 text-sm leading-relaxed max-w-md">
                         {t("auth.reg.tagline")}
                     </p>
@@ -57,7 +58,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="relative text-xs text-slate-500">
-                    © {new Date().getFullYear()} ForgeIQ · Developed by Y. Alibek · NSMLab · Sogang University
+                    © {new Date().getFullYear()} Developed by Y. Alibek
                 </div>
             </aside>
 

@@ -28,15 +28,19 @@ export default function LandingPage() {
       <nav className="fixed top-0 inset-x-0 z-40 bg-white/70 backdrop-blur-xl border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center leading-tight">
-            <div className="text-xl font-bold text-slate-900 tracking-tight font-montserrat">
-              Forge<span className="text-indigo-600">IQ</span>
+            <div className="flex flex-col">
+              <div className="text-xl font-bold text-slate-900 tracking-tight font-montserrat">
+                Forge<span className="text-indigo-600">IQ</span>
+                <span className="hidden md:inline text-[10px] text-slate-500 ml-2 font-normal align-middle">{t("home.nav.by_nsmlab")}</span>
+              </div>
+              <div className="hidden md:block text-[10px] text-indigo-600/80 font-semibold tracking-wider uppercase mt-0.5">{t("home.nav.tagline")}</div>
             </div>
-            <div className="hidden md:block text-[10px] text-slate-500 ml-2 mt-1">{t("home.nav.by_nsmlab")}</div>
           </Link>
           <div className="flex items-center gap-2">
             <a href="#programs" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.programs")}</a>
-            <a href="#capabilities" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.capabilities")}</a>
-            <a href="#team" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.team")}</a>
+            <a href="#demo" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.try_demo")}</a>
+            <a href="#capabilities" className="hidden lg:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.capabilities")}</a>
+            <a href="#team" className="hidden lg:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.team")}</a>
             <LangSwitcher />
             <button onClick={toggleAiAssistant} className="hidden md:flex items-center gap-1.5 cursor-pointer px-3 h-9 rounded-md text-sm font-medium bg-gradient-to-br from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 text-indigo-700 border border-indigo-200/60">
               <HiSparkles className="text-amber-500" />{t("home.nav.ask_ai")}
@@ -81,6 +85,9 @@ export default function LandingPage() {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <a href="#programs" className="group inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all hover:scale-105">
                 {t("home.hero.cta_primary")} <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
+              </a>
+              <a href="#demo" className="group inline-flex items-center gap-2 h-12 px-6 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-semibold text-sm transition-all hover:scale-105 shadow-lg shadow-indigo-500/30">
+                <LuPlay />{t("home.hero.cta_demo")} <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
               </a>
               <button onClick={toggleAiAssistant} className="cursor-pointer inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-medium text-sm transition-all">
                 <HiSparkles className="text-amber-400" />{t("home.hero.cta_ai")}
@@ -244,6 +251,65 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* SCREENSHOTS */}
+      <section id="demo" className="py-24 px-6 lg:px-10 bg-white border-y border-slate-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.screens.eyebrow")}</p>
+            <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900">
+              {t("home.screens.title")}
+            </h2>
+            <p className="mt-4 text-lg text-slate-600 leading-relaxed">
+              {t("home.screens.desc")}
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <Shot src="/screenshots/01_architecture.png" title={t("home.screens.s1_title")} desc={t("home.screens.s1_desc")} />
+            <Shot src="/screenshots/02_workflow_pipeline.png" title={t("home.screens.s2_title")} desc={t("home.screens.s2_desc")} />
+            <Shot src="/screenshots/03_before_after.png" title={t("home.screens.s3_title")} desc={t("home.screens.s3_desc")} />
+            <Shot src="/screenshots/05_mesh_quality_grades.png" title={t("home.screens.s4_title")} desc={t("home.screens.s4_desc")} />
+            <Shot src="/screenshots/07_unet_architecture.png" title={t("home.screens.s5_title")} desc={t("home.screens.s5_desc")} />
+            <Shot src="/screenshots/09_performance_comparison.png" title={t("home.screens.s6_title")} desc={t("home.screens.s6_desc")} />
+          </div>
+        </div>
+      </section>
+
+      {/* DEMO VIDEO */}
+      <section className="py-24 px-6 lg:px-10 bg-slate-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12 max-w-3xl mx-auto">
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.demo.eyebrow")}</p>
+            <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900">
+              {t("home.demo.title")}
+            </h2>
+            <p className="mt-4 text-lg text-slate-600 leading-relaxed">
+              {t("home.demo.desc")}
+            </p>
+          </div>
+
+          {/* Video placeholder — replace inner div with <iframe> once recording is published */}
+          <div className="relative aspect-video w-full rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 shadow-2xl shadow-indigo-500/10 overflow-hidden group">
+            <div className="absolute inset-0 bg-grid opacity-30"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white px-6">
+              <div className="mx-auto w-20 h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-3xl text-white mb-5 group-hover:scale-110 transition-transform">
+                <LuPlay />
+              </div>
+              <div className="text-xl md:text-2xl font-semibold font-montserrat">{t("home.demo.placeholder_title")}</div>
+              <p className="mt-2 text-sm text-slate-300 max-w-md mx-auto">{t("home.demo.placeholder_sub")}</p>
+            </div>
+            <div className="absolute bottom-0 inset-x-0 p-5 flex flex-wrap items-center justify-center gap-3 bg-gradient-to-t from-black/60 to-transparent">
+              <Link href="/workflow" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all">
+                <LuPlay />{t("home.demo.cta_workflow")}
+              </Link>
+              <a href="#programs" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white font-medium text-sm transition-all">
+                {t("home.demo.cta_try")} <LuArrowRight />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CAPABILITIES */}
       <section id="capabilities" className="py-24 px-6 lg:px-10 bg-slate-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-dots opacity-40"></div>
@@ -274,7 +340,7 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.team.eyebrow")}</p>
             <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900">
-              {t("home.team.title")}
+              {t("home.team.title")} <span className="text-indigo-600">— Developed by Y. Alibek</span>
             </h2>
             <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
               {t("home.team.desc")}
@@ -330,8 +396,9 @@ export default function LandingPage() {
             <div>
               <div className="text-white font-semibold text-sm font-montserrat">
                 Forge<span className="text-indigo-400">IQ</span>
+                <span className="text-[10px] text-indigo-300 ml-2 font-normal align-middle">— {t("home.nav.tagline")}</span>
               </div>
-              <div className="text-[11px] mt-0.5">© {new Date().getFullYear()} · Developed by <span className="text-indigo-300">Y. Alibek</span> · NSMLab · Sogang University</div>
+              <div className="text-[11px] mt-0.5">© {new Date().getFullYear()} · Developed by Y. Alibek</div>
             </div>
           </div>
           <div className="flex items-center gap-5">
@@ -382,6 +449,21 @@ function Stat({ value, label }: { value: string; label: string }) {
     <div className="text-center">
       <div className="text-3xl md:text-4xl font-bold font-montserrat text-white">{value}</div>
       <div className="text-xs uppercase tracking-widest text-slate-400 mt-1">{label}</div>
+    </div>
+  );
+}
+
+function Shot({ src, title, desc }: { src: string; title: string; desc: string }) {
+  return (
+    <div className="group rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:border-indigo-200 hover:-translate-y-1 transition-all duration-300">
+      <div className="aspect-[16/10] bg-slate-50 border-b border-slate-100 overflow-hidden flex items-center justify-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt={title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+      </div>
+      <div className="p-5">
+        <h3 className="text-base font-semibold text-slate-900 font-montserrat">{title}</h3>
+        <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">{desc}</p>
+      </div>
     </div>
   );
 }

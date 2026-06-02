@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🌐 Live site & in-app contact
+    url: https://forgeiq.dev
+    about: Send a message through the contact form on the live site — reaches the author directly.
+  - name: 📘 Capabilities reference (formulas + honest limits)
+    url: https://github.com/jonesh77/forgeiq/blob/main/CAPABILITIES.md
+    about: Before reporting a "wrong result", check whether the underlying program is designed to solve your case.
+  - name: 🛣️ Roadmap
+    url: https://github.com/jonesh77/forgeiq/blob/main/ROADMAP.md
+    about: See what is planned for upcoming releases before requesting a feature.

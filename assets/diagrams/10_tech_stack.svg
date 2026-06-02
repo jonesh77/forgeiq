@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 800" font-family="Arial, sans-serif">
+  <defs>
+    <filter id="sh10" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="1400" height="800" fill="#fafbfc"/>
+
+  <text x="700" y="40" text-anchor="middle" font-size="26" font-weight="bold" fill="#0f172a">Technology Stack — Built on Modern Open-Source</text>
+  <text x="700" y="65" text-anchor="middle" font-size="13" fill="#64748b">All free / open-source · No vendor lock-in · Reproducible deploys</text>
+
+  <!-- Frontend Section -->
+  <g filter="url(#sh10)">
+    <rect x="50" y="100" width="640" height="320" rx="12" fill="white" stroke="#0ea5e9" stroke-width="2"/>
+    <rect x="50" y="100" width="640" height="40" rx="12" fill="#0ea5e9"/>
+    <text x="70" y="125" font-size="18" font-weight="bold" fill="white">🌐 FRONTEND</text>
+
+    <!-- Next.js -->
+    <g transform="translate(80, 165)">
+      <rect width="180" height="100" rx="6" fill="#000" />
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Next.js</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">v15 (App Router)</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">SSR + CSR hybrid</text>
+    </g>
+
+    <!-- React -->
+    <g transform="translate(280, 165)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#61dafb">React</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">v19 + TypeScript</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Component UI</text>
+    </g>
+
+    <!-- Tailwind -->
+    <g transform="translate(480, 165)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#06b6d4">Tailwind</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">v4 + Shadcn UI</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Utility CSS</text>
+    </g>
+
+    <!-- Three.js -->
+    <g transform="translate(80, 285)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Three.js</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">STL viewer</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">WebGL 3D</text>
+    </g>
+
+    <!-- Plotly -->
+    <g transform="translate(280, 285)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#3b82f6">Plotly.js</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">Contour charts</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Interactive plots</text>
+    </g>
+
+    <!-- iron-session -->
+    <g transform="translate(480, 285)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="32" text-anchor="middle" font-size="13" font-weight="bold" fill="white">iron-session</text>
+      <text x="90" y="50" text-anchor="middle" font-size="11" fill="#94a3b8">+ bcryptjs</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Auth</text>
+    </g>
+  </g>
+
+  <!-- Backend Section -->
+  <g filter="url(#sh10)">
+    <rect x="710" y="100" width="640" height="320" rx="12" fill="white" stroke="#f59e0b" stroke-width="2"/>
+    <rect x="710" y="100" width="640" height="40" rx="12" fill="#f59e0b"/>
+    <text x="730" y="125" font-size="18" font-weight="bold" fill="white">🔧 BACKEND</text>
+
+    <!-- Flask -->
+    <g transform="translate(740, 165)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Flask</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">Python web framework</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Waitress WSGI</text>
+    </g>
+
+    <!-- TensorFlow -->
+    <g transform="translate(940, 165)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#ff6f00">TensorFlow</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">v2.13 + Keras</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">3D U-Net inference</text>
+    </g>
+
+    <!-- scikit-learn -->
+    <g transform="translate(1140, 165)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#f7931e">scikit-learn</text>
+      <text x="90" y="50" text-anchor="middle" font-size="11" fill="#94a3b8">+ XGBoost</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Cogging MLP/GB</text>
+    </g>
+
+    <!-- SciPy -->
+    <g transform="translate(740, 285)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#8caaee">SciPy</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">Optimization</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">trust-constr</text>
+    </g>
+
+    <!-- pymeshlab -->
+    <g transform="translate(940, 285)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="white">pymeshlab</text>
+      <text x="90" y="50" text-anchor="middle" font-size="11" fill="#94a3b8">+ PyVista</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">STL smoothing</text>
+    </g>
+
+    <!-- NumPy -->
+    <g transform="translate(1140, 285)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#013243">NumPy</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">+ pandas</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Data crunching</text>
+    </g>
+  </g>
+
+  <!-- Database & Hosting -->
+  <g filter="url(#sh10)">
+    <rect x="50" y="440" width="640" height="320" rx="12" fill="white" stroke="#10b981" stroke-width="2"/>
+    <rect x="50" y="440" width="640" height="40" rx="12" fill="#10b981"/>
+    <text x="70" y="465" font-size="18" font-weight="bold" fill="white">🗄 DATABASE &amp; HOSTING</text>
+
+    <!-- MongoDB -->
+    <g transform="translate(80, 505)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#47a248">MongoDB</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">Atlas M0 (free)</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Seoul region</text>
+    </g>
+
+    <!-- Vercel -->
+    <g transform="translate(280, 505)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Vercel</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">Hobby Free</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Frontend hosting</text>
+    </g>
+
+    <!-- Hetzner -->
+    <g transform="translate(480, 505)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#d50c2d">Hetzner</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">Cloud CPX22</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Backend hosting</text>
+    </g>
+
+    <!-- Docker -->
+    <g transform="translate(80, 625)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#2496ed">Docker</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">+ Compose</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">Reproducible</text>
+    </g>
+
+    <!-- Caddy -->
+    <g transform="translate(280, 625)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#1f88c0">Caddy v2</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">+ Let's Encrypt</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">HTTPS auto</text>
+    </g>
+
+    <!-- Cloudflare -->
+    <g transform="translate(480, 625)">
+      <rect width="180" height="100" rx="6" fill="#0f172a"/>
+      <text x="90" y="35" text-anchor="middle" font-size="14" font-weight="bold" fill="#f48120">Cloudflare</text>
+      <text x="90" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">DNS + domain</text>
+      <text x="90" y="80" text-anchor="middle" font-size="10" fill="#cbd5e1">forgeiq.dev</text>
+    </g>
+  </g>
+
+  <!-- AI Section -->
+  <g filter="url(#sh10)">
+    <rect x="710" y="440" width="640" height="320" rx="12" fill="white" stroke="#a855f7" stroke-width="2"/>
+    <rect x="710" y="440" width="640" height="40" rx="12" fill="#a855f7"/>
+    <text x="730" y="465" font-size="18" font-weight="bold" fill="white">🤖 AI ASSISTANT (multi-provider)</text>
+
+    <!-- Gemini -->
+    <g transform="translate(740, 505)">
+      <rect width="280" height="100" rx="6" fill="#0f172a"/>
+      <text x="140" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#4285f4">Google Gemini</text>
+      <text x="140" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">2.5-flash → 2.0-flash → flash-latest</text>
+      <text x="140" y="80" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="bold">Primary · 1500 req/day free</text>
+    </g>
+
+    <!-- OpenAI -->
+    <g transform="translate(1040, 505)">
+      <rect width="280" height="100" rx="6" fill="#0f172a"/>
+      <text x="140" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="white">OpenAI</text>
+      <text x="140" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">GPT models</text>
+      <text x="140" y="80" text-anchor="middle" font-size="11" fill="#f59e0b" font-weight="bold">Fallback #1</text>
+    </g>
+
+    <!-- Anthropic -->
+    <g transform="translate(740, 625)">
+      <rect width="280" height="100" rx="6" fill="#0f172a"/>
+      <text x="140" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#d4a574">Anthropic Claude</text>
+      <text x="140" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">Claude 4.x models</text>
+      <text x="140" y="80" text-anchor="middle" font-size="11" fill="#f59e0b" font-weight="bold">Fallback #2</text>
+    </g>
+
+    <!-- Local FAQ -->
+    <g transform="translate(1040, 625)">
+      <rect width="280" height="100" rx="6" fill="#0f172a"/>
+      <text x="140" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Local FAQ</text>
+      <text x="140" y="55" text-anchor="middle" font-size="11" fill="#94a3b8">Keyword matching</text>
+      <text x="140" y="80" text-anchor="middle" font-size="11" fill="#ef4444" font-weight="bold">Last resort (offline)</text>
+    </g>
+  </g>
+</svg>

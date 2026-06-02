@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" font-family="Arial, sans-serif">
+  <defs>
+    <filter id="sh3" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="600" fill="#fafbfc"/>
+
+  <text x="600" y="50" text-anchor="middle" font-size="28" font-weight="bold" fill="#0f172a">Before vs After ForgeIQ</text>
+  <text x="600" y="80" text-anchor="middle" font-size="14" fill="#64748b">Design iteration time: ~480× faster</text>
+
+  <!-- Before column -->
+  <g filter="url(#sh3)">
+    <rect x="80" y="130" width="500" height="420" rx="12" fill="white" stroke="#ef4444" stroke-width="2"/>
+    <rect x="80" y="130" width="500" height="50" rx="12" fill="#fef2f2"/>
+    <text x="330" y="163" text-anchor="middle" font-size="20" font-weight="bold" fill="#991b1b">❌ Before</text>
+
+    <text x="105" y="215" font-size="14" font-weight="bold" fill="#0f172a">📊 Build processing map</text>
+    <text x="555" y="215" text-anchor="end" font-size="14" fill="#dc2626" font-weight="bold">~4 hours</text>
+    <text x="105" y="235" font-size="12" fill="#64748b">Excel + MATLAB</text>
+
+    <text x="105" y="275" font-size="14" font-weight="bold" fill="#0f172a">📋 Design 7-pass schedule</text>
+    <text x="555" y="275" text-anchor="end" font-size="14" fill="#dc2626" font-weight="bold">~2 hours</text>
+    <text x="105" y="295" font-size="12" fill="#64748b">Pen + paper + Excel</text>
+
+    <text x="105" y="335" font-size="14" font-weight="bold" fill="#0f172a">🧊 Generate 3D preform</text>
+    <text x="555" y="335" text-anchor="end" font-size="14" fill="#dc2626" font-weight="bold">~1 hour</text>
+    <text x="105" y="355" font-size="12" fill="#64748b">SolidWorks / CAD</text>
+
+    <text x="105" y="395" font-size="14" font-weight="bold" fill="#0f172a">🧪 FEM validation</text>
+    <text x="555" y="395" text-anchor="end" font-size="14" fill="#dc2626" font-weight="bold">~30 min/run</text>
+    <text x="105" y="415" font-size="12" fill="#64748b">DEFORM ($$$ license)</text>
+
+    <line x1="100" y1="445" x2="560" y2="445" stroke="#fecaca" stroke-width="1"/>
+
+    <text x="105" y="478" font-size="16" font-weight="bold" fill="#0f172a">TOTAL per iteration</text>
+    <text x="555" y="478" text-anchor="end" font-size="20" font-weight="bold" fill="#dc2626">~8 hours</text>
+
+    <text x="105" y="510" font-size="13" fill="#64748b">5+ tools needed</text>
+    <text x="555" y="510" text-anchor="end" font-size="13" fill="#64748b">License: thousands of $</text>
+  </g>
+
+  <!-- After column -->
+  <g filter="url(#sh3)">
+    <rect x="620" y="130" width="500" height="420" rx="12" fill="white" stroke="#10b981" stroke-width="2"/>
+    <rect x="620" y="130" width="500" height="50" rx="12" fill="#f0fdf4"/>
+    <text x="870" y="163" text-anchor="middle" font-size="20" font-weight="bold" fill="#065f46">✅ After (with ForgeIQ)</text>
+
+    <text x="645" y="215" font-size="14" font-weight="bold" fill="#0f172a">🌐 Open forgeiq.dev</text>
+    <text x="1095" y="215" text-anchor="end" font-size="14" fill="#10b981" font-weight="bold">5 sec</text>
+    <text x="645" y="235" font-size="12" fill="#64748b">Any browser</text>
+
+    <text x="645" y="275" font-size="14" font-weight="bold" fill="#0f172a">🖱 Click "Run pipeline"</text>
+    <text x="1095" y="275" text-anchor="end" font-size="14" fill="#10b981" font-weight="bold">1 click</text>
+    <text x="645" y="295" font-size="12" fill="#64748b">All four steps run automatically</text>
+
+    <text x="645" y="335" font-size="14" font-weight="bold" fill="#0f172a">⏳ Wait for completion</text>
+    <text x="1095" y="335" text-anchor="end" font-size="14" fill="#10b981" font-weight="bold">~35 sec</text>
+    <text x="645" y="355" font-size="12" fill="#64748b">PINN + correction + schedule + STL</text>
+
+    <text x="645" y="395" font-size="14" font-weight="bold" fill="#0f172a">💾 Export results</text>
+    <text x="1095" y="395" text-anchor="end" font-size="14" fill="#10b981" font-weight="bold">~5 sec</text>
+    <text x="645" y="415" font-size="12" fill="#64748b">PDF + STL + Excel</text>
+
+    <line x1="640" y1="445" x2="1100" y2="445" stroke="#bbf7d0" stroke-width="1"/>
+
+    <text x="645" y="478" font-size="16" font-weight="bold" fill="#0f172a">TOTAL per iteration</text>
+    <text x="1095" y="478" text-anchor="end" font-size="20" font-weight="bold" fill="#10b981">~1 minute</text>
+
+    <text x="645" y="510" font-size="13" fill="#64748b">1 tool (browser)</text>
+    <text x="1095" y="510" text-anchor="end" font-size="13" fill="#64748b">Cost: $0</text>
+  </g>
+</svg>
