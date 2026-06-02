@@ -1,8 +1,4 @@
-"""Cogging + Processing Map API (backend1).
-
-Copyright (c) 2026 Y. Alibek (NSMLab). All Rights Reserved.
-See LICENSE in the project root.
-"""
+"""Cogging + Processing Map API (backend1)."""
 import json
 import logging
 import os
@@ -15,6 +11,8 @@ from werkzeug.exceptions import HTTPException
 
 from cogginglogic.fourimages1h5 import process_excel
 from cogginglogic.gradient_boosting import process_excel_gb
+from cogginglogic.gaussian_process import process_excel_gpr
+from cogginglogic.random_forest import process_excel_rf
 from cogginglogic.traindatacorrection import correct_train_data
 from cogginglogic.passschedule import process_pass_schedule
 from processingmaplogic.processingmap import (
@@ -168,6 +166,46 @@ def gradient_boosting():
             log.exception("process_excel_gb failed")
             return fail(f"Failed to process Excel: {e}", code=500)
         return ok(result)
+
+
+def _run_tabular_trainer(processor, fn_label):
+    """Shared entrypoint for the GB/GPR/RF endpoints — they have identical I/O."""
+    n_splits = int(request.form.get("n_splits") or 5)
+    if _is_sample_request():
+        sample_path = resolve_sample("cogging_data")
+        if not sample_path:
+            return fail("Sample cogging dataset not available on server", code=500)
+        try:
+            result = processor(sample_path, n_splits=n_splits)
+        except Exception as e:
+            log.exception("%s (sample) failed", fn_label)
+            return fail(f"Failed to process sample: {e}", code=500)
+        return ok(result, used_sample=True)
+
+    try:
+        uploaded = require_file("file")
+    except ValueError as e:
+        return fail(str(e))
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        path = os.path.join(temp_dir, uploaded.filename)
+        uploaded.save(path)
+        try:
+            result = processor(path, n_splits=n_splits)
+        except Exception as e:
+            log.exception("%s failed", fn_label)
+            return fail(f"Failed to process Excel: {e}", code=500)
+        return ok(result)
+
+
+@app.route("/api/cogging/gpr", methods=["POST"])
+def gaussian_process():
+    return _run_tabular_trainer(process_excel_gpr, "process_excel_gpr")
+
+
+@app.route("/api/cogging/random_forest", methods=["POST"])
+def random_forest():
+    return _run_tabular_trainer(process_excel_rf, "process_excel_rf")
 
 
 @app.route("/api/cogging/traindatacorrection", methods=["POST"])

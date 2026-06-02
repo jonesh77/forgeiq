@@ -47,32 +47,54 @@ COLUMN_NAMES = ["Feed", "Depth Schedule", "Number of Rotataion",
                 "Pass1", "Pass2", "Pass3", "Pass4", "Pass5", "Pass6", "Pass7", "ENE"]
 
 
-def _make_regressor():
-    """Return a fresh gradient-boosting regressor (XGBoost or sklearn fallback)."""
+def _make_regressor(n_samples: int = 50):
+    # Auto-tune trees and depth to dataset size — heavy boosters overfit
+    # tabular data with <100 rows, which is the main cause of negative
+    # cross-validated R² on the cogging dataset.
+    if n_samples < 80:
+        n_est, depth, lr = 150, 2, 0.05
+    elif n_samples < 200:
+        n_est, depth, lr = 250, 3, 0.05
+    else:
+        n_est, depth, lr = 400, 3, 0.05
+
     if _HAS_XGB:
         return XGBRegressor(
-            n_estimators=400, learning_rate=0.05, max_depth=3,
-            subsample=0.9, colsample_bytree=0.9, reg_lambda=1.0,
-            random_state=42, n_jobs=-1,
+            n_estimators=n_est, learning_rate=lr, max_depth=depth,
+            subsample=0.9, colsample_bytree=0.9, reg_lambda=2.0,
+            min_child_weight=2, random_state=42, n_jobs=-1,
         )
     return HistGradientBoostingRegressor(
-        max_iter=400, learning_rate=0.05, max_depth=3,
-        l2_regularization=1.0, random_state=42,
+        max_iter=n_est, learning_rate=lr, max_depth=depth,
+        l2_regularization=2.0, min_samples_leaf=5,
+        random_state=42,
     )
 
 
-def _make_quantile_regressor(q: float):
-    """Quantile gradient-boosting regressor.
-
-    Always uses sklearn — XGBoost ≤2 lacks built-in quantile loss. Returns a
-    regressor that, when fit, predicts the *q*-quantile of the target rather
-    than the mean. Used to build prediction intervals.
-    """
+def _make_quantile_regressor(q: float, n_samples: int = 50):
     from sklearn.ensemble import HistGradientBoostingRegressor as _HGBR
+    depth = 2 if n_samples < 80 else 3
+    n_est = 150 if n_samples < 80 else 250
     return _HGBR(
-        max_iter=400, learning_rate=0.05, max_depth=3,
+        max_iter=n_est, learning_rate=0.05, max_depth=depth,
+        l2_regularization=2.0, min_samples_leaf=5,
         loss="quantile", quantile=q, random_state=42,
     )
+
+
+def _leakage_diagnostic(X: pd.DataFrame, y: np.ndarray) -> dict:
+    # Pearson correlation between each feature and the target. |r| > 0.95
+    # almost always means the feature carries the target — flag it so the
+    # frontend can warn the user instead of silently shipping a leaky model.
+    diag = {}
+    for col in X.columns:
+        col_vals = X[col].to_numpy(dtype=float)
+        if np.std(col_vals) < 1e-12:
+            diag[col] = 0.0
+            continue
+        diag[col] = float(np.corrcoef(col_vals, y)[0, 1])
+    suspect = {k: v for k, v in diag.items() if abs(v) > 0.95}
+    return {"feature_target_corr": diag, "suspected_leakage": suspect}
 
 
 def process_excel_gb(file_path, n_splits=5):
@@ -94,6 +116,9 @@ def process_excel_gb(file_path, n_splits=5):
     X = data.drop("ENE", axis=1)
     y = data["ENE"].to_numpy()
     feat_names = list(X.columns)
+    n_samples = len(y)
+
+    leakage = _leakage_diagnostic(X, y)
 
     # Identical feature front end to the Keras path (kept for parity / optimizer reuse)
     scaler = StandardScaler()
@@ -109,7 +134,7 @@ def process_excel_gb(file_path, n_splits=5):
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
     rmse_folds, mae_folds, r2_folds = [], [], []
     for tr, te in kf.split(X_sel):
-        m = _make_regressor()
+        m = _make_regressor(n_samples)
         m.fit(X_sel[tr], y[tr])
         p = m.predict(X_sel[te])
         rmse_folds.append(np.sqrt(mean_squared_error(y[te], p)))
@@ -117,7 +142,7 @@ def process_excel_gb(file_path, n_splits=5):
         r2_folds.append(r2_score(y[te], p) if len(te) > 1 else np.nan)
 
     # Out-of-fold predictions for an honest "actual vs predicted" scatter
-    oof_pred = cross_val_predict(_make_regressor(), X_sel, y, cv=kf)
+    oof_pred = cross_val_predict(_make_regressor(n_samples), X_sel, y, cv=kf)
 
     metrics = {
         "rmse_mean": float(np.mean(rmse_folds)), "rmse_std": float(np.std(rmse_folds)),
@@ -131,8 +156,8 @@ def process_excel_gb(file_path, n_splits=5):
     # values that fall inside their predicted band). Well-calibrated → coverage ≈ 80%.
     q_lo, q_hi = np.full_like(y, np.nan, dtype=float), np.full_like(y, np.nan, dtype=float)
     for tr, te in kf.split(X_sel):
-        lo = _make_quantile_regressor(0.1); lo.fit(X_sel[tr], y[tr])
-        hi = _make_quantile_regressor(0.9); hi.fit(X_sel[tr], y[tr])
+        lo = _make_quantile_regressor(0.1, n_samples); lo.fit(X_sel[tr], y[tr])
+        hi = _make_quantile_regressor(0.9, n_samples); hi.fit(X_sel[tr], y[tr])
         q_lo[te] = lo.predict(X_sel[te])
         q_hi[te] = hi.predict(X_sel[te])
     # Numerical guard — make sure lo ≤ hi (quantile crossing is rare but possible)
@@ -144,7 +169,7 @@ def process_excel_gb(file_path, n_splits=5):
     metrics["pi_coverage_pct"] = coverage
 
     # ---- Final model on ALL data (this is what gets deployed) ----
-    model = _make_regressor()
+    model = _make_regressor(n_samples)
     model.fit(X_sel, y)
 
     # ---- Interpretability: built-in importance + permutation importance ----
@@ -206,6 +231,8 @@ def process_excel_gb(file_path, n_splits=5):
         "image": image_b64,
         "metrics": metrics,
         "backend": "xgboost" if _HAS_XGB else "hist_gbr",
+        "diagnostics": leakage,
+        "n_samples": n_samples,
     }
 
 

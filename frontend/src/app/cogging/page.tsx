@@ -7,6 +7,8 @@ import TrainDataForm from "./train_data/default";
 import { useState } from "react";
 import PassSchedule from "./pass_schedule/default";
 import GradientBoostingForm from "./gradient_boosting/default";
+import GaussianProcessForm from "./gaussian_process/default";
+import RandomForestForm from "./random_forest/default";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +39,8 @@ import { LuArrowRight } from "react-icons/lu";
 const tabs: [string, (states: any, setStates: any) => React.ReactNode][] = [
     ["svc.train_model", (states, setStates) => (<TrainDataForm states={states} setStates={setStates} />)],
     ["svc.gradient_boosting", () => (<GradientBoostingForm />)],
+    ["svc.gaussian_process", () => (<GaussianProcessForm />)],
+    ["svc.random_forest", () => (<RandomForestForm />)],
     ["svc.pass_schedule", () => (<PassSchedule />)],
 ]
 
