@@ -11,6 +11,7 @@ import { LuPlay, LuMinus, LuUpload, LuX } from "react-icons/lu";
 import { postToBackend1 } from "@/lib/api";
 import { toast } from "sonner";
 import { useT } from "@/lib/i18n";
+import { UploadGate } from "@/components/our/upload-gate";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -116,12 +117,14 @@ function CoggingCompare() {
       busy={busy}
       runLabel={file ? `${t("cmp.cog.run_with_pre")}${file.name}${t("cmp.cog.run_with_post")}` : t("cmp.cog.run_sample")}
       controls={
-        <FilePicker
-          file={file}
-          setFile={setFile}
-          accept=".xlsx"
-          hint={t("cmp.cog.fp_hint")}
-        />
+        <UploadGate compact>
+          <FilePicker
+            file={file}
+            setFile={setFile}
+            accept=".xlsx"
+            hint={t("cmp.cog.fp_hint")}
+          />
+        </UploadGate>
       }
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -224,12 +227,14 @@ function PmapCompare() {
       busy={busy}
       runLabel={file ? `${t("cmp.cog.run_with_pre")}${file.name}${t("cmp.cog.run_with_post")}` : t("cmp.pmap.run_sample")}
       controls={
-        <FilePicker
-          file={file}
-          setFile={setFile}
-          accept=".xlsx"
-          hint={t("cmp.pmap.fp_hint")}
-        />
+        <UploadGate compact>
+          <FilePicker
+            file={file}
+            setFile={setFile}
+            accept=".xlsx"
+            hint={t("cmp.pmap.fp_hint")}
+          />
+        </UploadGate>
       }
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

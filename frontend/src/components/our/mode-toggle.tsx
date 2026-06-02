@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { HiSparkles } from "react-icons/hi2";
-import { LuUpload } from "react-icons/lu";
+import { LuUpload, LuLock } from "react-icons/lu";
 import { useT } from "@/lib/i18n";
+import { useUser } from "@/lib/user";
 
 export type FormMode = "quick" | "advanced";
 
@@ -11,8 +13,10 @@ export type FormMode = "quick" | "advanced";
  *  - "quick"    — just enter the numbers; bundled sample data is used behind the scenes
  *  - "advanced" — upload your own data files
  *
- * Designed to sit at the top of every service form so even users without
- * any input files can still get real results.
+ * For anonymous (signed-out) viewers, the Advanced pill is locked behind sign-in.
+ * A small lock icon + tooltip explains why; clicking does nothing. If the form
+ * was already on advanced when the user signed out, this component forces it
+ * back to "quick" so the form stays in a working demo state.
  */
 export function ModeToggle({
   mode,
@@ -24,6 +28,15 @@ export function ModeToggle({
   className?: string;
 }) {
   const { t } = useT();
+  const user = useUser();
+  const locked = !user?.isSignedIn;
+
+  // Defensive: if the user is anonymous but the form thinks it's in advanced mode,
+  // force it back to quick. Prevents file-upload UI from rendering during demo.
+  useEffect(() => {
+    if (locked && mode === "advanced") setMode("quick");
+  }, [locked, mode, setMode]);
+
   return (
     <div className={"inline-flex p-1 rounded-lg bg-slate-100 border border-slate-200 " + className}>
       <button
@@ -41,15 +54,22 @@ export function ModeToggle({
       </button>
       <button
         type="button"
-        onClick={() => setMode("advanced")}
+        onClick={() => { if (!locked) setMode("advanced"); }}
+        disabled={locked}
+        title={locked ? t("mode.advanced_locked_tip") : undefined}
         className={
-          "flex items-center gap-1.5 px-3 h-8 rounded-md text-xs font-medium transition-all cursor-pointer " +
-          (mode === "advanced"
-            ? "bg-white text-slate-900 shadow-sm border border-slate-300"
-            : "text-slate-600 hover:text-slate-900")
+          "flex items-center gap-1.5 px-3 h-8 rounded-md text-xs font-medium transition-all " +
+          (locked
+            ? "text-slate-400 cursor-not-allowed"
+            : (mode === "advanced"
+              ? "bg-white text-slate-900 shadow-sm border border-slate-300 cursor-pointer"
+              : "text-slate-600 hover:text-slate-900 cursor-pointer"))
         }
       >
-        <LuUpload className={mode === "advanced" ? "text-slate-700" : "text-slate-400"} />
+        {locked
+          ? <LuLock className="text-slate-400" />
+          : <LuUpload className={mode === "advanced" ? "text-slate-700" : "text-slate-400"} />
+        }
         {t("mode.advanced")}
       </button>
     </div>

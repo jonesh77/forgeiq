@@ -11,6 +11,7 @@ import { LuFileInput } from "react-icons/lu";
 import { postToBackend1, sampleFormData, sampleDownloadUrl } from "@/lib/api";
 import { toast } from "sonner";
 import { SampleButtons } from "@/components/our/sample-button";
+import { UploadGate } from "@/components/our/upload-gate";
 import { recordHistory } from "@/lib/history";
 import Info from "./info";
 import { useT } from "@/lib/i18n";
@@ -97,12 +98,16 @@ export default function PinnForm() {
           </h4>
 
           <h5 className="mt-6 font-medium text-xs text-slate-700">{t("pmap.pinn.excel_file")}</h5>
-          <Input
-            accept=".xlsx"
-            type="file"
-            name="file"
-            className="bg-slate-50 border-slate-200 mt-1.5 cursor-pointer h-10 file:mr-3 file:bg-slate-200 file:text-slate-700 file:border-0 file:rounded file:px-2 file:py-1 file:text-xs"
-          />
+          <div className="mt-1.5">
+            <UploadGate compact>
+              <Input
+                accept=".xlsx"
+                type="file"
+                name="file"
+                className="bg-slate-50 border-slate-200 cursor-pointer h-10 file:mr-3 file:bg-slate-200 file:text-slate-700 file:border-0 file:rounded file:px-2 file:py-1 file:text-xs"
+              />
+            </UploadGate>
+          </div>
 
           <div className="grid grid-cols-2 gap-3 mt-4">
             <div>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import logo from "../../public/logo.png";
 import { useUser } from "@/lib/user";
 import { NsmLogo } from "@/components/our/nsm-logo";
@@ -15,7 +16,7 @@ import {
 import { PiCompassTool, PiCube, PiBrain, PiLightning, PiGlobeStand, PiBookOpenText, PiBookmarkSimple, PiClockCounterClockwise, PiFlask, PiArrowsClockwise } from "react-icons/pi";
 import { TbChartArea, TbAtom2 } from "react-icons/tb";
 import { HiSparkles } from "react-icons/hi2";
-import { LuArrowRight, LuMessagesSquare, LuPlay } from "react-icons/lu";
+import { LuArrowRight, LuMessagesSquare, LuPlay, LuX, LuMaximize2 } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa6";
 
 export default function LandingPage() {
@@ -264,14 +265,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <Shot src="/screenshots/01_architecture.png" title={t("home.screens.s1_title")} desc={t("home.screens.s1_desc")} />
-            <Shot src="/screenshots/02_workflow_pipeline.png" title={t("home.screens.s2_title")} desc={t("home.screens.s2_desc")} />
-            <Shot src="/screenshots/03_before_after.png" title={t("home.screens.s3_title")} desc={t("home.screens.s3_desc")} />
-            <Shot src="/screenshots/05_mesh_quality_grades.png" title={t("home.screens.s4_title")} desc={t("home.screens.s4_desc")} />
-            <Shot src="/screenshots/07_unet_architecture.png" title={t("home.screens.s5_title")} desc={t("home.screens.s5_desc")} />
-            <Shot src="/screenshots/09_performance_comparison.png" title={t("home.screens.s6_title")} desc={t("home.screens.s6_desc")} />
-          </div>
+          <ScreenshotsGallery />
         </div>
       </section>
 
@@ -453,18 +447,126 @@ function Stat({ value, label }: { value: string; label: string }) {
   );
 }
 
-function Shot({ src, title, desc }: { src: string; title: string; desc: string }) {
+type ScreenshotItem = {
+  src: string;
+  titleKey: string;
+  descKey: string;
+  href: string;
+  hrefKey: string;
+};
+
+const SCREENSHOTS: ScreenshotItem[] = [
+  { src: "/screenshots/01_architecture.png",         titleKey: "home.screens.s1_title", descKey: "home.screens.s1_desc", href: "/workflow",       hrefKey: "home.screens.open_workflow" },
+  { src: "/screenshots/02_workflow_pipeline.png",    titleKey: "home.screens.s2_title", descKey: "home.screens.s2_desc", href: "/workflow",       hrefKey: "home.screens.open_workflow" },
+  { src: "/screenshots/03_before_after.png",         titleKey: "home.screens.s3_title", descKey: "home.screens.s3_desc", href: "/workflow",       hrefKey: "home.screens.open_workflow" },
+  { src: "/screenshots/05_mesh_quality_grades.png",  titleKey: "home.screens.s4_title", descKey: "home.screens.s4_desc", href: "/3d_preform",     hrefKey: "home.screens.open_preform" },
+  { src: "/screenshots/07_unet_architecture.png",    titleKey: "home.screens.s5_title", descKey: "home.screens.s5_desc", href: "/3d_preform",     hrefKey: "home.screens.open_preform" },
+  { src: "/screenshots/09_performance_comparison.png", titleKey: "home.screens.s6_title", descKey: "home.screens.s6_desc", href: "/compare",      hrefKey: "home.screens.open_compare" },
+];
+
+function ScreenshotsGallery() {
+  const { t } = useT();
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (openIdx === null) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpenIdx(null); };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [openIdx]);
+
+  const active = openIdx === null ? null : SCREENSHOTS[openIdx];
+
   return (
-    <div className="group rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:border-indigo-200 hover:-translate-y-1 transition-all duration-300">
-      <div className="aspect-[16/10] bg-slate-50 border-b border-slate-100 overflow-hidden flex items-center justify-center">
+    <>
+      <p className="text-center text-xs text-slate-500 mb-6 -mt-8">
+        {t("home.screens.zoom_hint")}
+      </p>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {SCREENSHOTS.map((s, i) => (
+          <Shot
+            key={s.src}
+            src={s.src}
+            title={t(s.titleKey as any)}
+            desc={t(s.descKey as any)}
+            onClick={() => setOpenIdx(i)}
+          />
+        ))}
+      </div>
+
+      {active && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-[100] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 animate-fade-up"
+          onClick={() => setOpenIdx(null)}
+        >
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setOpenIdx(null); }}
+            title={t("home.screens.close")}
+            className="absolute top-4 right-4 cursor-pointer w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-colors"
+          >
+            <LuX className="text-xl" />
+          </button>
+
+          <div
+            className="relative max-w-6xl w-full max-h-[90vh] flex flex-col gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex-1 min-h-0 bg-white rounded-2xl overflow-hidden border border-white/10 shadow-2xl flex items-center justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={active.src}
+                alt={t(active.titleKey as any)}
+                className="max-w-full max-h-[80vh] object-contain"
+              />
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 text-white">
+              <div>
+                <h3 className="text-base font-semibold font-montserrat">{t(active.titleKey as any)}</h3>
+                <p className="text-sm text-slate-300 mt-0.5">{t(active.descKey as any)}</p>
+              </div>
+              <Link
+                href={active.href}
+                onClick={() => setOpenIdx(null)}
+                className="shrink-0 inline-flex items-center gap-2 h-10 px-5 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all hover:scale-105"
+              >
+                {t(active.hrefKey as any)} <LuArrowRight />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function Shot({ src, title, desc, onClick }: { src: string; title: string; desc: string; onClick?: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group text-left rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:border-indigo-200 hover:-translate-y-1 transition-all duration-300 cursor-zoom-in"
+    >
+      <div className="relative aspect-[16/10] bg-slate-50 border-b border-slate-100 overflow-hidden flex items-center justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+        <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-slate-900/70 backdrop-blur-sm text-white text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          <LuMaximize2 className="text-[11px]" /> Zoom
+        </span>
       </div>
       <div className="p-5">
         <h3 className="text-base font-semibold text-slate-900 font-montserrat">{title}</h3>
         <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">{desc}</p>
       </div>
-    </div>
+    </button>
   );
 }
 

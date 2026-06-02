@@ -155,6 +155,12 @@ const dict = {
     "mode.advanced_label": "Advanced mode:",
     "mode.quick_banner": "just fill in the parameters below — the platform will use a bundled reference dataset to run the calculation. No files needed.",
     "mode.advanced_banner": "upload your own data files for the most accurate, project-specific results.",
+    "mode.advanced_locked_tip": "Sign in to upload your own files.",
+
+    "upload.locked.title": "Sign in to upload your own files",
+    "upload.locked.desc": "File upload is part of the personal cabinet. In demo mode the platform runs every program on bundled sample data — sign up free to upload your own Excel / .dat / model files and save the results.",
+    "upload.locked.cta_signup": "Sign up free",
+    "upload.locked.cta_signin": "Sign in",
 
     // Program hero — shared
     "hero.hide": "Hide",
@@ -372,6 +378,11 @@ const dict = {
     "home.screens.s5_desc": "Attention U-Net replaces the baseline for sharper preform boundaries.",
     "home.screens.s6_title": "Surrogate performance",
     "home.screens.s6_desc": "Side-by-side accuracy and speed against the FEM baseline.",
+    "home.screens.zoom_hint": "Click any image to enlarge.",
+    "home.screens.close": "Close (Esc)",
+    "home.screens.open_workflow": "Open Auto Pipeline",
+    "home.screens.open_preform": "Open 3D Preform",
+    "home.screens.open_compare": "Open Model Comparison",
 
     "home.demo.eyebrow": "Live walkthrough",
     "home.demo.title": "Watch a 90-second demo",
@@ -1095,6 +1106,12 @@ const dict = {
     "mode.advanced_label": "Kengaytirilgan rejim:",
     "mode.quick_banner": "faqat parametrlarni kiriting — platforma o'rnatilgan namuna ma'lumotlardan foydalanadi. Fayl kerak emas.",
     "mode.advanced_banner": "eng aniq, loyihaga xos natijalar uchun o'z fayllaringizni yuklang.",
+    "mode.advanced_locked_tip": "O'z fayllaringizni yuklash uchun tizimga kiring.",
+
+    "upload.locked.title": "O'z fayllaringizni yuklash uchun tizimga kiring",
+    "upload.locked.desc": "Fayl yuklash shaxsiy kabinet imkoniyati. Demo rejimda platforma har bir dasturni biz tayyorlagan namuna ma'lumotlar bilan ishga tushiradi — bepul ro'yxatdan o'tib, o'z Excel / .dat / model fayllaringizni yuklang va natijalarni saqlang.",
+    "upload.locked.cta_signup": "Bepul ro'yxatdan o'tish",
+    "upload.locked.cta_signin": "Kirish",
 
     "hero.hide": "Yashirish",
     "hero.show": "Kirish so'zini ko'rsatish",
@@ -1304,6 +1321,11 @@ const dict = {
     "home.screens.s5_desc": "Attention U-Net asosiy modelni almashtirib, yanada aniq preform chegaralarini beradi.",
     "home.screens.s6_title": "Surrogate samaradorligi",
     "home.screens.s6_desc": "FEM bilan yonma-yon aniqlik va tezlik taqqoslash.",
+    "home.screens.zoom_hint": "Har qanday rasmni kattalashtirish uchun bosing.",
+    "home.screens.close": "Yopish (Esc)",
+    "home.screens.open_workflow": "Auto Pipeline'ni ochish",
+    "home.screens.open_preform": "3D Preform'ni ochish",
+    "home.screens.open_compare": "Model taqqoslashni ochish",
 
     "home.demo.eyebrow": "Jonli ko'rsatuv",
     "home.demo.title": "90 soniyalik demoni tomosha qiling",
@@ -2022,6 +2044,12 @@ const dict = {
     "mode.advanced_label": "고급 모드:",
     "mode.quick_banner": "아래 매개변수만 입력하세요 — 플랫폼이 내장 참조 데이터셋을 사용하여 계산을 실행합니다. 파일이 필요 없습니다.",
     "mode.advanced_banner": "프로젝트별로 가장 정확한 결과를 얻으려면 자신의 데이터 파일을 업로드하세요.",
+    "mode.advanced_locked_tip": "직접 파일을 업로드하려면 로그인하세요.",
+
+    "upload.locked.title": "직접 파일을 업로드하려면 로그인하세요",
+    "upload.locked.desc": "파일 업로드는 개인 캐비닛 기능입니다. 데모 모드에서는 모든 프로그램이 내장된 샘플 데이터로 실행됩니다 — 무료로 가입하시면 본인의 Excel / .dat / 모델 파일을 업로드하고 결과를 저장할 수 있습니다.",
+    "upload.locked.cta_signup": "무료 가입",
+    "upload.locked.cta_signin": "로그인",
 
     "hero.hide": "숨기기",
     "hero.show": "소개 보기",
@@ -2231,6 +2259,11 @@ const dict = {
     "home.screens.s5_desc": "Attention U-Net이 기준 모델을 대체해 더 선명한 프리폼 경계를 만듭니다.",
     "home.screens.s6_title": "서로게이트 성능",
     "home.screens.s6_desc": "FEM 기준 대비 정확도와 속도를 나란히 비교.",
+    "home.screens.zoom_hint": "이미지를 클릭하면 크게 볼 수 있습니다.",
+    "home.screens.close": "닫기 (Esc)",
+    "home.screens.open_workflow": "Auto Pipeline 열기",
+    "home.screens.open_preform": "3D 프리폼 열기",
+    "home.screens.open_compare": "모델 비교 열기",
 
     "home.demo.eyebrow": "라이브 워크스루",
     "home.demo.title": "90초 데모 영상 보기",

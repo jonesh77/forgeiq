@@ -152,14 +152,9 @@ export function Header({ minimize = false, first, second }) {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 ) : (
-                    <div className="flex items-center gap-1.5 ml-1">
-                        <Link href="/auth/login" className="hidden sm:inline-flex items-center px-3 h-9 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100">
-                            {t("home.nav.sign_in")}
-                        </Link>
-                        <Link href="/auth/register" className="inline-flex items-center gap-1 px-3 h-9 rounded-md text-sm font-medium bg-slate-900 hover:bg-slate-800 text-white">
-                            {t("home.nav.sign_up")} <LuArrowRight />
-                        </Link>
-                    </div>
+                    <Link href="/auth/login" className="ml-1 inline-flex items-center gap-1 px-3.5 h-9 rounded-md text-sm font-medium bg-slate-900 hover:bg-slate-800 text-white">
+                        {t("home.nav.sign_in")} <LuArrowRight />
+                    </Link>
                 )}
             </div>
         </div>

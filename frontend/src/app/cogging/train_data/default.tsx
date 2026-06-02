@@ -38,22 +38,30 @@ import { recordHistory } from "@/lib/history";
 import { BookmarkPanel } from "@/components/our/bookmark-panel";
 import { useRef } from "react";
 import { ModeToggle, ModeBanner, FormMode } from "@/components/our/mode-toggle";
+import { UploadGate } from "@/components/our/upload-gate";
 import { useT } from "@/lib/i18n";
+import { useUser } from "@/lib/user";
 
 export default function TF ({ states, setStates }) {
   const { t } = useT();
+  const user = useUser();
+  const signedIn = !!user?.isSignedIn;
   return (
     <div className='w-full p-3 space-y-12'>
       <TrainDataCorrection state={states.trainDataCorrection} setState={(d) => { setStates({ ...states, trainDataCorrection: d }) }} />
-      <details className="bg-white border border-slate-200 rounded-2xl">
-        <summary className="cursor-pointer px-6 py-4 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-2xl flex items-center justify-between">
-          <span>{t("cog.tm.advanced_summary")}</span>
-          <span className="text-xs text-slate-400">{t("cog.tm.optional")}</span>
-        </summary>
-        <div className="border-t border-slate-200 p-6">
-          <ModelTrainer state={states.trainData} setState={(d) => { setStates({ ...states, trainData: d }) }} />
-        </div>
-      </details>
+      {signedIn ? (
+        <details className="bg-white border border-slate-200 rounded-2xl">
+          <summary className="cursor-pointer px-6 py-4 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-2xl flex items-center justify-between">
+            <span>{t("cog.tm.advanced_summary")}</span>
+            <span className="text-xs text-slate-400">{t("cog.tm.optional")}</span>
+          </summary>
+          <div className="border-t border-slate-200 p-6">
+            <ModelTrainer state={states.trainData} setState={(d) => { setStates({ ...states, trainData: d }) }} />
+          </div>
+        </details>
+      ) : (
+        <UploadGate>{null}</UploadGate>
+      )}
     </div>
   )
 }
