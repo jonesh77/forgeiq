@@ -56,7 +56,7 @@ export default async function RootLayout({
           <ProvideUser user={user}>
             <NotificationProvider>
               {children}
-              {user.isSignedIn && <AiAssistant />}
+              <AiAssistant />
             </NotificationProvider>
           </ProvideUser>
           <Toaster position="bottom-right" richColors />

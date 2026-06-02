@@ -6,7 +6,6 @@ import { HiSparkles } from "react-icons/hi2";
 import { IoMdSend } from "react-icons/io";
 import { LuX } from "react-icons/lu";
 import { AiOutlineLoading } from "react-icons/ai";
-import { useUser } from "@/lib/user";
 import { useT } from "@/lib/i18n";
 
 type Msg = { from: "user" | "assistant"; text: string; source?: "ai" | "faq" };
@@ -27,7 +26,6 @@ export function toggleAiAssistant() {
  * triggered by openAiAssistant() (e.g. the "Ask AI" header button).
  */
 export function AiAssistant() {
-  const user = useUser();
   const { t } = useT();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
@@ -61,8 +59,6 @@ export function AiAssistant() {
       window.removeEventListener("keydown", handleEsc);
     };
   }, []);
-
-  if (!user?.isSignedIn) return null;
 
   const send = async (text?: string) => {
     const q = (text ?? draft).trim();

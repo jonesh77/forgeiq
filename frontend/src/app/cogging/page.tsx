@@ -32,6 +32,7 @@ import { ProgramHero } from "@/components/our/program-hero";
 import { useNotifications, NotifBadge, NotifDot } from "@/components/our/notification-context";
 import { toggleAiAssistant } from "@/components/our/ai-assistant";
 import { HiSparkles } from "react-icons/hi2";
+import { LuArrowRight } from "react-icons/lu";
 
 const tabs: [string, (states: any, setStates: any) => React.ReactNode][] = [
     ["svc.train_model", (states, setStates) => (<TrainDataForm states={states} setStates={setStates} />)],
@@ -115,40 +116,51 @@ export function Header({ minimize = false, first, second }) {
                         } />
                     </>
                 )}
-                <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger asChild>
-                        <button type="button" className="ml-1 relative w-9 h-9 cursor-pointer rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white flex items-center justify-center text-sm font-semibold hover:opacity-90 transition-opacity">
-                            {(user?.name && user.name.length > 0) ? user.name[0].toUpperCase() : "?"}
-                            <NotifDot show={totalUnread > 0} />
-                        </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="font-public mr-2 min-w-[200px]">
-                        {user?.name && (
-                            <div className="px-2 py-2 border-b mb-1">
-                                <div className="text-sm font-medium text-slate-900 truncate">{user.name}</div>
-                                {user.email && <div className="text-xs text-slate-500 truncate">{user.email}</div>}
-                            </div>
-                        )}
-                        <Link href={"/history"}><DropdownMenuItem className="cursor-pointer">{t("nav.history")}</DropdownMenuItem></Link>
-                        <Link href={counts.isSuper ? "/super/message" : "/message"}>
-                            <DropdownMenuItem className="cursor-pointer flex items-center justify-between gap-3">
-                                <span>{t("nav.messages")}</span>
-                                <NotifBadge count={counts.isSuper ? counts.pendingMessages : counts.unreadReplies} />
+                {user?.isSignedIn ? (
+                    <DropdownMenu modal={false}>
+                        <DropdownMenuTrigger asChild>
+                            <button type="button" className="ml-1 relative w-9 h-9 cursor-pointer rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white flex items-center justify-center text-sm font-semibold hover:opacity-90 transition-opacity">
+                                {(user?.name && user.name.length > 0) ? user.name[0].toUpperCase() : "?"}
+                                <NotifDot show={totalUnread > 0} />
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="font-public mr-2 min-w-[200px]">
+                            {user?.name && (
+                                <div className="px-2 py-2 border-b mb-1">
+                                    <div className="text-sm font-medium text-slate-900 truncate">{user.name}</div>
+                                    {user.email && <div className="text-xs text-slate-500 truncate">{user.email}</div>}
+                                </div>
+                            )}
+                            <Link href={"/history"}><DropdownMenuItem className="cursor-pointer">{t("nav.history")}</DropdownMenuItem></Link>
+                            <Link href={counts.isSuper ? "/super/message" : "/message"}>
+                                <DropdownMenuItem className="cursor-pointer flex items-center justify-between gap-3">
+                                    <span>{t("nav.messages")}</span>
+                                    <NotifBadge count={counts.isSuper ? counts.pendingMessages : counts.unreadReplies} />
+                                </DropdownMenuItem>
+                            </Link>
+                            <Link href={"/settings"}><DropdownMenuItem className="cursor-pointer">{t("nav.settings")}</DropdownMenuItem></Link>
+                            <DropdownMenuItem
+                                className="cursor-pointer text-red-600 focus:text-red-700"
+                                onSelect={(e) => {
+                                    e.preventDefault();
+                                    try { window.localStorage.removeItem("welcome_modal_seen_v1"); } catch {}
+                                    void logout();
+                                }}
+                            >
+                                {t("nav.logout")}
                             </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                ) : (
+                    <div className="flex items-center gap-1.5 ml-1">
+                        <Link href="/auth/login" className="hidden sm:inline-flex items-center px-3 h-9 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100">
+                            {t("home.nav.sign_in")}
                         </Link>
-                        <Link href={"/settings"}><DropdownMenuItem className="cursor-pointer">{t("nav.settings")}</DropdownMenuItem></Link>
-                        <DropdownMenuItem
-                            className="cursor-pointer text-red-600 focus:text-red-700"
-                            onSelect={(e) => {
-                                e.preventDefault();
-                                try { window.localStorage.removeItem("welcome_modal_seen_v1"); } catch {}
-                                void logout();
-                            }}
-                        >
-                            {t("nav.logout")}
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                        <Link href="/auth/register" className="inline-flex items-center gap-1 px-3 h-9 rounded-md text-sm font-medium bg-slate-900 hover:bg-slate-800 text-white">
+                            {t("home.nav.sign_up")} <LuArrowRight />
+                        </Link>
+                    </div>
+                )}
             </div>
         </div>
         <div className="lg:hidden border-t border-slate-200 pt-2 -mx-6 lg:-mx-8 px-6 lg:px-8">

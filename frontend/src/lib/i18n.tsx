@@ -381,6 +381,12 @@ const dict = {
     "home.demo.cta_try": "Try it yourself",
     "home.demo.cta_workflow": "Open Auto Pipeline",
 
+    "home.nav.sign_up": "Sign up",
+    "demo.banner.chip": "Demo mode",
+    "demo.banner.text": "You're using ForgeIQ in demo mode. Programs run live — sign up free to save runs, bookmark inputs, and upload your own files.",
+    "demo.banner.cta": "Sign up free",
+    "demo.banner.dismiss": "Dismiss",
+
     // ==================== COGGING ====================
     "cog.tm.advanced_summary": "Advanced — train your own model from raw cogging data",
     "cog.tm.optional": "(optional)",
@@ -1307,6 +1313,12 @@ const dict = {
     "home.demo.cta_try": "O'zingiz sinab ko'ring",
     "home.demo.cta_workflow": "Auto Pipeline'ni ochish",
 
+    "home.nav.sign_up": "Ro'yxatdan o'tish",
+    "demo.banner.chip": "Demo rejim",
+    "demo.banner.text": "Siz ForgeIQ'dan demo rejimida foydalanyapsiz. Dasturlar to'liq ishlaydi — bepul ro'yxatdan o'tib o'z natijalaringizni saqlash, parametrlarni belgilab qo'yish va shaxsiy fayllaringizni yuklash imkonini oching.",
+    "demo.banner.cta": "Bepul ro'yxatdan o'tish",
+    "demo.banner.dismiss": "Yashirish",
+
     "cog.tm.advanced_summary": "Kengaytirilgan — xom cogging ma'lumotlardan o'z modelingizni o'qiting",
     "cog.tm.optional": "(ixtiyoriy)",
     "cog.tm.step1": "1-bosqich",
@@ -2227,6 +2239,12 @@ const dict = {
     "home.demo.placeholder_sub": "영상이 준비되는 동안, 지금 바로 플랫폼을 라이브로 시도해 볼 수 있습니다.",
     "home.demo.cta_try": "직접 시도하기",
     "home.demo.cta_workflow": "Auto Pipeline 열기",
+
+    "home.nav.sign_up": "회원가입",
+    "demo.banner.chip": "데모 모드",
+    "demo.banner.text": "현재 ForgeIQ를 데모 모드로 사용 중입니다. 모든 프로그램이 실제로 작동합니다 — 무료로 가입하시면 실행 결과 저장, 입력값 북마크, 파일 업로드 기능을 사용할 수 있습니다.",
+    "demo.banner.cta": "무료 가입",
+    "demo.banner.dismiss": "닫기",
 
     "cog.tm.advanced_summary": "고급 — 원시 코깅 데이터로 직접 모델을 학습",
     "cog.tm.optional": "(선택 사항)",

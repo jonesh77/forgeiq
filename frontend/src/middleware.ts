@@ -9,6 +9,16 @@ export interface SessionData {
     super: boolean;
 }
 
+// Routes that require a signed-in user. Everything else is publicly accessible
+// (demo mode): landing, /cogging, /processing_map, /3d_preform, /workflow,
+// /compare, /auth/*. Signed-in users get the same routes plus the personal
+// cabinet (history, messages, settings).
+const AUTH_REQUIRED_PREFIXES = ["/history", "/message", "/settings", "/super"];
+
+function requiresAuth(path: string): boolean {
+    return AUTH_REQUIRED_PREFIXES.some((p) => path === p || path.startsWith(p + "/"));
+}
+
 // HTTP headers only accept ByteString (chars 0-255). Names like "알리벡" or
 // "Алибек" must be percent-encoded before being placed in a header, then
 // decoded on the read side (layout.tsx -> getUserServer / ProvideUser).
@@ -43,7 +53,9 @@ export default async function middleware(req: NextRequest) {
         };
     } catch (e) {
         console.error("[middleware] Session error:", e);
-        if (goingToAuth) return NextResponse.next();
+        // On session read failure, treat as anonymous and let public routes through.
+        // Only block protected pages so we don't leak personal data.
+        if (goingToAuth || !requiresAuth(path)) return NextResponse.next();
         return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
     }
 
@@ -54,8 +66,10 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
-    if (!isSignedIn) {
-        return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
+    if (requiresAuth(path) && !isSignedIn) {
+        const loginUrl = new URL("/auth/login", req.nextUrl);
+        loginUrl.searchParams.set("next", path);
+        return NextResponse.redirect(loginUrl);
     }
 
     if (goingToSuper && !isSuper) {

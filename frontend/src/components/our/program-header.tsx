@@ -3,6 +3,11 @@
 import { Header } from "@/app/cogging/page";
 import { MdOutlineUnfoldMore } from "react-icons/md";
 import Link from "next/link";
+import { useUser } from "@/lib/user";
+import { useT } from "@/lib/i18n";
+import { useEffect, useState } from "react";
+import { LuX, LuArrowRight } from "react-icons/lu";
+import { HiSparkles } from "react-icons/hi2";
 
 type Accent = "blue" | "emerald" | "violet" | "slate" | "indigo";
 
@@ -31,6 +36,7 @@ export function ProgramHeader({
   const a = ACCENT[accent];
   return (
     <div className="font-public sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200">
+      <DemoBanner />
       <div className="px-6 lg:px-8 py-3">
         <Header
           minimize={minimize}
@@ -49,6 +55,53 @@ export function ProgramHeader({
             </button>
           }
         />
+      </div>
+    </div>
+  );
+}
+
+const DEMO_BANNER_DISMISS_KEY = "demo_banner_dismissed_v1";
+
+function DemoBanner() {
+  const user = useUser();
+  const { t } = useT();
+  const [dismissed, setDismissed] = useState(true);
+
+  useEffect(() => {
+    if (user?.isSignedIn) { setDismissed(true); return; }
+    try {
+      const v = window.localStorage.getItem(DEMO_BANNER_DISMISS_KEY);
+      setDismissed(v === "1");
+    } catch { setDismissed(false); }
+  }, [user?.isSignedIn]);
+
+  if (user?.isSignedIn || dismissed) return null;
+
+  const dismiss = () => {
+    setDismissed(true);
+    try { window.localStorage.setItem(DEMO_BANNER_DISMISS_KEY, "1"); } catch {}
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border-b border-amber-200">
+      <div className="px-6 lg:px-8 py-2 flex items-center gap-3">
+        <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-200/70 text-amber-900 text-[10px] font-bold uppercase tracking-wider">
+          <HiSparkles className="text-amber-600" />{t("demo.banner.chip")}
+        </span>
+        <p className="flex-1 text-xs sm:text-sm text-amber-900 leading-tight">
+          {t("demo.banner.text")}
+        </p>
+        <Link href="/auth/register" className="shrink-0 inline-flex items-center gap-1 h-7 px-2.5 rounded-md text-[11px] sm:text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white transition-colors">
+          {t("demo.banner.cta")} <LuArrowRight />
+        </Link>
+        <button
+          type="button"
+          onClick={dismiss}
+          title={t("demo.banner.dismiss")}
+          className="shrink-0 w-6 h-6 rounded-md text-amber-700 hover:bg-amber-200/70 flex items-center justify-center cursor-pointer transition-colors"
+        >
+          <LuX className="text-sm" />
+        </button>
       </div>
     </div>
   );
