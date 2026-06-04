@@ -140,24 +140,26 @@ function CoggingStrip() {
         ))}
       </div>
 
-      {/* Glowing hot billet — slides across */}
+      {/* Glowing hot billet — slides across; sparks fly from inside it */}
       <div className="absolute inset-y-0 left-0 w-1/6 flex items-center hero-slide-x pointer-events-none">
         <div className="relative w-full h-5 mx-2">
           <div className="absolute inset-0 rounded-sm bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 hero-glow-shift text-amber-400" />
           {/* heat trail */}
           <div className="absolute inset-y-0 -left-8 w-8 bg-gradient-to-l from-amber-400/60 to-transparent rounded-l-full blur-sm" />
-        </div>
-      </div>
-
-      {/* Sparks scattered around the track (decorative, fixed positions, staggered) */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[15, 28, 42, 55, 68, 82].map((leftPct, i) => (
+          {/* sparks emitted from the billet — radial fly-out via animate-spark */}
           <span
-            key={i}
-            className="absolute top-1/2 w-1 h-1 rounded-full bg-amber-300 hero-spark"
-            style={{ left: `${leftPct}%`, animationDelay: `${i * 0.18}s` }}
+            className="absolute top-1/2 left-1/2 w-1 h-1 rounded-full bg-amber-200 animate-spark"
+            style={{ ["--sx" as any]: "70px", ["--sy" as any]: "-50px" }}
           />
-        ))}
+          <span
+            className="absolute top-1/2 left-1/2 w-1 h-1 rounded-full bg-amber-100 animate-spark"
+            style={{ ["--sx" as any]: "-60px", ["--sy" as any]: "40px", animationDelay: "0.45s" }}
+          />
+          <span
+            className="absolute top-1/2 left-1/2 w-px h-px rounded-full bg-amber-300 animate-spark"
+            style={{ ["--sx" as any]: "50px", ["--sy" as any]: "55px", animationDelay: "0.9s" }}
+          />
+        </div>
       </div>
     </div>
   );

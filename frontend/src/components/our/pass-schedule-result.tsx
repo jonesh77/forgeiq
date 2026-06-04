@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import feed_png from "../../../public/feed.png";
 import depth_png from "../../../public/Depth schedule.png";
@@ -83,18 +83,26 @@ export function PassScheduleResult({ data }: { data: PassScheduleData }) {
 
         <div className="grid grid-cols-7 gap-2">
           {data.pass_schedule.map((v, i) => (
-            <PassCard
+            <div
               key={i}
-              n={i + 1}
-              passValue={v}
-              forging={data.forging_ratios[i]}
-              length={data.length_changes[i]}
-              cutting={data.cutting_lengths[i]}
-              voidClosure={data.void_closure[i]}
-            />
+              className="animate-count"
+              style={{ animationDelay: `${i * 70}ms` }}
+            >
+              <PassCard
+                n={i + 1}
+                passValue={v}
+                forging={data.forging_ratios[i]}
+                length={data.length_changes[i]}
+                cutting={data.cutting_lengths[i]}
+                voidClosure={data.void_closure[i]}
+              />
+            </div>
           ))}
         </div>
       </div>
+
+      {/* Animated void-closure line chart — the line draws itself, then dots pop in */}
+      <VoidChart voids={data.void_closure} />
 
       {/* Void closure progress strip */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
@@ -291,6 +299,103 @@ function LegendDot({ color, label }: { color: string; label: string }) {
     <div className="flex items-center gap-1.5">
       <span className={"w-2 h-2 rounded-full " + color}></span>
       <span className="text-slate-600">{label}</span>
+    </div>
+  );
+}
+
+/**
+ * Animated void-closure SVG chart — the line draws itself (stroke-dashoffset),
+ * the gradient area fades in, and each per-pass dot pops in sequence.
+ * All transitions honour prefers-reduced-motion via .void-chart-* CSS rules.
+ */
+function VoidChart({ voids }: { voids: number[] }) {
+  const { t } = useT();
+  const [drawn, setDrawn] = useState(false);
+
+  useEffect(() => {
+    const id = setTimeout(() => setDrawn(true), 60);
+    return () => clearTimeout(id);
+  }, []);
+
+  const W = 720, H = 220, padL = 42, padR = 16, padT = 18, padB = 36;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const n = voids.length;
+  const maxV = Math.max(100, Math.max(...voids) * 1.05);
+  const xs = voids.map((_, i) => padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW));
+  const ys = voids.map((v) => padT + (1 - v / maxV) * plotH);
+  const line = xs.map((x, i) => (i ? "L" : "M") + x.toFixed(1) + " " + ys[i].toFixed(1)).join(" ");
+  const area = line + ` L${xs[n - 1].toFixed(1)} ${padT + plotH} L${xs[0].toFixed(1)} ${padT + plotH} Z`;
+  const LEN = 1600;
+  const grid = [0, 0.25, 0.5, 0.75, 1];
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+      <div className="flex items-baseline justify-between mb-3">
+        <div>
+          <h3 className="text-lg font-semibold text-slate-900">{t("cog.res.void_prog_title")}</h3>
+          <p className="text-xs text-slate-500 mt-0.5">% void closure per pass</p>
+        </div>
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="voidArea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="voidLine" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#2563eb" />
+            <stop offset="100%" stopColor="#4f46e5" />
+          </linearGradient>
+        </defs>
+        {grid.map((g, i) => {
+          const y = padT + g * plotH;
+          return (
+            <g key={i}>
+              <line x1={padL} y1={y} x2={W - padR} y2={y} stroke="#e2e8f0" strokeWidth="1" strokeDasharray="3 4" />
+              <text x={padL - 8} y={y + 3} textAnchor="end" fontSize="9" fill="#94a3b8" fontFamily="ui-monospace, monospace">
+                {(maxV * (1 - g)).toFixed(0)}
+              </text>
+            </g>
+          );
+        })}
+        <path
+          d={area}
+          fill="url(#voidArea)"
+          className="void-chart-area"
+          style={{ opacity: drawn ? 1 : 0 }}
+        />
+        <path
+          d={line}
+          fill="none"
+          stroke="url(#voidLine)"
+          strokeWidth="2.5"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          className="void-chart-line"
+          style={{
+            strokeDasharray: LEN,
+            strokeDashoffset: drawn ? 0 : LEN,
+            transition: "stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1)",
+          }}
+        />
+        {xs.map((x, i) => (
+          <g key={i}>
+            <circle
+              cx={x}
+              cy={ys[i]}
+              r="4.5"
+              fill="#fff"
+              stroke="#4f46e5"
+              strokeWidth="2.5"
+              className="void-chart-dot"
+              style={{ opacity: drawn ? 1 : 0, transitionDelay: `${300 + i * 120}ms` }}
+            />
+            <text x={x} y={H - 14} textAnchor="middle" fontSize="10" fill="#94a3b8" fontFamily="ui-monospace, monospace">
+              P{i + 1}
+            </text>
+          </g>
+        ))}
+      </svg>
     </div>
   );
 }

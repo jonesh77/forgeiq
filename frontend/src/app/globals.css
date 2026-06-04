@@ -505,3 +505,30 @@ body { overflow-x: hidden; }
     animation: none !important;
   }
 }
+
+/* ============================================================ */
+/* ===== Scroll-reveal (IntersectionObserver-driven) ======== */
+/* ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: opacity, transform;
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+/* ============================================================ */
+/* ===== Animated SVG void-closure chart =================== */
+/* ============================================================ */
+.void-chart-area { transition: opacity 1.2s ease 0.3s; }
+.void-chart-dot  { transition: opacity 0.4s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .void-chart-area, .void-chart-dot { transition: none !important; opacity: 1 !important; }
+  .void-chart-line { stroke-dashoffset: 0 !important; transition: none !important; }
+}

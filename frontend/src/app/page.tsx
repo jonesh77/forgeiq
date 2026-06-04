@@ -16,8 +16,11 @@ import {
 import { PiCompassTool, PiCube, PiBrain, PiLightning, PiGlobeStand, PiBookOpenText, PiBookmarkSimple, PiClockCounterClockwise, PiFlask, PiArrowsClockwise } from "react-icons/pi";
 import { TbChartArea, TbAtom2 } from "react-icons/tb";
 import { HiSparkles } from "react-icons/hi2";
-import { LuArrowRight, LuMessagesSquare, LuPlay, LuX, LuMaximize2 } from "react-icons/lu";
+import { LuArrowRight, LuMessagesSquare, LuPlay, LuX, LuMaximize2, LuExternalLink } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa6";
+import { useCountUp, parseStatString } from "@/lib/use-count-up";
+import { useInView } from "@/lib/use-in-view";
+import { Reveal } from "@/components/our/reveal";
 
 export default function LandingPage() {
   const user = useUser();
@@ -95,11 +98,13 @@ export default function LandingPage() {
               </button>
             </div>
 
-            <div className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <Stat value={t("home.hero.stat1_v")} label={t("home.hero.stat1_l")} />
-              <Stat value={t("home.hero.stat2_v")} label={t("home.hero.stat2_l")} />
-              <Stat value={t("home.hero.stat3_v")} label={t("home.hero.stat3_l")} />
-            </div>
+            <HeroStats
+              stats={[
+                { raw: t("home.hero.stat1_v"), label: t("home.hero.stat1_l") },
+                { raw: t("home.hero.stat2_v"), label: t("home.hero.stat2_l") },
+                { raw: t("home.hero.stat3_v"), label: t("home.hero.stat3_l") },
+              ]}
+            />
           </div>
         </div>
       </section>
@@ -118,21 +123,27 @@ export default function LandingPage() {
           </div>
 
           <div className="mt-16 grid md:grid-cols-3 gap-6">
-            <BenefitCard
-              icon={<PiBrain className="text-2xl" />}
-              title={t("home.why.b1_title")}
-              text={t("home.why.b1_text")}
-            />
-            <BenefitCard
-              icon={<PiLightning className="text-2xl" />}
-              title={t("home.why.b2_title")}
-              text={t("home.why.b2_text")}
-            />
-            <BenefitCard
-              icon={<PiFlask className="text-2xl" />}
-              title={t("home.why.b3_title")}
-              text={t("home.why.b3_text")}
-            />
+            <Reveal delay={0}>
+              <BenefitCard
+                icon={<PiBrain className="text-2xl" />}
+                title={t("home.why.b1_title")}
+                text={t("home.why.b1_text")}
+              />
+            </Reveal>
+            <Reveal delay={90}>
+              <BenefitCard
+                icon={<PiLightning className="text-2xl" />}
+                title={t("home.why.b2_title")}
+                text={t("home.why.b2_text")}
+              />
+            </Reveal>
+            <Reveal delay={180}>
+              <BenefitCard
+                icon={<PiFlask className="text-2xl" />}
+                title={t("home.why.b3_title")}
+                text={t("home.why.b3_text")}
+              />
+            </Reveal>
           </div>
         </div>
       </section>
@@ -151,39 +162,45 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <ProgramCard
-              href="/cogging"
-              accent="blue"
-              order="01"
-              icon={<PiCompassTool />}
-              title={t("home.programs.cog.title")}
-              tag={t("home.programs.cog.tag")}
-              desc={t("home.programs.cog.desc")}
-              features={[t("home.programs.cog.f1"), t("home.programs.cog.f2"), t("home.programs.cog.f3")]}
-              openLabel={t("home.programs.open")}
-            />
-            <ProgramCard
-              href="/processing_map"
-              accent="emerald"
-              order="02"
-              icon={<TbChartArea />}
-              title={t("home.programs.pmap.title")}
-              tag={t("home.programs.pmap.tag")}
-              desc={t("home.programs.pmap.desc")}
-              features={[t("home.programs.pmap.f1"), t("home.programs.pmap.f2"), t("home.programs.pmap.f3")]}
-              openLabel={t("home.programs.open")}
-            />
-            <ProgramCard
-              href="/3d_preform"
-              accent="violet"
-              order="03"
-              icon={<PiCube />}
-              title={t("home.programs.pre.title")}
-              tag={t("home.programs.pre.tag")}
-              desc={t("home.programs.pre.desc")}
-              features={[t("home.programs.pre.f1"), t("home.programs.pre.f2"), t("home.programs.pre.f3")]}
-              openLabel={t("home.programs.open")}
-            />
+            <Reveal delay={0}>
+              <ProgramCard
+                href="/cogging"
+                accent="blue"
+                order="01"
+                icon={<PiCompassTool />}
+                title={t("home.programs.cog.title")}
+                tag={t("home.programs.cog.tag")}
+                desc={t("home.programs.cog.desc")}
+                features={[t("home.programs.cog.f1"), t("home.programs.cog.f2"), t("home.programs.cog.f3")]}
+                openLabel={t("home.programs.open")}
+              />
+            </Reveal>
+            <Reveal delay={110}>
+              <ProgramCard
+                href="/processing_map"
+                accent="emerald"
+                order="02"
+                icon={<TbChartArea />}
+                title={t("home.programs.pmap.title")}
+                tag={t("home.programs.pmap.tag")}
+                desc={t("home.programs.pmap.desc")}
+                features={[t("home.programs.pmap.f1"), t("home.programs.pmap.f2"), t("home.programs.pmap.f3")]}
+                openLabel={t("home.programs.open")}
+              />
+            </Reveal>
+            <Reveal delay={220}>
+              <ProgramCard
+                href="/3d_preform"
+                accent="violet"
+                order="03"
+                icon={<PiCube />}
+                title={t("home.programs.pre.title")}
+                tag={t("home.programs.pre.tag")}
+                desc={t("home.programs.pre.desc")}
+                features={[t("home.programs.pre.f1"), t("home.programs.pre.f2"), t("home.programs.pre.f3")]}
+                openLabel={t("home.programs.open")}
+              />
+            </Reveal>
           </div>
         </div>
       </section>
@@ -282,24 +299,32 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Video placeholder — replace inner div with <iframe> once recording is published */}
-          <div className="relative aspect-video w-full rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 shadow-2xl shadow-indigo-500/10 overflow-hidden group">
-            <div className="absolute inset-0 bg-grid opacity-30"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white px-6">
-              <div className="mx-auto w-20 h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-3xl text-white mb-5 group-hover:scale-110 transition-transform">
-                <LuPlay />
-              </div>
-              <div className="text-xl md:text-2xl font-semibold font-montserrat">{t("home.demo.placeholder_title")}</div>
-              <p className="mt-2 text-sm text-slate-300 max-w-md mx-auto">{t("home.demo.placeholder_sub")}</p>
-            </div>
-            <div className="absolute bottom-0 inset-x-0 p-5 flex flex-wrap items-center justify-center gap-3 bg-gradient-to-t from-black/60 to-transparent">
-              <Link href="/workflow" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all">
-                <LuPlay />{t("home.demo.cta_workflow")}
-              </Link>
-              <a href="#programs" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white font-medium text-sm transition-all">
-                {t("home.demo.cta_try")} <LuArrowRight />
-              </a>
-            </div>
+          {/* Bundled ForgeIQ explainer — runtime-unpacked React/Babel HTML in /public */}
+          <div className="relative aspect-video w-full rounded-3xl border border-slate-200 bg-slate-950 shadow-2xl shadow-indigo-500/10 overflow-hidden">
+            <iframe
+              src="/forgeiq-video.html"
+              title="ForgeIQ explainer"
+              className="absolute inset-0 w-full h-full"
+              allow="autoplay; fullscreen"
+              loading="lazy"
+            />
+            <a
+              href="/forgeiq-video.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 h-9 px-3 rounded-md bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-medium transition-colors"
+              title={t("home.demo.cta_try")}
+            >
+              <LuExternalLink />
+            </a>
+          </div>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+            <Link href="/workflow" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition-all">
+              <LuPlay />{t("home.demo.cta_workflow")}
+            </Link>
+            <a href="#programs" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm transition-all">
+              {t("home.demo.cta_try")} <LuArrowRight />
+            </a>
           </div>
         </div>
       </section>
@@ -438,10 +463,25 @@ function UserMenu({ name, email }: { name: string; email: string }) {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+function HeroStats({ stats }: { stats: { raw: string; label: string }[] }) {
+  const [ref, seen] = useInView<HTMLDivElement>(0.4);
+  return (
+    <div ref={ref} className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
+      {stats.map((s, i) => (
+        <Stat key={i} raw={s.raw} label={s.label} start={seen} />
+      ))}
+    </div>
+  );
+}
+
+function Stat({ raw, label, start }: { raw: string; label: string; start: boolean }) {
+  const parsed = parseStatString(raw);
+  const n = useCountUp(parsed.num, { decimals: parsed.decimals, start, duration: 1300 });
   return (
     <div className="text-center">
-      <div className="text-3xl md:text-4xl font-bold font-montserrat text-white">{value}</div>
+      <div className="text-3xl md:text-4xl font-bold font-montserrat text-white tabular-nums">
+        {parsed.prefix}{n}{parsed.suffix}
+      </div>
       <div className="text-xs uppercase tracking-widest text-slate-400 mt-1">{label}</div>
     </div>
   );
@@ -583,9 +623,9 @@ function BenefitCard({ icon, title, text }: { icon: React.ReactNode; title: stri
 }
 
 const PROGRAM_ACCENT = {
-  blue: { bg: "from-blue-600 to-indigo-600", chip: "bg-blue-100 text-blue-800", glow: "shadow-blue-500/20" },
-  emerald: { bg: "from-emerald-600 to-teal-600", chip: "bg-emerald-100 text-emerald-800", glow: "shadow-emerald-500/20" },
-  violet: { bg: "from-violet-600 to-fuchsia-600", chip: "bg-violet-100 text-violet-800", glow: "shadow-violet-500/20" },
+  blue: { bg: "from-blue-600 to-indigo-600", chip: "bg-blue-100 text-blue-800", glow: "glow-blue" },
+  emerald: { bg: "from-emerald-600 to-teal-600", chip: "bg-emerald-100 text-emerald-800", glow: "glow-emerald" },
+  violet: { bg: "from-violet-600 to-fuchsia-600", chip: "bg-violet-100 text-violet-800", glow: "glow-violet" },
 };
 
 function ProgramCard({
@@ -599,8 +639,7 @@ function ProgramCard({
     <Link
       href={href}
       className={
-        "group relative block rounded-2xl border border-slate-200 bg-white p-7 overflow-hidden " +
-        "transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl " + a.glow
+        "group relative block rounded-2xl border border-slate-200 bg-white p-7 overflow-hidden " + a.glow
       }
     >
       <div className="absolute top-0 right-0 text-[140px] font-bold font-montserrat text-slate-100 leading-none -mr-4 -mt-6 select-none pointer-events-none">
