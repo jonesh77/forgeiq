@@ -302,14 +302,14 @@ export default function LandingPage() {
           {/* Bundled ForgeIQ explainer — runtime-unpacked React/Babel HTML in /public */}
           <div className="relative aspect-video w-full rounded-3xl border border-slate-200 bg-slate-950 shadow-2xl shadow-indigo-500/10 overflow-hidden">
             <iframe
-              src="/forgeiq-video.html"
+              src="/video/index.html"
               title="ForgeIQ explainer"
               className="absolute inset-0 w-full h-full"
               allow="autoplay; fullscreen"
               loading="lazy"
             />
             <a
-              href="/forgeiq-video.html"
+              href="/video/index.html"
               target="_blank"
               rel="noopener noreferrer"
               className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 h-9 px-3 rounded-md bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-medium transition-colors"

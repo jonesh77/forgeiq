@@ -387,7 +387,7 @@ const dict = {
     "home.screens.open_compare": "Open Model Comparison",
 
     "home.demo.eyebrow": "Live walkthrough",
-    "home.demo.title": "Watch a 90-second demo",
+    "home.demo.title": "Watch a 62-second demo",
     "home.demo.desc": "A full Auto Pipeline run — from raw cogging Excel to a watertight 3D preform STL — captured end-to-end.",
     "home.demo.placeholder_title": "Demo video coming soon",
     "home.demo.placeholder_sub": "While the recording is being prepared, you can try the platform live right now.",
@@ -1356,7 +1356,7 @@ const dict = {
     "home.screens.open_compare": "Model taqqoslashni ochish",
 
     "home.demo.eyebrow": "Jonli ko'rsatuv",
-    "home.demo.title": "90 soniyalik demoni tomosha qiling",
+    "home.demo.title": "62 soniyalik demoni tomosha qiling",
     "home.demo.desc": "To'liq Auto Pipeline ishga tushishi — xom cogging Excel'dan suv o'tkazmaydigan 3D preform STL'ga qadar — to'liq yozib olingan.",
     "home.demo.placeholder_title": "Demo video tez kunda",
     "home.demo.placeholder_sub": "Yozuv tayyorlanayotgan paytda, siz hozir platformani jonli sinab ko'rishingiz mumkin.",
@@ -2320,7 +2320,7 @@ const dict = {
     "home.screens.open_compare": "모델 비교 열기",
 
     "home.demo.eyebrow": "라이브 워크스루",
-    "home.demo.title": "90초 데모 영상 보기",
+    "home.demo.title": "62초 데모 영상 보기",
     "home.demo.desc": "원시 코깅 Excel부터 수밀(watertight) 3D 프리폼 STL까지 — 전체 Auto Pipeline 실행 과정을 끝까지 담았습니다.",
     "home.demo.placeholder_title": "데모 영상 곧 공개 예정",
     "home.demo.placeholder_sub": "영상이 준비되는 동안, 지금 바로 플랫폼을 라이브로 시도해 볼 수 있습니다.",
