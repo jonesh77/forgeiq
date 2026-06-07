@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Public_Sans, Montserrat } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
@@ -21,8 +21,13 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "ForgeIQ",
+  title: "ForgeIQ — AI Metallurgy Simulation Platform",
   description: "ForgeIQ — intelligence for forging design. Cogging optimization, processing maps, and 3D preform prediction in one workbench. Built by NSMLab, Sogang University.",
+  manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#4f46e5",
 };
 
 export default async function RootLayout({
