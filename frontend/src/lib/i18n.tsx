@@ -899,6 +899,12 @@ const dict = {
     "wf.metric.preformVolumeChange": "Preform volume change",
     "wf.metric.preformGrade": "Mesh grade",
     "wf.metric.preformScore": "Mesh score",
+    "wf.metric.material": "Material",
+
+    "wf.card.material_title": "Material",
+    "wf.card.material_sub": "Drives the void-closure polynomial and flow-stress model",
+    "wf.row.material_preset": "Material preset",
+    "wf.row.material_help": "Each material has its own fitted void_B/C/D coefficients — changing the preset changes the min void closure even with the same dimensions.",
 
     "wf.iter.title": "Iteration history",
     "wf.iter.subtitle": "Each pipeline run is kept here so you can compare different design targets.",
@@ -1864,6 +1870,12 @@ const dict = {
     "wf.metric.preformVolumeChange": "Preform hajm o'zgarishi",
     "wf.metric.preformGrade": "Mesh bahosi",
     "wf.metric.preformScore": "Mesh ball",
+    "wf.metric.material": "Material",
+
+    "wf.card.material_title": "Material",
+    "wf.card.material_sub": "Void-closure polinomi va oqim kuchi modelini boshqaradi",
+    "wf.row.material_preset": "Material presetti",
+    "wf.row.material_help": "Har bir materialning o'ziga xos void_B/C/D koeffitsiyentlari mavjud — presetni o'zgartirish bir xil o'lchamlarda ham min void closure'ni o'zgartiradi.",
 
     "wf.iter.title": "Iteratsiyalar tarixi",
     "wf.iter.subtitle": "Har bir pipeline ishga tushirilishi shu yerda saqlanadi, turli loyiha maqsadlarini solishtirish uchun.",
@@ -2828,6 +2840,12 @@ const dict = {
     "wf.metric.preformVolumeChange": "프리폼 부피 변화",
     "wf.metric.preformGrade": "메시 등급",
     "wf.metric.preformScore": "메시 점수",
+    "wf.metric.material": "소재",
+
+    "wf.card.material_title": "소재",
+    "wf.card.material_sub": "공극 폐쇄 다항식과 유동 응력 모델을 좌우합니다",
+    "wf.row.material_preset": "소재 프리셋",
+    "wf.row.material_help": "각 소재마다 고유한 void_B/C/D 계수가 있어, 같은 치수에서도 프리셋을 바꾸면 최소 공극 폐쇄율이 달라집니다.",
 
     "wf.iter.title": "반복 기록",
     "wf.iter.subtitle": "각 파이프라인 실행이 여기에 저장되어 다양한 설계 목표를 비교할 수 있습니다.",

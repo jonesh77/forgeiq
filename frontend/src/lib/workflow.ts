@@ -1,6 +1,7 @@
 "use client";
 
 import { postToBackend1, postToBackend2, sampleFormData } from "@/lib/api";
+import { findPreset } from "@/lib/materials";
 
 type Tfn = (key: string) => string;
 
@@ -46,6 +47,18 @@ export interface WorkflowParams {
   // Correction
   target_astm: number;
   weight_factor: number;
+  // Material preset — drives void-closure polynomial + flow-stress model.
+  // Same set the Cogging Pass-Schedule form exposes (AISI 4340 / AISI 1045 /
+  // Inconel 718 / Custom). Choosing a different preset makes the backend
+  // compute a different min-void-closure, which is the whole point of the
+  // pipeline being interactive instead of a fixed demo.
+  materialId: string;
+  // Custom overrides — only sent when materialId === "custom"
+  void_B?: number;
+  void_C?: number;
+  void_D?: number;
+  flow_stress_base_MPa?: number;
+  flow_stress_slope?: number;
   // PINN
   pmap_strain: number;       // strain slice for the η/ξ field (typical 0.5)
   pmap_epochs: number;       // PINN epochs (500 = quick estimate, ~10–20 s)
@@ -74,6 +87,7 @@ export interface WorkflowOutcome {
     depthSchedule?: number;
     numberOfRotation?: number;
     correctedRows?: number;        // KB of corrected Excel
+    materialId?: string;           // which preset drove void_B/C/D
     // 3D Preform
     preformVolume?: number;        // mm³
     preformVolumeChange?: number;  // %
@@ -187,10 +201,29 @@ export async function runWorkflow(
     const s: StepResult = { step: "pass_schedule", status: "running", title: t("wf.step.pass_schedule_title"), startedAt: Date.now() };
     log(onStep, s);
 
+    // Resolve material coefficients. Custom material uses any overrides the
+    // caller supplied; otherwise the preset table is the source of truth.
+    const preset = findPreset(params.materialId);
+    const isCustom = params.materialId === "custom";
+    const mat = {
+      void_B: isCustom && params.void_B !== undefined ? params.void_B : preset.void_B,
+      void_C: isCustom && params.void_C !== undefined ? params.void_C : preset.void_C,
+      void_D: isCustom && params.void_D !== undefined ? params.void_D : preset.void_D,
+      flow_stress_base_MPa: isCustom && params.flow_stress_base_MPa !== undefined
+        ? params.flow_stress_base_MPa : preset.flow_stress_base_MPa,
+      flow_stress_slope: isCustom && params.flow_stress_slope !== undefined
+        ? params.flow_stress_slope : preset.flow_stress_slope,
+    };
+
     const fd = sampleFormData({
       initial_cross_section: String(params.initial_cross_section),
       initial_length: String(params.initial_length),
       cutting_length: String(params.cutting_length),
+      void_B: String(mat.void_B),
+      void_C: String(mat.void_C),
+      void_D: String(mat.void_D),
+      flow_stress_base_MPa: String(mat.flow_stress_base_MPa),
+      flow_stress_slope: String(mat.flow_stress_slope),
     });
 
     try {
@@ -213,6 +246,7 @@ export async function runWorkflow(
         metrics.feed = r.data?.feed;
         metrics.depthSchedule = r.data?.depth_schedule;
         metrics.numberOfRotation = r.data?.number_of_rotation;
+        metrics.materialId = params.materialId;
       } else {
         s.status = "error";
         s.error = r.error;
@@ -289,4 +323,5 @@ export const METRIC_LABELS: Record<keyof WorkflowOutcome["metrics"], string> = {
   preformVolumeChange: "wf.metric.preformVolumeChange",
   preformGrade:        "wf.metric.preformGrade",
   preformScore:        "wf.metric.preformScore",
+  materialId:          "wf.metric.material",
 };

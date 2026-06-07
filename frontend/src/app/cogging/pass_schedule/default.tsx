@@ -32,6 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { MATERIAL_PRESETS } from "@/lib/materials";
 
 
 export default function PassSchedule () {
@@ -269,50 +270,6 @@ function MechanicalCard ({ label, value, img_src }) {
 /* ============================================================ */
 /* MATERIAL PICKER — preset selector + advanced custom inputs    */
 /* ============================================================ */
-
-type MaterialPreset = {
-  id: string;
-  nameKey: string;
-  // Void-closure polynomial V(ε) = 1 + B·ε + C·ε² + D·ε³
-  void_B: number;
-  void_C: number;
-  void_D: number;
-  // Flow stress σ(T) = base + slope·(1200 − T)   MPa
-  flow_stress_base_MPa: number;
-  flow_stress_slope: number;
-  noteKey: string;
-};
-
-const MATERIAL_PRESETS: MaterialPreset[] = [
-  {
-    id: "aisi4340",
-    nameKey: "cog.mat.aisi4340_name",
-    void_B: -1.521351466, void_C: 0.818014592, void_D: -0.145775097,
-    flow_stress_base_MPa: 80,  flow_stress_slope: 0.6,
-    noteKey: "cog.mat.aisi4340_note",
-  },
-  {
-    id: "aisi1045",
-    nameKey: "cog.mat.aisi1045_name",
-    void_B: -1.32, void_C: 0.74, void_D: -0.12,
-    flow_stress_base_MPa: 70,  flow_stress_slope: 0.55,
-    noteKey: "cog.mat.aisi1045_note",
-  },
-  {
-    id: "inconel718",
-    nameKey: "cog.mat.inconel718_name",
-    void_B: -1.80, void_C: 1.05, void_D: -0.20,
-    flow_stress_base_MPa: 220, flow_stress_slope: 0.8,
-    noteKey: "cog.mat.inconel718_note",
-  },
-  {
-    id: "custom",
-    nameKey: "cog.mat.custom_name",
-    void_B: -1.521351466, void_C: 0.818014592, void_D: -0.145775097,
-    flow_stress_base_MPa: 80,  flow_stress_slope: 0.6,
-    noteKey: "cog.mat.custom_note",
-  },
-];
 
 function MaterialPicker({ formRef }: { formRef: React.RefObject<HTMLFormElement | null> }) {
   const { t } = useT();

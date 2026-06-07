@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ProgramHeader } from "@/components/our/program-header";
 import { runWorkflow, WorkflowParams, StepResult, WorkflowOutcome, METRIC_LABELS } from "@/lib/workflow";
+import { MATERIAL_PRESETS, findPreset } from "@/lib/materials";
 import { ParamHelp } from "@/components/our/param-help";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,7 @@ const DEFAULTS: WorkflowParams = {
   cutting_length: 800,
   target_astm: 6,
   weight_factor: 0.1,
+  materialId: "aisi4340",
   pmap_strain: 0.5,
   pmap_epochs: 500,
   runProcessingMap: true,
@@ -76,8 +78,9 @@ export default function WorkflowPage() {
             cross_section: String(params.initial_cross_section),
             length: String(params.initial_length),
             target_astm: String(params.target_astm),
+            material: params.materialId,
           },
-          summary: `min void closure ${outcome.metrics.minVoidClosure?.toFixed?.(1)}%, passes ${outcome.metrics.numPasses}`,
+          summary: `min void closure ${outcome.metrics.minVoidClosure?.toFixed?.(1)}%, passes ${outcome.metrics.numPasses}, material ${params.materialId}`,
           used_sample: true,
         });
       } else {
@@ -115,6 +118,23 @@ export default function WorkflowPage() {
             <Row label={t("wf.row.weight_factor")} help={t("wf.row.weight_factor_help")}>
               <Input type="number" step={0.01} value={params.weight_factor} onChange={(e) => set("weight_factor", +e.target.value)} className="h-10 bg-slate-50" />
             </Row>
+          </Card>
+
+          <Card title={t("wf.card.material_title")} subtitle={t("wf.card.material_sub")} icon={<span className="text-amber-600">⚒️</span>}>
+            <Row label={t("wf.row.material_preset")} help={t("wf.row.material_help")}>
+              <select
+                value={params.materialId}
+                onChange={(e) => set("materialId", e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-md h-10 px-3 text-sm cursor-pointer"
+              >
+                {MATERIAL_PRESETS.map((m) => (
+                  <option key={m.id} value={m.id}>{t(m.nameKey as any)}</option>
+                ))}
+              </select>
+            </Row>
+            <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+              {t(findPreset(params.materialId).noteKey as any)}
+            </p>
           </Card>
 
           <Card title={t("wf.card.pmap_title")} subtitle={t("wf.card.pmap_sub")} icon={<span className="text-violet-600">🧠</span>}>
