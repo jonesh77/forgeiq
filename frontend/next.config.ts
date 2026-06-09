@@ -23,6 +23,8 @@ const nextConfig: NextConfig = {
       // pretty URL to the actual file. /redesign/assets/* still works as-is.
       { source: "/redesign", destination: "/redesign/index.html" },
       { source: "/redesign/", destination: "/redesign/index.html" },
+      { source: "/redesign-v2", destination: "/redesign-v2/index.html" },
+      { source: "/redesign-v2/", destination: "/redesign-v2/index.html" },
     ];
   },
 };

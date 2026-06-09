@@ -1,0 +1,170 @@
+/* ============================================================================
+   ForgeIQ — Design Tokens : Color + Type
+   AI Metallurgy Simulation Platform · NSMLab, Sogang University
+   ----------------------------------------------------------------------------
+   Source of truth: forgeiq/frontend/src/app/globals.css (shadcn/ui + Tailwind v4)
+   Base neutral scale is zinc (oklch). Brand primary is indigo. Each of the
+   three "programs" owns an accent: Cogging=blue, Processing Map=emerald,
+   3D Preform=violet. Import this file first; everything references these vars.
+   ============================================================================ */
+
+/* ---- Fonts ---------------------------------------------------------------
+   Montserrat = display / headings / wordmark / KPIs.
+   Public Sans = body, UI, numeric. (Both are Google Fonts; the app loads them
+   via next/font. We mirror that with a Google Fonts import here.) */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  /* ---- Font families ---- */
+  --font-display: 'Montserrat', system-ui, -apple-system, sans-serif;  /* headings, wordmark, stat numbers */
+  --font-body:    'Public Sans', system-ui, -apple-system, sans-serif; /* body, UI, forms */
+  --font-mono:    'Public Sans', ui-monospace, 'SF Mono', Menlo, monospace; /* logs / tabular — app uses Public Sans here too */
+
+  /* ======================================================================
+     NEUTRALS — zinc scale (Tailwind). The shadcn oklch tokens map onto these.
+     ====================================================================== */
+  --slate-950: #020617;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-400: #94a3b8;
+  --slate-300: #cbd5e1;
+  --slate-200: #e2e8f0;
+  --slate-100: #f1f5f9;
+  --slate-50:  #f8fafc;
+  --white:     #ffffff;
+
+  /* ======================================================================
+     BRAND — Indigo (primary) + Violet (secondary brand gradient partner)
+     ====================================================================== */
+  --indigo-700: #4338ca;
+  --indigo-600: #4f46e5;   /* PRIMARY — wordmark "IQ", links, primary accents */
+  --indigo-500: #6366f1;
+  --indigo-400: #818cf8;
+  --indigo-300: #a5b4fc;   /* shimmer highlight, dark-bg text */
+  --indigo-200: #c7d2fe;
+  --indigo-100: #e0e7ff;
+  --indigo-50:  #eef2ff;
+  --violet-600: #7c3aed;
+  --violet-500: #8b5cf6;
+  --violet-300: #c4b5fd;
+  --fuchsia-500:#d946ef;
+
+  /* ======================================================================
+     PROGRAM ACCENTS — each program page is themed by one accent ramp.
+     ====================================================================== */
+  /* Cogging — industrial BLUE */
+  --cog-700: #1d4ed8;
+  --cog-600: #2563eb;
+  --cog-500: #3b82f6;
+  --cog-300: #93c5fd;
+  --cog-100: #dbeafe;
+  --cog-50:  #eff6ff;
+  --cog-grad: linear-gradient(135deg, #2563eb, #4f46e5); /* @kind color */
+
+  /* Processing Map — scientific EMERALD/TEAL */
+  --pmap-700: #047857;
+  --pmap-600: #059669;
+  --pmap-500: #10b981;
+  --pmap-teal:#14b8a6;
+  --pmap-300: #6ee7b7;
+  --pmap-100: #d1fae5;
+  --pmap-50:  #ecfdf5;
+  --pmap-grad: linear-gradient(135deg, #059669, #0d9488); /* @kind color */
+
+  /* 3D Preform — holographic VIOLET/FUCHSIA */
+  --pre-700: #6d28d9;
+  --pre-600: #7c3aed;
+  --pre-500: #8b5cf6;
+  --pre-fuchsia: #c026d3;
+  --pre-300: #c4b5fd;
+  --pre-100: #ede9fe;
+  --pre-50:  #faf5ff;
+  --pre-grad: linear-gradient(135deg, #7c3aed, #c026d3); /* @kind color */
+
+  /* ======================================================================
+     SEMANTIC — feasibility chips (pass schedule), states, accents
+     ====================================================================== */
+  --ok-700:  #047857;  --ok-600:  #059669;  --ok-100: #d1fae5;  --ok-50: #ecfdf5; /* green  — feasible */
+  --warn-700:#b45309;  --warn-600:#d97706;  --warn-100:#fef3c7; --warn-50:#fffbeb; /* amber  — marginal / demo / AI */
+  --bad-700: #b91c1c;  --bad-600: #dc2626;  --bad-100: #fee2e2; --bad-50: #fef2f2; /* red    — overload / error */
+  --amber-500: #f59e0b; /* the "sparkle" / Ask-AI star */
+
+  /* NSMLab brand-mark ink (from logo.png) */
+  --nsm-navy: #0a2a4a;
+  --nsm-teal: #0d5c63;
+
+  /* ======================================================================
+     SEMANTIC SURFACE TOKENS (shadcn naming → hex for static HTML)
+     ====================================================================== */
+  --background: var(--white);
+  --foreground: var(--slate-900);
+  --card: var(--white);
+  --card-foreground: var(--slate-900);
+  --primary: var(--slate-900);          /* app primary button = slate-900 */
+  --primary-foreground: var(--slate-50);
+  --muted: var(--slate-100);
+  --muted-foreground: var(--slate-500);
+  --border: var(--slate-200);
+  --input: var(--slate-200);
+  --ring: var(--indigo-400);
+  --link: var(--indigo-600);
+
+  /* Dark hero surface gradient (landing / login / capabilities) */
+  --hero-grad: linear-gradient(135deg, #020617, #0f172a 45%, #1e1b4b); /* @kind color */
+
+  /* ======================================================================
+     RADII · SHADOWS · SPACING
+     ====================================================================== */
+  --radius: 0.625rem;                 /* 10px — base shadcn --radius */
+  --radius-sm: calc(var(--radius) - 4px);  /* 6px  */
+  --radius-md: calc(var(--radius) - 2px);  /* 8px  */
+  --radius-lg: var(--radius);              /* 10px — buttons, inputs */
+  --radius-xl: calc(var(--radius) + 4px);  /* 14px */
+  --radius-2xl: 1rem;                  /* 16px — cards (rounded-2xl) */
+  --radius-3xl: 1.5rem;                /* 24px — feature panels */
+  --radius-full: 9999px;              /* pills, CTAs, avatars */
+
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+  --shadow-lg: 0 12px 32px -10px rgb(0 0 0 / 0.18);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  /* Accent glows used on card hover */
+  --glow-blue:    0 0 0 1px rgba(59,130,246,0.45), 0 12px 32px -10px rgba(59,130,246,0.30), 0 0 50px -10px rgba(99,102,241,0.25);
+  --glow-emerald: 0 0 0 1px rgba(16,185,129,0.45), 0 12px 32px -10px rgba(16,185,129,0.30), 0 0 50px -10px rgba(20,184,166,0.25);
+  --glow-violet:  0 0 0 1px rgba(139,92,246,0.45), 0 12px 32px -10px rgba(139,92,246,0.30), 0 0 50px -10px rgba(217,70,239,0.25);
+
+  /* 4px base spacing scale (Tailwind) */
+  --space-1: 0.25rem; --space-2: 0.5rem;  --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.25rem; --space-6: 1.5rem;  --space-8: 2rem;    --space-10: 2.5rem;
+  --space-12: 3rem;   --space-16: 4rem;   --space-24: 6rem;
+}
+
+/* ============================================================================
+   TYPE — semantic roles. Sizes mirror the live app (html base is 115% on
+   desktop, so rem values run ~15% larger than nominal). Values below are the
+   effective px at desktop.
+   ============================================================================ */
+
+/* Display / hero — Montserrat bold, tight tracking */
+.fiq-display   { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.75rem, 6vw, 6rem); line-height: 1.05; letter-spacing: -0.02em; }
+.fiq-h1        { font-family: var(--font-display); font-weight: 700; font-size: 3rem;    line-height: 1.08; letter-spacing: -0.02em; }
+.fiq-h2        { font-family: var(--font-display); font-weight: 700; font-size: 2.25rem; line-height: 1.1;  letter-spacing: -0.015em; }
+.fiq-h3        { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem;  line-height: 1.2;  letter-spacing: -0.01em; }
+.fiq-stat      { font-family: var(--font-display); font-weight: 700; font-size: 2.25rem; line-height: 1;    letter-spacing: -0.01em; }
+
+/* Body / UI — Public Sans */
+.fiq-lead      { font-family: var(--font-body); font-weight: 400; font-size: 1.25rem; line-height: 1.6; color: var(--slate-600); }
+.fiq-body      { font-family: var(--font-body); font-weight: 400; font-size: 1rem;    line-height: 1.6; color: var(--slate-600); }
+.fiq-sm        { font-family: var(--font-body); font-weight: 400; font-size: 0.875rem; line-height: 1.55; color: var(--slate-600); }
+.fiq-label     { font-family: var(--font-body); font-weight: 500; font-size: 0.75rem; line-height: 1.4; color: var(--slate-700); }
+/* Eyebrow / kicker — uppercase tracked indigo */
+.fiq-eyebrow   { font-family: var(--font-body); font-weight: 600; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--indigo-600); }
+.fiq-kicker    { font-family: var(--font-body); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3em; color: var(--indigo-300); }
+/* Mono — logs, code, tabular numerics */
+.fiq-mono      { font-family: var(--font-mono); font-weight: 400; font-size: 0.6875rem; line-height: 1.5; font-variant-numeric: tabular-nums; }
+
+body { font-family: var(--font-body); color: var(--foreground); background: var(--background); }
