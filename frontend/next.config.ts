@@ -16,6 +16,15 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "50mb",
     },
   },
+  async rewrites() {
+    return [
+      // Static design-system preview lives under public/redesign/. Next.js
+      // doesn't auto-resolve index.html for public folders, so we map the
+      // pretty URL to the actual file. /redesign/assets/* still works as-is.
+      { source: "/redesign", destination: "/redesign/index.html" },
+      { source: "/redesign/", destination: "/redesign/index.html" },
+    ];
+  },
 };
 
 export default nextConfig;
