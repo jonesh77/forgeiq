@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PiBrain, PiFlask, PiGitBranch } from "react-icons/pi";
 import { HiSparkles } from "react-icons/hi2";
-import { LuArrowRight, LuLifeBuoy, LuYoutube, LuLinkedin } from "react-icons/lu";
+import { LuArrowRight, LuLifeBuoy, LuLinkedin, LuGraduationCap } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { useInView } from "@/lib/use-in-view";
@@ -297,9 +297,9 @@ export default function LandingPage() {
               <a href="#" className="block text-sm py-1.5 hover:text-white">Research</a>
               <a href="#" className="block text-sm py-1.5 hover:text-white">Contact</a>
               <div className="flex gap-3 mt-5">
-                <a href="https://github.com/jonesh77/forgeiq" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><FaGithub /></a>
-                <a href="#" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><LuLinkedin /></a>
-                <a href="#" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><LuYoutube /></a>
+                <a href="https://github.com/jonesh77/forgeiq" target="_blank" rel="noopener noreferrer" title="GitHub" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><FaGithub /></a>
+                <a href="https://www.linkedin.com/in/alibek-yuldoshev-a980b5413" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><LuLinkedin /></a>
+                <a href="https://sciprofiles.com/profile/Alibek-Yuldoshev" target="_blank" rel="noopener noreferrer" title="SciProfiles" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><LuGraduationCap /></a>
               </div>
             </div>
           </div>
