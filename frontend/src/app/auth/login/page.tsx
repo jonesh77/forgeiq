@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image"
-import logo from "../../../../public/logo.png"
-import { NsmLogo } from "@/components/our/nsm-logo"
+import { ForgeIqBrand } from "@/components/our/forgeiq-brand"
 import { Input } from "@/components/ui/input"
 import { PasswordInput } from "@/components/our/password-input"
 import { Button } from "@/components/ui/button"
@@ -31,7 +29,7 @@ export default function LoginPage() {
                 <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_20%_20%,white_1px,transparent_1px)] [background-size:24px_24px]"></div>
 
                 <div className="relative">
-                    <NsmLogo variant="dark" />
+                    <ForgeIqBrand variant="dark" />
                 </div>
 
                 <div className="relative">
@@ -74,7 +72,7 @@ export default function LoginPage() {
 
                 <div className="w-full max-w-sm">
                     <div className="lg:hidden mb-8 flex justify-center">
-                        <NsmLogo variant="light" />
+                        <ForgeIqBrand variant="light" />
                     </div>
 
                     <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">{t("common.login_creds")}</h2>

@@ -62,15 +62,15 @@ const dict = {
     "auth.forgot.submit": "Send new password",
     "auth.forgot.sending": "Sending...",
 
-    "auth.brand.by_nsmlab": "by NSMLab",
-    "auth.brand.tagline": "Intelligence for forging design. Train cogging models, explore processing maps, and generate 3D preforms — a single workbench for hot-working research and production.",
+    "auth.brand.by_nsmlab": "AI Metallurgy Ecosystem",
+    "auth.brand.tagline": "Closed-loop, AI-driven process design for hot-forging and cogging. Engineering that turns weeks of iteration into seconds.",
     "auth.brand.feat_cogging_title": "Cogging Program",
     "auth.brand.feat_cogging_desc": "Neural-network predictor + 7-pass schedule optimizer.",
     "auth.brand.feat_pmap_title": "Processing Map",
     "auth.brand.feat_pmap_desc": "2D / 3D dissipation & instability maps with FEM overlays.",
     "auth.brand.feat_preform_title": "3D Preform",
     "auth.brand.feat_preform_desc": "U-Net voxel prediction → smoothed STL geometry.",
-    "auth.brand.footer_suffix": "ForgeIQ · by NSMLab · Sogang University",
+    "auth.brand.footer_suffix": "ForgeIQ · by Y. Alibek",
 
     "auth.login.subtitle": "Sign in to continue to your workbench.",
 
@@ -1049,15 +1049,15 @@ const dict = {
     "auth.forgot.submit": "Yangi parol yuborish",
     "auth.forgot.sending": "Yuborilmoqda...",
 
-    "auth.brand.by_nsmlab": "NSMLab tomonidan",
-    "auth.brand.tagline": "Forging dizayni uchun aql. Cogging modellarini o'qiting, processing maplarni o'rganing va 3D preformlar yarating — issiq qayta ishlash tadqiqotlari va ishlab chiqarish uchun yagona ish stoli.",
+    "auth.brand.by_nsmlab": "AI Metallurgiya Ekosistemasi",
+    "auth.brand.tagline": "Issiq qiyofalash va cogging uchun yopiq tsikl, AI asosidagi jarayon dizayni. Haftalik takrorlanishlarni soniyalarga aylantiruvchi muhandislik.",
     "auth.brand.feat_cogging_title": "Cogging Dasturi",
     "auth.brand.feat_cogging_desc": "Neyron tarmoq prediktor + 7 pass schedule optimizatori.",
     "auth.brand.feat_pmap_title": "Processing Map",
     "auth.brand.feat_pmap_desc": "FEM qatlamlari bilan 2D / 3D dissipatsiya va beqarorlik xaritalari.",
     "auth.brand.feat_preform_title": "3D Preform",
     "auth.brand.feat_preform_desc": "U-Net voxel bashorat → silliqlangan STL geometriya.",
-    "auth.brand.footer_suffix": "ForgeIQ · NSMLab · Sogang University",
+    "auth.brand.footer_suffix": "ForgeIQ · Y. Alibek tomonidan",
 
     "auth.login.subtitle": "Ish stolingizga davom etish uchun tizimga kiring.",
 
@@ -2019,15 +2019,15 @@ const dict = {
     "auth.forgot.submit": "새 비밀번호 보내기",
     "auth.forgot.sending": "전송 중...",
 
-    "auth.brand.by_nsmlab": "NSMLab 제공",
-    "auth.brand.tagline": "단조 설계를 위한 지능. 코깅 모델을 학습하고, 프로세싱 맵을 탐색하며 3D 프리폼을 생성하세요 — 열간 가공 연구 및 생산을 위한 단일 워크벤치입니다.",
+    "auth.brand.by_nsmlab": "AI 야금 생태계",
+    "auth.brand.tagline": "열간 단조와 코깅을 위한 폐쇄 루프 AI 공정 설계. 주 단위의 반복을 초 단위로 단축하는 엔지니어링.",
     "auth.brand.feat_cogging_title": "코깅 프로그램",
     "auth.brand.feat_cogging_desc": "신경망 예측기 + 7-패스 스케줄 최적화.",
     "auth.brand.feat_pmap_title": "프로세싱 맵",
     "auth.brand.feat_pmap_desc": "FEM 오버레이가 포함된 2D / 3D 소산 및 불안정성 맵.",
     "auth.brand.feat_preform_title": "3D 프리폼",
     "auth.brand.feat_preform_desc": "U-Net 복셀 예측 → 매끄러운 STL 지오메트리.",
-    "auth.brand.footer_suffix": "ForgeIQ · NSMLab · Sogang University",
+    "auth.brand.footer_suffix": "ForgeIQ · by Y. Alibek",
 
     "auth.login.subtitle": "워크벤치를 계속 사용하려면 로그인하세요.",
 
