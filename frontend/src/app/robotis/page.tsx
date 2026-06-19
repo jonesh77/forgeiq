@@ -14,7 +14,8 @@ import { TbChartArea } from "react-icons/tb";
 import { HiSparkles } from "react-icons/hi2";
 import { LuArrowRight, LuLifeBuoy, LuYoutube, LuLinkedin } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa6";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useInView } from "@/lib/use-in-view";
 
 /**
  * Robotis-style ecosystem landing page (port of Design System 7's
@@ -261,12 +262,20 @@ export default function RobotisLanding() {
                 Forge<span className="text-indigo-400">IQ</span>
               </Link>
               <p className="text-[13.5px] leading-relaxed mt-4 max-w-xs">
-                AI Metallurgy Simulation Platform. A closed-loop, AI-driven process-design workbench for hot-forging and cogging.
+                AI Metallurgy Simulation Platform. A closed-loop, AI-driven process-design workbench for hot-forging and cogging — built by Y. Alibek with research support from NSMLab, Sogang University.
               </p>
-              <span className="inline-flex bg-white rounded-lg p-2 mt-5">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/redesign-v3/assets/nsmlab-logo.png" alt="NSMLAB" className="h-7 block" />
-              </span>
+              <div className="flex items-center gap-2.5 mt-5">
+                {/* ForgeIQ emblem — our own brand mark (icon.svg, indigo F + accent dot) */}
+                <span className="inline-flex bg-white rounded-lg p-1.5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/icon.svg" alt="ForgeIQ" className="h-9 w-9 block" />
+                </span>
+                {/* NSMLab supporting lab lockup */}
+                <span className="inline-flex bg-white rounded-lg p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/redesign-v3/assets/nsmlab-logo.png" alt="NSMLAB" className="h-7 block" />
+                </span>
+              </div>
             </div>
             <FootCol heading={t("home.nav.programs")} links={[
               ["/cogging", t("home.programs.cog.title")],
@@ -293,7 +302,7 @@ export default function RobotisLanding() {
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-between gap-4 py-6 text-[12.5px]">
-            <span>© {new Date().getFullYear()} ForgeIQ · NSMLab, Sogang University. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} ForgeIQ — Developed by Y. Alibek · Supported by NSMLab, Sogang University. All rights reserved.</span>
             <span className="flex gap-5">
               <a href="#" className="hover:text-white">Privacy</a>
               <a href="#" className="hover:text-white">Cookies</a>
@@ -334,17 +343,29 @@ const ACCENT_STYLE: Record<string, { bg: string; text: string }> = {
 };
 
 function ProgramSeries({
-  num, accent, tag, title, subtitle, desc, specs, href, openLabel, viz, figLabel, flip,
+  num, accent, tag, subtitle, desc, specs, href, openLabel, viz, figLabel, flip,
 }: {
   num: string; accent: keyof typeof ACCENT_STYLE; tag: string; title: string;
   subtitle: string; desc: string; specs: { v: string; l: string }[];
   href: string; openLabel: string; viz: React.ReactNode; figLabel: string; flip?: boolean;
 }) {
   const a = ACCENT_STYLE[accent];
+  // Two refs — text and visual reveal independently, sliding in from opposite
+  // sides (text from text-side, visual from visual-side) with a soft pop-up.
+  const [txtRef, txtSeen] = useInView<HTMLDivElement>(0.18);
+  const [vizRef, vizSeen] = useInView<HTMLDivElement>(0.18);
+  const txtFromLeft = !flip;
+  const txtTransform = txtSeen ? "translate3d(0,0,0)" : `translate3d(${txtFromLeft ? "-80px" : "80px"}, 28px, 0)`;
+  const vizTransform = vizSeen ? "translate3d(0,0,0)" : `translate3d(${txtFromLeft ? "80px" : "-80px"}, 28px, 0)`;
+  const ease = "transform 1s cubic-bezier(0.16,1,0.3,1), opacity 1s ease";
   return (
-    <section className={"border-b border-slate-200 " + (flip ? "bg-slate-50" : "bg-white")}>
+    <section className={"border-b border-slate-200 overflow-hidden " + (flip ? "bg-slate-50" : "bg-white")}>
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-24 lg:py-28 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-        <div className={flip ? "lg:order-2" : ""}>
+        <div
+          ref={txtRef}
+          className={flip ? "lg:order-2" : ""}
+          style={{ transform: txtTransform, opacity: txtSeen ? 1 : 0, transition: ease, willChange: "transform, opacity" }}
+        >
           <span className={"inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase " + a.bg + " " + a.text}>
             {num} · {tag}
           </span>
@@ -367,7 +388,11 @@ function ProgramSeries({
             </span>
           </Link>
         </div>
-        <div className={"relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 aspect-[4/3] shadow-2xl shadow-slate-900/40 " + (flip ? "lg:order-1" : "")}>
+        <div
+          ref={vizRef}
+          className={"relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 aspect-[4/3] shadow-2xl shadow-slate-900/40 " + (flip ? "lg:order-1" : "")}
+          style={{ transform: vizTransform, opacity: vizSeen ? 1 : 0, transition: ease, willChange: "transform, opacity" }}
+        >
           <span className="absolute top-4 left-5 font-mono text-xs text-white bg-slate-950/60 px-2.5 py-1 rounded backdrop-blur-sm z-10">
             {figLabel}
           </span>
