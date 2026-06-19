@@ -9,12 +9,11 @@ import { toggleAiAssistant } from "@/components/our/ai-assistant";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PiCompassTool, PiCube, PiBrain, PiLightning, PiFlask, PiArrowsClockwise, PiGitBranch } from "react-icons/pi";
-import { TbChartArea } from "react-icons/tb";
+import { PiBrain, PiFlask, PiGitBranch } from "react-icons/pi";
 import { HiSparkles } from "react-icons/hi2";
 import { LuArrowRight, LuLifeBuoy, LuYoutube, LuLinkedin } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa6";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "@/lib/use-in-view";
 
 /**
@@ -55,8 +54,12 @@ export default function RobotisLanding() {
       {/* NAV — sticky, white bg */}
       <nav className="sticky top-0 z-40 bg-white/92 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 h-[76px] flex items-center justify-between">
-          <Link href="/" className="text-2xl font-extrabold font-montserrat tracking-tight">
-            Forge<span className="text-indigo-600">IQ</span>
+          <Link href="/" className="flex items-center gap-2.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/forgeiq-mark.svg" alt="" className="h-9 w-9 rounded-lg" />
+            <span className="text-2xl font-extrabold font-montserrat tracking-tight">
+              Forge<span className="text-indigo-600">IQ</span>
+            </span>
           </Link>
           <div className="flex items-center gap-1">
             <a href="#programs" className="hidden md:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-slate-600 hover:text-slate-900 px-4 py-2.5 rounded-lg hover:bg-slate-50">{t("home.nav.programs")}</a>
@@ -265,12 +268,10 @@ export default function RobotisLanding() {
                 AI Metallurgy Simulation Platform. A closed-loop, AI-driven process-design workbench for hot-forging and cogging — built by Y. Alibek with research support from NSMLab, Sogang University.
               </p>
               <div className="flex items-center gap-2.5 mt-5">
-                {/* ForgeIQ emblem — our own brand mark (icon.svg, indigo F + accent dot) */}
-                <span className="inline-flex bg-white rounded-lg p-1.5">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/icon.svg" alt="ForgeIQ" className="h-9 w-9 block" />
-                </span>
-                {/* NSMLab supporting lab lockup */}
+                {/* ForgeIQ emblem — dark mark matches site nav: slate-900 + white F + indigo dot */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/forgeiq-mark.svg" alt="ForgeIQ" className="h-12 w-12 block" />
+                {/* NSMLab supporting lab lockup — kept in white pill since the source PNG has white background */}
                 <span className="inline-flex bg-white rounded-lg p-2">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/redesign-v3/assets/nsmlab-logo.png" alt="NSMLAB" className="h-7 block" />
