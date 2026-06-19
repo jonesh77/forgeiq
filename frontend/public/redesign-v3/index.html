@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ForgeIQ — AI Metallurgy Platform</title>
+<link rel="stylesheet" href="colors_and_type.css" />
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  :root { --bg: #060912; --bg2: #0b1020; --line: rgba(255,255,255,0.10); --fg: #f3f5fb; --fg2: #aab3c8; --fg3: #6b7689; --acc: #818cf8; --acc2: #6366f1; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { text-decoration: none; color: inherit; }
+  ::selection { background: rgba(99,102,241,0.4); }
+  /* site-wide live ambient background */
+  #siteCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  /* lift all content above the ambient canvas; transparent sections let it show through */
+  nav, .hero, section, footer { position: relative; z-index: 1; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+  .disp { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.035em; line-height: 0.98; }
+  .mono { font-family: var(--font-mono); }
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  svg.li { width: 1em; height: 1em; }
+
+  /* ---------- NAV ---------- */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: background .4s, border-color .4s, backdrop-filter .4s; border-bottom: 1px solid transparent; }
+  nav.scrolled { background: rgba(6,9,18,0.72); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+  .nav-in { height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -0.03em; }
+  .brand span { color: var(--acc); }
+  .nav-links { display: flex; align-items: center; gap: 38px; }
+  .nav-links a { font-size: 14px; color: var(--fg2); transition: color .2s; }
+  .nav-links a:hover { color: var(--fg); }
+  .nav-cta { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 20px; border-radius: 999px; background: var(--fg); color: #0a0a0a; font-size: 14px; font-weight: 600; transition: transform .2s, background .2s; }
+  .nav-cta:hover { transform: translateY(-1px); background: #fff; }
+  @media (max-width: 880px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+  /* ---------- HERO ---------- */
+  .hero { position: relative; min-height: 100vh; display: flex; align-items: flex-end; overflow: hidden; }
+  .hero-media { position: absolute; inset: 0; z-index: 0; }
+  .hero-media img, .hero-media video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .hero-media img { transform: scale(1.08); animation: kenburns 24s ease-in-out infinite alternate; filter: saturate(0.9) contrast(1.05); }
+  .hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+  @keyframes kenburns { from { transform: scale(1.08) translate(0,0); } to { transform: scale(1.22) translate(-2%,-3%); } }
+  .hero-media::after { content: ""; position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, rgba(6,9,18,0.62) 0%, rgba(6,9,18,0.35) 40%, rgba(6,9,18,0.86) 82%, var(--bg) 100%); }
+  .hero-media::before { content: ""; position: absolute; inset: 0; z-index: 1; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(circle at 50% 40%, #000 30%, transparent 78%); opacity: 0.5; }
+  .hero-in { position: relative; z-index: 2; width: 100%; padding-bottom: 72px; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--acc); margin-bottom: 30px; }
+  .hero-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--acc); box-shadow: 0 0 12px var(--acc); animation: blink 2.4s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .hero h1 { font-size: clamp(3.2rem, 9vw, 8.2rem); margin-bottom: 30px; }
+  .hero h1 .dim { color: var(--fg3); }
+  .hero h1 .acc { background: linear-gradient(100deg, #a5b4fc, #818cf8, #c4b5fd); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-sub { max-width: 560px; font-size: 19px; line-height: 1.6; color: var(--fg2); margin-bottom: 38px; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 28px; border-radius: 999px; background: var(--fg); color: #0a0a0a; font-size: 16px; font-weight: 600; transition: transform .2s, box-shadow .3s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -14px rgba(255,255,255,0.4); }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 26px; border-radius: 999px; border: 1px solid var(--line); color: var(--fg); font-size: 16px; font-weight: 500; transition: background .2s, border-color .2s; }
+  .btn-ghost:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.25); }
+  .scrollcue { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg3); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .scrollcue .bar { width: 1px; height: 38px; background: linear-gradient(var(--fg3), transparent); animation: drop 2s ease-in-out infinite; }
+  @keyframes drop { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+  /* ---------- STATEMENT ---------- */
+  .statement { padding: 150px 0; border-bottom: 1px solid var(--line); }
+  .statement .kick { font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg3); margin-bottom: 36px; }
+  .statement p { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.9rem, 4.2vw, 3.6rem); line-height: 1.18; letter-spacing: -0.02em; max-width: 1000px; }
+  .statement p em { font-style: normal; color: var(--fg3); }
+  .statement p b { font-weight: 600; color: var(--acc); }
+
+  /* ---------- PROGRAMS (numbered) ---------- */
+  .prog { border-bottom: 1px solid var(--line); padding: 120px 0; }
+  .prog-in { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .prog:nth-child(even) .prog-text { order: 2; }
+  .prog-num { font-family: var(--font-mono); font-size: 15px; color: var(--acc); margin-bottom: 26px; letter-spacing: 0.1em; }
+  .prog h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 4.4vw, 3.6rem); letter-spacing: -0.03em; line-height: 1.02; margin-bottom: 22px; }
+  .prog .lead { font-size: 18px; line-height: 1.65; color: var(--fg2); max-width: 460px; margin-bottom: 30px; }
+  .prog .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 34px; }
+  .prog .tag { font-size: 13px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); color: var(--fg2); }
+  .prog .link { display: inline-flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 600; color: var(--fg); transition: gap .2s; }
+  .prog .link:hover { gap: 15px; }
+  .prog-visual { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); background: var(--bg2); aspect-ratio: 4/3; box-shadow: 0 40px 80px -40px rgba(0,0,0,0.8); }
+  .prog-visual img { width: 100%; height: 100%; object-fit: cover; }
+  .prog-visual .glow { position: absolute; inset: -2px; z-index: -1; }
+  @media (max-width: 900px) { .prog-in { grid-template-columns: 1fr; gap: 40px; } .prog:nth-child(even) .prog-text { order: 0; } }
+
+  /* ---------- METRICS ---------- */
+  .metrics { padding: 130px 0; border-bottom: 1px solid var(--line); }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+  .metric .v { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.6rem, 5vw, 4.6rem); letter-spacing: -0.04em; line-height: 1; }
+  .metric .v .u { color: var(--acc); }
+  .metric .l { font-size: 14px; color: var(--fg3); margin-top: 14px; line-height: 1.4; }
+  @media (max-width: 760px) { .metrics-grid { grid-template-columns: 1fr 1fr; gap: 48px 30px; } }
+
+  /* ---------- CLOSED LOOP ---------- */
+  .loop { padding: 140px 0; text-align: center; border-bottom: 1px solid var(--line); position: relative; overflow: hidden; }
+  .loop .glowblob { position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(99,102,241,0.16), transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+  .loop .kick { position: relative; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--acc); margin-bottom: 26px; }
+  .loop h2 { position: relative; font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 5vw, 4.2rem); letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 28px; }
+  .loop h2 .dim { color: var(--fg3); }
+  .loop .lead { position: relative; max-width: 540px; margin: 0 auto 44px; font-size: 18px; line-height: 1.6; color: var(--fg2); }
+  .loop-steps { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .loop-step { display: inline-flex; align-items: center; gap: 10px; padding: 13px 20px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.03); font-size: 14.5px; color: var(--fg); }
+  .loop-step .n { font-family: var(--font-mono); font-size: 12px; color: var(--acc); }
+  .loop-arrow { display: inline-flex; align-items: center; color: var(--fg3); }
+  @media (max-width: 700px) { .loop-arrow { display: none; } .loop-step { width: 100%; justify-content: center; } }
+
+  /* ---------- BACKED BY ---------- */
+  .backed { padding: 110px 0; border-bottom: 1px solid var(--line); }
+  .backed .kick { text-align: center; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg3); margin-bottom: 44px; }
+  .backed-row { display: flex; align-items: center; justify-content: center; gap: 24px; }
+  .backed-card { display: flex; align-items: center; gap: 18px; padding: 22px 30px; border-radius: 16px; border: 1px solid var(--line); background: rgba(255,255,255,0.02); }
+  .backed-card img { height: 46px; background: #fff; padding: 7px 10px; border-radius: 9px; }
+  .backed-card .t { font-family: var(--font-display); font-weight: 700; font-size: 17px; }
+  .backed-card .s { font-size: 13px; color: var(--fg3); margin-top: 3px; }
+
+  /* ---------- CTA ---------- */
+  .final { padding: 170px 0; text-align: center; position: relative; overflow: hidden; }
+  .final h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 8vw, 7rem); letter-spacing: -0.04em; line-height: 0.98; margin-bottom: 36px; }
+  .final h2 .acc { background: linear-gradient(100deg, #a5b4fc, #c4b5fd); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .final .lead { font-size: 19px; color: var(--fg2); margin-bottom: 44px; }
+  .final .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(circle at 50% 50%, #000, transparent 70%); opacity: 0.4; }
+
+  /* ---------- FOOTER ---------- */
+  footer { padding: 50px 0; border-top: 1px solid var(--line); }
+  .foot-in { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+  .foot-links { display: flex; gap: 28px; font-size: 14px; color: var(--fg2); }
+  .foot-links a:hover { color: var(--fg); }
+  .foot-copy { font-size: 13px; color: var(--fg3); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-media img { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .scrollcue .bar, .hero-eyebrow .dot { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="siteCanvas"></canvas>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a href="#" class="brand">Forge<span>IQ</span></a>
+    <div class="nav-links">
+      <a href="#programs">Programs</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#backed">About</a>
+      <a href="dashboard.html" class="nav-cta">Launch app <svg class="li" data-lucide="arrow-up-right"></svg></a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-media">
+    <!-- Living animated forge scene (canvas) — no photo needed. To use a real clip instead: drop assets/hero.mp4 and uncomment the <video>; it sits above the canvas, under the overlay. -->
+    <!-- <video autoplay muted loop playsinline poster="assets/bg-forge.jpg"><source src="assets/hero.mp4" type="video/mp4" /></video> -->
+    <canvas class="hero-canvas" id="forgeCanvas"></canvas>
+  </div>
+  <div class="wrap hero-in">
+    <div class="hero-eyebrow reveal"><span class="dot"></span> AI Metallurgy Platform · NSMLab</div>
+    <h1 class="disp reveal">Design forgings,<br><span class="acc">not meshes.</span></h1>
+    <p class="hero-sub reveal">Trained neural surrogates replace the slow finite-element loop — explore the design space, validate a pass schedule, and ship a 3D preform in a single session.</p>
+    <div class="hero-cta reveal">
+      <a href="dashboard.html" class="btn-primary">Launch the workbench <svg class="li" data-lucide="arrow-right"></svg></a>
+      <a href="#pipeline" class="btn-ghost"><svg class="li" data-lucide="play"></svg> Watch the pipeline</a>
+    </div>
+  </div>
+  <div class="scrollcue"><span>Scroll</span><span class="bar"></span></div>
+</header>
+
+<!-- STATEMENT -->
+<section class="statement">
+  <div class="wrap">
+    <div class="kick reveal">The bottleneck</div>
+    <p class="reveal">Every forging shop is racing toward <b>first-time-right</b> design — <em>and the cost is weeks of finite-element iteration.</em> ForgeIQ removes that bottleneck with trained surrogates, delivered as one closed-loop workbench.</p>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<div id="programs">
+  <section class="prog">
+    <div class="wrap prog-in">
+      <div class="prog-text reveal">
+        <div class="prog-num">01 — Cogging</div>
+        <h2 class="disp">Void closure,<br>predicted.</h2>
+        <p class="lead">Surrogate models estimate final void volume from grain size, weight factor and your per-pass schedule — then check every pass against your press.</p>
+        <div class="tags"><span class="tag">MLP</span><span class="tag">Gradient boosting</span><span class="tag">Pass schedule</span></div>
+        <a href="dashboard.html" class="link">Explore Cogging <svg class="li" data-lucide="arrow-right"></svg></a>
+      </div>
+      <div class="prog-visual reveal"><img src="assets/cogging-plot.png" alt="Void closure plot" /></div>
+    </div>
+  </section>
+
+  <section class="prog">
+    <div class="wrap prog-in">
+      <div class="prog-text reveal">
+        <div class="prog-num">02 — Processing Map</div>
+        <h2 class="disp">Find the safe<br>window.</h2>
+        <p class="lead">Prasad-criterion power-dissipation (η) and instability (ξ) heatmaps over temperature and strain rate. The PINN surrogate maps where it's safe to forge.</p>
+        <div class="tags"><span class="tag">PINN</span><span class="tag">η / ξ maps</span><span class="tag">2D / 3D</span></div>
+        <a href="dashboard.html" class="link">Explore Processing Map <svg class="li" data-lucide="arrow-right"></svg></a>
+      </div>
+      <div class="prog-visual reveal"><img src="assets/mesh-quality-grades.png" alt="Processing map grades" /></div>
+    </div>
+  </section>
+
+  <section class="prog">
+    <div class="wrap prog-in">
+      <div class="prog-text reveal">
+        <div class="prog-num">03 — 3D Preform</div>
+        <h2 class="disp">Voxel to<br>watertight STL.</h2>
+        <p class="lead">An attention U-Net turns a target shape into a manufacturable preform — returning a watertight mesh and a manufacturability grade from A to D.</p>
+        <div class="tags"><span class="tag">Attention U-Net</span><span class="tag">Watertight</span><span class="tag">Grade A–D</span></div>
+        <a href="dashboard.html" class="link">Explore 3D Preform <svg class="li" data-lucide="arrow-right"></svg></a>
+      </div>
+      <div class="prog-visual reveal"><img src="assets/before-after.png" alt="Before / after preform" /></div>
+    </div>
+  </section>
+</div>
+
+<!-- METRICS -->
+<section class="metrics">
+  <div class="wrap metrics-grid">
+    <div class="metric reveal"><div class="v"><span data-count="60" data-prefix="≤">≤60</span><span class="u">s</span></div><div class="l">Per surrogate run, not weeks</div></div>
+    <div class="metric reveal"><div class="v"><span data-count="96.1" data-dec="1">96.1</span><span class="u">%</span></div><div class="l">Surrogate accuracy</div></div>
+    <div class="metric reveal"><div class="v"><span data-count="4">4</span></div><div class="l">Programs in one closed loop</div></div>
+    <div class="metric reveal"><div class="v"><span data-count="14" data-prefix="−">−14</span><span class="u">d</span></div><div class="l">Cut from each iteration</div></div>
+  </div>
+</section>
+
+<!-- CLOSED LOOP -->
+<section class="loop" id="pipeline">
+  <div class="glowblob"></div>
+  <div class="wrap">
+    <div class="kick reveal">Auto Pipeline</div>
+    <h2 class="disp reveal">One click. Four surrogates.<br><span class="dim">A finished preform.</span></h2>
+    <p class="lead reveal">The Auto Pipeline chains every stage into a single closed loop — re-running toward your target until the preform grades out.</p>
+    <div class="loop-steps reveal">
+      <span class="loop-step"><span class="n">01</span> Processing map</span>
+      <span class="loop-arrow"><svg class="li" data-lucide="arrow-right"></svg></span>
+      <span class="loop-step"><span class="n">02</span> Correction</span>
+      <span class="loop-arrow"><svg class="li" data-lucide="arrow-right"></svg></span>
+      <span class="loop-step"><span class="n">03</span> Pass schedule</span>
+      <span class="loop-arrow"><svg class="li" data-lucide="arrow-right"></svg></span>
+      <span class="loop-step"><span class="n">04</span> 3D preform</span>
+    </div>
+  </div>
+</section>
+
+<!-- BACKED BY -->
+<section class="backed" id="backed">
+  <div class="wrap">
+    <div class="kick reveal">Built at</div>
+    <div class="backed-row reveal">
+      <div class="backed-card">
+        <img src="assets/nsmlab-logo.png" alt="NSMLAB" />
+        <div>
+          <div class="t">NSMLab</div>
+          <div class="s">Net Shape Manufacturing Laboratory · Sogang University</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="launch">
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <h2 class="disp reveal">Forge <span class="acc">smarter.</span></h2>
+    <p class="lead reveal">No install. Try the live workbench — no account required.</p>
+    <div class="hero-cta reveal" style="justify-content:center">
+      <a href="dashboard.html" class="btn-primary">Launch the workbench <svg class="li" data-lucide="arrow-right"></svg></a>
+      <a href="#" class="btn-ghost">Talk with us</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a href="#" class="brand" style="font-size:18px">Forge<span>IQ</span></a>
+    <div class="foot-links">
+      <a href="#programs">Programs</a><a href="#pipeline">Pipeline</a><a href="#backed">About</a>
+    </div>
+    <div class="foot-copy">© 2026 ForgeIQ · NSMLab, Sogang University</div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+  // nav bg on scroll
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+  onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ---------- HERO LIVE BACKGROUND (canvas "video") ----------
+  // Drifting ember/data particles + neural connection lines + a roaming glow.
+  // Evokes the forge (rising embers) and the AI (constellation) — loops forever.
+  (function forgeCanvas() {
+    const cv = document.getElementById('forgeCanvas');
+    if (!cv) return;
+    const ctx = cv.getContext('2d');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+    let parts = [];
+
+    function resize() {
+      const r = cv.getBoundingClientRect();
+      W = r.width; H = r.height;
+      cv.width = W * DPR; cv.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      const count = Math.round(Math.min(96, Math.max(40, (W * H) / 20000)));
+      parts = Array.from({ length: count }, () => spawn(true));
+    }
+    function spawn(anywhere) {
+      const ember = Math.random() < 0.26;
+      return {
+        x: Math.random() * W,
+        y: anywhere ? Math.random() * H : H + 12,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: -(0.12 + Math.random() * 0.5),
+        r: 0.8 + Math.random() * 2.2,
+        a: 0.25 + Math.random() * 0.55,
+        ember,
+        tw: Math.random() * Math.PI * 2,
+      };
+    }
+    function glow(x, y, rad, color) {
+      const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+      g.addColorStop(0, color); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+    }
+
+    function frame(now) {
+      const t = now * 0.0004;
+      // 1) base vertical gradient — deep blue, shifting subtly (the "scene")
+      const base = ctx.createLinearGradient(0, 0, 0, H);
+      base.addColorStop(0, '#06101f');
+      base.addColorStop(0.5, '#0a1d36');
+      base.addColorStop(1, '#0b2342');
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, W, H);
+
+      // 2) large drifting color bodies (flowing light — looks like video motion)
+      glow(W * (0.30 + 0.22 * Math.sin(t)),        H * (0.34 + 0.16 * Math.cos(t * 0.8)),  Math.max(W, H) * 0.55, 'rgba(99,102,241,0.22)');
+      glow(W * (0.74 + 0.18 * Math.cos(t * 0.7)),  H * (0.52 + 0.20 * Math.sin(t * 0.9)),  Math.max(W, H) * 0.5,  'rgba(20,184,166,0.14)');
+      glow(W * (0.55 + 0.26 * Math.sin(t * 0.55)), H * (0.80 + 0.10 * Math.cos(t)),        Math.max(W, H) * 0.48, 'rgba(124,58,237,0.16)');
+      // warm forge ember pool, low
+      glow(W * (0.5 + 0.3 * Math.cos(t * 0.5)),    H * 1.02,                                Math.max(W, H) * 0.42, 'rgba(245,158,11,0.12)');
+
+      // 3) diagonal light sweep crossing slowly
+      const sweepX = ((now * 0.045) % (W + 400)) - 200;
+      const sw = ctx.createLinearGradient(sweepX - 160, 0, sweepX + 160, H);
+      sw.addColorStop(0, 'rgba(165,180,252,0)');
+      sw.addColorStop(0.5, 'rgba(165,180,252,0.06)');
+      sw.addColorStop(1, 'rgba(165,180,252,0)');
+      ctx.fillStyle = sw; ctx.fillRect(0, 0, W, H);
+
+      // 4) connection lines (neural constellation)
+      for (let i = 0; i < parts.length; i++) {
+        for (let j = i + 1; j < parts.length; j++) {
+          const a = parts[i], b = parts[j];
+          const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+          if (d2 < 132 * 132) {
+            const al = (1 - Math.sqrt(d2) / 132) * 0.15;
+            ctx.strokeStyle = `rgba(129,140,248,${al})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+
+      // 5) particles / embers
+      for (const p of parts) {
+        if (!reduce) {
+          p.x += p.vx; p.y += p.vy; p.tw += 0.05;
+          if (p.y < -12 || p.x < -12 || p.x > W + 12) Object.assign(p, spawn(false));
+        }
+        const tw = 0.65 + 0.35 * Math.sin(p.tw);
+        const col = p.ember ? '251,191,36' : '165,180,252';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${col},${p.a * tw})`;
+        ctx.shadowBlur = p.ember ? 12 : 6;
+        ctx.shadowColor = `rgba(${col},0.6)`;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      // 6) molten surface wave at the very bottom (flowing hot metal)
+      ctx.beginPath();
+      ctx.moveTo(0, H);
+      for (let x = 0; x <= W; x += 14) {
+        const y = H - 22 - Math.sin(x * 0.012 + t * 6) * 10 - Math.sin(x * 0.03 + t * 9) * 5;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W, H); ctx.closePath();
+      const mg = ctx.createLinearGradient(0, H - 50, 0, H);
+      mg.addColorStop(0, 'rgba(99,102,241,0.0)');
+      mg.addColorStop(1, 'rgba(129,140,248,0.18)');
+      ctx.fillStyle = mg; ctx.fill();
+
+      if (!reduce) requestAnimationFrame(frame);
+    }
+
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+    requestAnimationFrame(frame);
+  })();
+
+  // ---------- SITE-WIDE AMBIENT BACKGROUND ----------
+  // A fixed, full-viewport canvas behind every section (sections are transparent),
+  // so the same living motion continues down the whole page — but subtler, to keep
+  // body text readable. Opaque base color is painted each frame.
+  (function siteCanvas() {
+    const cv = document.getElementById('siteCanvas');
+    if (!cv) return;
+    const ctx = cv.getContext('2d');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+    let parts = [];
+
+    function resize() {
+      W = window.innerWidth; H = window.innerHeight;
+      cv.width = W * DPR; cv.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      const count = Math.round(Math.min(70, Math.max(28, (W * H) / 34000)));
+      parts = Array.from({ length: count }, () => spawn(true));
+    }
+    function spawn(anywhere) {
+      const ember = Math.random() < 0.16;
+      return {
+        x: Math.random() * W,
+        y: anywhere ? Math.random() * H : H + 12,
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: -(0.06 + Math.random() * 0.26),
+        r: 0.7 + Math.random() * 1.6,
+        a: 0.12 + Math.random() * 0.30,
+        ember,
+        tw: Math.random() * Math.PI * 2,
+      };
+    }
+    function glow(x, y, rad, color) {
+      const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+      g.addColorStop(0, color); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+    }
+    function frame(now) {
+      // opaque base so this canvas IS the page background
+      ctx.fillStyle = '#060912';
+      ctx.fillRect(0, 0, W, H);
+
+      const t = now * 0.0003;
+      glow(W * (0.5 + 0.36 * Math.sin(t)), H * (0.30 + 0.16 * Math.cos(t * 0.9)), 460, 'rgba(99,102,241,0.13)');
+      glow(W * (0.5 + 0.32 * Math.cos(t * 0.6)), H * (0.78 + 0.12 * Math.sin(t * 0.7)), 420, 'rgba(124,58,237,0.10)');
+
+      for (let i = 0; i < parts.length; i++) {
+        for (let j = i + 1; j < parts.length; j++) {
+          const a = parts[i], b = parts[j];
+          const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+          if (d2 < 140 * 140) {
+            const al = (1 - Math.sqrt(d2) / 140) * 0.08;
+            ctx.strokeStyle = `rgba(129,140,248,${al})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+      for (const p of parts) {
+        if (!reduce) {
+          p.x += p.vx; p.y += p.vy; p.tw += 0.04;
+          if (p.y < -12 || p.x < -12 || p.x > W + 12) Object.assign(p, spawn(false));
+        }
+        const tw = 0.6 + 0.4 * Math.sin(p.tw);
+        const col = p.ember ? '251,191,36' : '165,180,252';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${col},${p.a * tw})`;
+        ctx.shadowBlur = p.ember ? 8 : 5;
+        ctx.shadowColor = `rgba(${col},0.55)`;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      if (!reduce) requestAnimationFrame(frame);
+    }
+
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+    requestAnimationFrame(frame);
+  })();
+
+  // reveal on view
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); if (e.target.querySelector('[data-count]') || e.target.matches('.metric')) countUp(e.target); } });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+  // count-up
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function countUp(scope) {
+    scope.querySelectorAll('[data-count]').forEach((el) => {
+      const target = parseFloat(el.dataset.count);
+      const dec = parseInt(el.dataset.dec || '0', 10);
+      const prefix = el.dataset.prefix || '';
+      if (reduce) { el.textContent = prefix + target.toFixed(dec); return; }
+      const dur = 1400; let t0;
+      const tick = (t) => {
+        if (!t0) t0 = t;
+        const p = Math.min(1, (t - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = prefix + (target * eased).toFixed(dec);
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = prefix + target.toFixed(dec);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+</script>
+</body>
+</html>

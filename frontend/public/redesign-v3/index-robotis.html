@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ForgeIQ — AI Metallurgy Ecosystem</title>
+<link rel="stylesheet" href="colors_and_type.css" />
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  :root {
+    --ink: #0a0d14; --ink2: #3f4654; --ink3: #8a93a6; --paper: #ffffff; --paper2: #f4f6fa;
+    --line: rgba(10,13,20,0.10); --line2: rgba(10,13,20,0.06);
+    --accent: #4f46e5; --accent2: #2563eb;
+    --dark: #0a0d14; --dark2: #11151f;
+    --cog: #2563eb; --pmap: #059669; --pre: #7c3aed;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { text-decoration: none; color: inherit; }
+  ::selection { background: rgba(79,70,229,0.18); }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+  .disp { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; }
+  .li svg { width: 1em; height: 1em; display: block; }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .9s cubic-bezier(0.16,1,0.3,1), transform .9s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar { background: var(--dark); color: #fff; font-size: 12px; }
+  .topbar-in { height: 36px; display: flex; align-items: center; justify-content: flex-end; gap: 22px; }
+  .topbar-in a { color: rgba(255,255,255,0.6); transition: color .2s; display: inline-flex; align-items: center; gap: 5px; }
+  .topbar-in a:hover { color: #fff; }
+  .lang { display: flex; gap: 12px; }
+  .lang a.on { color: #fff; font-weight: 600; }
+
+  /* ---------- NAV ---------- */
+  nav { position: sticky; top: 0; z-index: 60; background: rgba(255,255,255,0.92); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .nav-in { height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-family: var(--font-display); font-weight: 800; font-size: 24px; letter-spacing: -0.03em; }
+  .brand span { color: var(--accent); }
+  .nav-menu { display: flex; align-items: center; gap: 4px; }
+  .nav-menu > a { font-family: var(--font-body); font-weight: 600; font-size: 13.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink2); padding: 10px 16px; border-radius: 8px; transition: color .2s, background .2s; }
+  .nav-menu > a:hover { color: var(--ink); background: var(--paper2); }
+  .nav-cta { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 20px; border-radius: 8px; background: var(--accent); color: #fff !important; font-weight: 600; font-size: 13.5px; letter-spacing: 0.04em; text-transform: uppercase; transition: background .2s, transform .2s; }
+  .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
+  @media (max-width: 940px) { .nav-menu > a:not(.nav-cta) { display: none; } }
+
+  /* ---------- HERO ---------- */
+  .hero { position: relative; background: var(--dark); color: #fff; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; }
+  .hero-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 2s ease; }
+  .hero-slide.on { opacity: 1; }
+  .hero-slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; filter: grayscale(0.15) contrast(1.04); animation: kb 24s ease-in-out infinite alternate; }
+  @keyframes kb { from { transform: scale(1.06); } to { transform: scale(1.16) translate(-2%,-2%); } }
+  @media (prefers-reduced-motion: reduce) { .hero-slide img { animation: none; } }
+  /* slow drifting color glows — calm, behind the text */
+  .hero-glow { position: absolute; border-radius: 50%; filter: blur(100px); z-index: 1; }
+  .hero-glow.g1 { width: 620px; height: 620px; background: rgba(79,70,229,0.28); top: -180px; left: -120px; animation: float1 22s ease-in-out infinite; }
+  .hero-glow.g2 { width: 560px; height: 560px; background: rgba(124,58,237,0.20); bottom: -220px; right: -100px; animation: float2 26s ease-in-out infinite; }
+  @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(60px,40px); } }
+  @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-50px,-30px); } }
+  @media (prefers-reduced-motion: reduce) { .hero-glow { animation: none; } }
+  .hero-bg::after { content: ""; position: absolute; inset: 0; z-index: 2; background: linear-gradient(100deg, var(--dark) 34%, rgba(10,13,20,0.6) 70%, rgba(10,13,20,0.35)); }
+  .hero-in { position: relative; z-index: 2; padding: 130px 0 120px; max-width: 820px; }
+  .hero .ey { font-family: var(--font-body); font-weight: 600; font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+  .hero .ey .acc { color: #818cf8; }
+  .hero h1 { font-size: clamp(3rem, 7vw, 6rem); margin: 22px 0 30px; }
+  .hero h1 .dim { color: rgba(255,255,255,0.5); }
+  .hero p { max-width: 620px; font-size: 19px; line-height: 1.65; color: rgba(255,255,255,0.7); }
+  .hero p b { color: #fff; font-weight: 600; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 28px; border-radius: 8px; background: #fff; color: var(--ink); font-size: 15px; font-weight: 700; transition: transform .2s, box-shadow .3s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 40px -16px rgba(255,255,255,0.35); }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 26px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.25); color: #fff; font-size: 15px; font-weight: 600; transition: background .2s, border-color .2s; }
+  .btn-ghost:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+  .hero-strip { position: relative; z-index: 2; border-top: 1px solid rgba(255,255,255,0.1); }
+  .hero-strip-in { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .hstat { padding: 26px 0; border-right: 1px solid rgba(255,255,255,0.1); }
+  .hstat:last-child { border-right: none; }
+  .hstat .v { font-family: var(--font-display); font-weight: 800; font-size: 30px; color: #fff; letter-spacing: -0.02em; }
+  .hstat .v span { color: #818cf8; }
+  .hstat .l { font-size: 12.5px; color: rgba(255,255,255,0.55); margin-top: 5px; }
+  @media (max-width: 700px) { .hero-strip-in { grid-template-columns: repeat(2,1fr); } .hstat:nth-child(2){border-right:none;} }
+
+  /* ---------- INTRO LINE ---------- */
+  .intro { padding: 96px 0; text-align: center; border-bottom: 1px solid var(--line); }
+  .intro p { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.7rem, 3.4vw, 2.8rem); letter-spacing: -0.02em; line-height: 1.25; max-width: 980px; margin: 0 auto; }
+  .intro p b { color: var(--accent); }
+
+  /* ---------- SERIES (alternating product showcase) ---------- */
+  .series { border-bottom: 1px solid var(--line); }
+  .series:nth-child(even) { background: var(--paper2); }
+  .series-in { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; padding: 100px 0; }
+  .series.flip .series-in { direction: rtl; }
+  .series.flip .series-in > * { direction: ltr; }
+  @media (max-width: 920px) { .series-in { grid-template-columns: 1fr; gap: 40px; padding: 70px 0; } .series.flip .series-in { direction: ltr; } }
+  .series .tag { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-body); font-weight: 700; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 13px; border-radius: 999px; }
+  .series h2 { font-size: clamp(2.2rem, 4vw, 3.4rem); margin: 20px 0 18px; }
+  .series .txt p { font-size: 17px; line-height: 1.65; color: var(--ink2); max-width: 520px; }
+  .series .specs { display: flex; gap: 30px; margin: 26px 0; }
+  .series .spec .v { font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: -0.02em; }
+  .series .spec .l { font-size: 12px; color: var(--ink3); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .view { display: inline-flex; align-items: center; gap: 14px; font-weight: 700; font-size: 16px; color: var(--ink); transition: color .2s; }
+  .view:hover { color: var(--accent); }
+  .view .li { width: 38px; height: 38px; padding: 11px; border-radius: 50%; background: var(--ink); color: #fff; box-sizing: border-box; flex: none; transition: background .2s, transform .2s; }
+  .view:hover .li { background: var(--accent); transform: translateX(5px); }
+  .series-visual { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: #fff; box-shadow: 0 30px 70px -40px rgba(10,13,20,0.4); aspect-ratio: 4 / 3; }
+  .series-visual img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(0.16,1,0.3,1); }
+  .series-visual svg.viz { width: 100%; height: 100%; display: block; }
+  .series-visual.dark { background: #0a0d14; }
+  .series-visual:hover img { transform: scale(1.04); }
+  .series-visual .vnum { position: absolute; top: 16px; left: 18px; font-family: var(--font-mono); font-size: 12px; color: #fff; background: rgba(10,13,20,0.6); padding: 4px 10px; border-radius: 6px; backdrop-filter: blur(4px); }
+
+  /* ---------- ECOSYSTEM GRID ---------- */
+  .eco { padding: 100px 0; text-align: center; }
+  .eco .eyrow { display: flex; flex-direction: column; align-items: center; }
+  .kick { font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .eco h2 { font-size: clamp(2rem, 4vw, 3rem); margin: 16px 0 0; }
+  .eco .lead { font-size: 18px; color: var(--ink2); margin: 20px auto 0; max-width: 680px; line-height: 1.6; }
+  .eco-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 56px; text-align: left; }
+  @media (max-width: 860px) { .eco-grid { grid-template-columns: 1fr; } }
+  .eco-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 28px; transition: transform .3s, box-shadow .3s, border-color .3s; }
+  .eco-card:hover { transform: translateY(-4px); box-shadow: 0 24px 50px -28px rgba(10,13,20,0.3); border-color: var(--ec); }
+  .eco-card .ic { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; }
+  .eco-card h3 { font-family: var(--font-display); font-weight: 700; font-size: 19px; margin: 18px 0 8px; }
+  .eco-card p { font-size: 14px; line-height: 1.6; color: var(--ink2); }
+
+  /* ---------- CTA BANNER ---------- */
+  .cta { position: relative; background: var(--dark); color: #fff; overflow: hidden; }
+  .cta-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 60px 60px; }
+  .cta-blob { position: absolute; width: 520px; height: 520px; border-radius: 50%; filter: blur(90px); }
+  .cta-in { position: relative; z-index: 2; padding: 110px 0; text-align: center; }
+  .cta h2 { font-size: clamp(2.4rem, 5vw, 4.2rem); }
+  .cta h2 .acc { color: #818cf8; }
+  .cta p { font-size: 18px; color: rgba(255,255,255,0.7); margin: 22px auto 36px; }
+  .cta .hero-cta { justify-content: center; }
+
+  /* ---------- FOOTER ---------- */
+  footer { background: var(--dark2); color: rgba(255,255,255,0.6); }
+  .foot-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; padding: 64px 0 48px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; gap: 32px; } }
+  .foot-brand .brand { color: #fff; font-size: 22px; }
+  .foot-brand p { font-size: 13.5px; line-height: 1.6; margin-top: 14px; max-width: 280px; }
+  .foot-logo { display: inline-flex; background: #fff; border-radius: 8px; padding: 8px 11px; margin-top: 20px; }
+  .foot-logo img { height: 30px; display: block; }
+  .foot-col h5 { font-family: var(--font-body); font-weight: 700; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; margin-bottom: 16px; }
+  .foot-col a { display: block; font-size: 14px; padding: 6px 0; transition: color .2s; }
+  .foot-col a:hover { color: #fff; }
+  .foot-social { display: flex; gap: 12px; margin-top: 22px; }
+  .foot-social a { width: 38px; height: 38px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center; font-size: 17px; color: rgba(255,255,255,0.7); transition: background .2s, color .2s; }
+  .foot-social a:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 24px 0; font-size: 12.5px; flex-wrap: wrap; }
+  .foot-bot .links { display: flex; gap: 20px; }
+  .foot-bot a:hover { color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <a href="#"><svg class="li" data-lucide="life-buoy"></svg> Support</a>
+    <span class="lang"><a href="#" class="on">EN</a><a href="#">KO</a><a href="#">UZ</a></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="wrap nav-in">
+    <a href="#" class="brand">Forge<span>IQ</span></a>
+    <div class="nav-menu">
+      <a href="#programs">Programs</a>
+      <a href="#ecosystem">Ecosystem</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#about">About</a>
+      <a href="dashboard.html" class="nav-cta">Launch app</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg" id="heroBg">
+    <div class="hero-slide on"><img src="https://images.unsplash.com/photo-1571590946238-a0ba990d12a9?auto=format&fit=crop&w=1600&q=80" alt="" referrerpolicy="no-referrer" /></div>
+    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1572277603731-6941cdb65597?auto=format&fit=crop&w=1600&q=80" alt="" referrerpolicy="no-referrer" /></div>
+    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1766340744390-b13d21439515?auto=format&fit=crop&w=1600&q=80" alt="" referrerpolicy="no-referrer" /></div>
+    <div class="hero-glow g1"></div>
+    <div class="hero-glow g2"></div>
+  </div>
+  <div class="wrap hero-in">
+    <div class="ey reveal">AI Metallurgy Ecosystem · <span class="acc">NSMLab</span></div>
+    <h1 class="disp reveal">Design forgings,<br><span class="dim">not meshes.</span></h1>
+    <p class="reveal"><b>ForgeIQ DYNAMIXEL of metallurgy</b> — trained neural surrogates replace the slow finite-element loop, delivering consistent, reliable predictions even under complex forging conditions. Empower your process design to reach a higher level of completion and performance.</p>
+    <div class="hero-cta reveal">
+      <a href="dashboard.html" class="btn-primary">Launch the workbench <svg class="li" data-lucide="arrow-right"></svg></a>
+      <a href="#programs" class="btn-ghost">Explore programs</a>
+    </div>
+  </div>
+  <div class="hero-strip">
+    <div class="wrap hero-strip-in">
+      <div class="hstat reveal"><div class="v">&le;60<span>s</span></div><div class="l">Per surrogate run</div></div>
+      <div class="hstat reveal"><div class="v">96.1<span>%</span></div><div class="l">Surrogate accuracy</div></div>
+      <div class="hstat reveal"><div class="v">4</div><div class="l">Programs in one loop</div></div>
+      <div class="hstat reveal"><div class="v">&minus;14<span>d</span></div><div class="l">Cut per iteration</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- INTRO -->
+<section class="intro">
+  <div class="wrap">
+    <p class="reveal"><b>ForgeIQ</b> is the answer you've been looking for. Designed with a deep understanding of the precision and process data demanded by modern forging — for engineers who refuse to wait weeks per iteration.</p>
+  </div>
+</section>
+
+<!-- PROGRAMS as alternating series -->
+<div id="programs">
+  <section class="series">
+    <div class="wrap series-in">
+      <div class="txt reveal">
+        <span class="tag" style="background:rgba(37,99,235,0.1);color:var(--cog)">01 · Cogging</span>
+        <h2 class="disp">Void closure,<br>predicted per pass.</h2>
+        <p>MLP and gradient-boosting surrogates estimate final void volume from grain size, weight factor and your per-pass schedule — then check every pass against your press, in seconds.</p>
+        <div class="specs">
+          <div class="spec"><div class="v" style="color:var(--cog)">&lt;3s</div><div class="l">Per prediction</div></div>
+          <div class="spec"><div class="v">±1.4%</div><div class="l">Mean error</div></div>
+        </div>
+        <a href="dashboard.html" class="view">View program <svg class="li" data-lucide="arrow-right"></svg></a>
+      </div>
+      <div class="series-visual reveal dark"><span class="vnum">FIG.01 · void closure</span>
+        <svg class="viz" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="barCog" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#2563eb"/></linearGradient>
+          </defs>
+          <rect x="0" y="0" width="400" height="300" fill="#0a0d14"/>
+          <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+            <line x1="48" y1="60" x2="372" y2="60"/><line x1="48" y1="110" x2="372" y2="110"/><line x1="48" y1="160" x2="372" y2="160"/><line x1="48" y1="210" x2="372" y2="210"/>
+          </g>
+          <line x1="48" y1="248" x2="372" y2="248" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+          <g fill="url(#barCog)">
+            <rect x="60" y="86" width="30" height="162" rx="4"/>
+            <rect x="104" y="118" width="30" height="130" rx="4"/>
+            <rect x="148" y="150" width="30" height="98" rx="4"/>
+            <rect x="192" y="178" width="30" height="70" rx="4"/>
+            <rect x="236" y="200" width="30" height="48" rx="4"/>
+            <rect x="280" y="216" width="30" height="32" rx="4"/>
+            <rect x="324" y="228" width="30" height="20" rx="4"/>
+          </g>
+          <polyline points="75,86 119,118 163,150 207,178 251,200 295,216 339,228" fill="none" stroke="#a5b4fc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <g fill="#a5b4fc"><circle cx="75" cy="86" r="3.5"/><circle cx="339" cy="228" r="3.5"/></g>
+          <text x="48" y="272" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="11">P1</text>
+          <text x="339" y="272" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="11" text-anchor="middle">P7</text>
+          <text x="16" y="92" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="11">void%</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="series flip">
+    <div class="wrap series-in">
+      <div class="txt reveal">
+        <span class="tag" style="background:rgba(5,150,105,0.1);color:var(--pmap)">02 · Processing Map</span>
+        <h2 class="disp">Find the safe<br>forging window.</h2>
+        <p>Prasad-criterion power-dissipation (η) and instability (ξ) heatmaps over temperature and strain rate. The PINN surrogate reveals exactly where the material flows safely.</p>
+        <div class="specs">
+          <div class="spec"><div class="v" style="color:var(--pmap)">0.42</div><div class="l">Peak η</div></div>
+          <div class="spec"><div class="v">PINN</div><div class="l">Surrogate</div></div>
+        </div>
+        <a href="dashboard.html" class="view">View program <svg class="li" data-lucide="arrow-right"></svg></a>
+      </div>
+      <div class="series-visual reveal dark"><span class="vnum">FIG.02 · η / ξ map</span>
+        <svg class="viz" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <radialGradient id="etaField" cx="63%" cy="40%" r="68%">
+              <stop offset="0%" stop-color="#6ee7b7"/><stop offset="30%" stop-color="#10b981"/>
+              <stop offset="55%" stop-color="#0d9488"/><stop offset="74%" stop-color="#d97706"/>
+              <stop offset="100%" stop-color="#b91c1c"/>
+            </radialGradient>
+          </defs>
+          <rect x="40" y="22" width="330" height="230" fill="#0a0d14"/>
+          <rect x="40" y="22" width="330" height="230" fill="url(#etaField)" opacity="0.92"/>
+          <g stroke="rgba(10,13,20,0.28)" stroke-width="1">
+            <line x1="87" y1="22" x2="87" y2="252"/><line x1="134" y1="22" x2="134" y2="252"/><line x1="181" y1="22" x2="181" y2="252"/><line x1="228" y1="22" x2="228" y2="252"/><line x1="275" y1="22" x2="275" y2="252"/><line x1="322" y1="22" x2="322" y2="252"/>
+            <line x1="40" y1="60" x2="370" y2="60"/><line x1="40" y1="98" x2="370" y2="98"/><line x1="40" y1="136" x2="370" y2="136"/><line x1="40" y1="174" x2="370" y2="174"/><line x1="40" y1="212" x2="370" y2="212"/>
+          </g>
+          <rect x="233" y="58" width="110" height="94" rx="5" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="7 5"/>
+          <text x="288" y="50" fill="#fff" font-family="monospace" font-size="12" font-weight="700" text-anchor="middle">SAFE WINDOW</text>
+          <text x="40" y="272" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="11">900°C</text>
+          <text x="370" y="272" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="11" text-anchor="end">1250°C</text>
+          <text x="16" y="30" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="11">ε̇</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="series">
+    <div class="wrap series-in">
+      <div class="txt reveal">
+        <span class="tag" style="background:rgba(124,58,237,0.1);color:var(--pre)">03 · 3D Preform</span>
+        <h2 class="disp">From voxels to a<br>graded STL.</h2>
+        <p>An attention U-Net turns a target shape into a watertight preform mesh — returning a manufacturability grade from A to D based on genus, wall thickness and bounding box.</p>
+        <div class="specs">
+          <div class="spec"><div class="v" style="color:var(--pre)">A</div><div class="l">Grade</div></div>
+          <div class="spec"><div class="v">48k</div><div class="l">Faces</div></div>
+        </div>
+        <a href="dashboard.html" class="view">View program <svg class="li" data-lucide="arrow-right"></svg></a>
+      </div>
+      <div class="series-visual reveal dark"><span class="vnum">FIG.03 · preform mesh</span>
+        <svg class="viz" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="vxTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
+            <linearGradient id="vxL" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+            <linearGradient id="vxR" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6d28d9"/><stop offset="100%" stop-color="#5b21b6"/></linearGradient>
+          </defs>
+          <g transform="translate(200,168)" stroke-linejoin="round">
+            <!-- isometric voxel stack: each cube = top + left + right faces; tile dx=22,dy=12 -->
+            <g id="cube">
+            </g>
+            <!-- row base (z=0) 5x5-ish footprint -->
+            <g>
+              <!-- back-to-front cubes; manually layered -->
+              <!-- layer 0 -->
+              <g transform="translate(0,-48)"><polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)"/><polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)"/><polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)"/></g>
+              <g transform="translate(-44,-24)"><polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)"/><polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)"/><polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)"/></g>
+              <g transform="translate(44,-24)"><polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)"/><polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)"/><polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)"/></g>
+              <g transform="translate(0,0)"><polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)"/><polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)"/><polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)"/></g>
+              <g transform="translate(-44,24)"><polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)"/><polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)"/><polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)"/></g>
+              <g transform="translate(44,24)"><polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)"/><polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)"/><polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)"/></g>
+              <g transform="translate(0,48)"><polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)"/><polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)"/><polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)"/></g>
+              <!-- raised center cubes (z=1) -->
+              <g transform="translate(0,-36)"><polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)"/><polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)"/><polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)"/></g>
+              <g transform="translate(0,-12)"><polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)"/><polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)"/><polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)"/></g>
+            </g>
+          </g>
+          <line x1="0" y1="150" x2="400" y2="150" stroke="#c4b5fd" stroke-width="1.5" opacity="0.35">
+            <animate attributeName="y1" values="70;230;70" dur="4s" repeatCount="indefinite"/>
+            <animate attributeName="y2" values="70;230;70" dur="4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0.5;0" dur="4s" repeatCount="indefinite"/>
+          </line>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="series flip">
+    <div class="wrap series-in">
+      <div class="txt reveal">
+        <span class="tag" style="background:rgba(79,70,229,0.1);color:var(--accent)">04 · Auto Pipeline</span>
+        <h2 class="disp">One click,<br>a finished preform.</h2>
+        <p>Chain all four surrogates into a single target-driven closed loop — re-running toward your spec until the preform grades out, with full iteration history.</p>
+        <div class="specs">
+          <div class="spec"><div class="v" style="color:var(--accent)">~8s</div><div class="l">Full loop</div></div>
+          <div class="spec"><div class="v">4</div><div class="l">Stages</div></div>
+        </div>
+        <a href="dashboard.html" class="view">View program <svg class="li" data-lucide="arrow-right"></svg></a>
+      </div>
+      <div class="series-visual reveal dark"><span class="vnum">FIG.04 · pipeline</span>
+        <svg class="viz" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="node" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#6366f1"/></linearGradient>
+            <marker id="ar" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
+          </defs>
+          <rect x="0" y="0" width="400" height="300" fill="#0a0d14"/>
+          <!-- loop arrows between 4 nodes arranged in a rounded rectangle -->
+          <g fill="none" stroke="#4f46e5" stroke-width="2.5" marker-end="url(#ar)">
+            <path d="M150,80 H250"/>
+            <path d="M278,108 V192"/>
+            <path d="M250,220 H150"/>
+            <path d="M122,192 V108"/>
+          </g>
+          <!-- nodes -->
+          <g font-family="monospace" font-size="11" fill="#fff" text-anchor="middle">
+            <g transform="translate(110,80)"><circle r="26" fill="url(#node)"/><text dy="-2">1</text><text dy="42" fill="rgba(255,255,255,0.7)">map</text></g>
+            <g transform="translate(290,80)"><circle r="26" fill="url(#node)"/><text dy="-2">2</text><text dy="42" fill="rgba(255,255,255,0.7)">correct</text></g>
+            <g transform="translate(290,220)"><circle r="26" fill="url(#node)"/><text dy="-2">3</text><text dy="42" fill="rgba(255,255,255,0.7)">schedule</text></g>
+            <g transform="translate(110,220)"><circle r="26" fill="url(#node)"/><text dy="-2">4</text><text dy="42" fill="rgba(255,255,255,0.7)">preform</text></g>
+          </g>
+          <text x="200" y="154" fill="#a5b4fc" font-family="monospace" font-size="12" font-weight="700" text-anchor="middle">CLOSED LOOP</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ECOSYSTEM -->
+<section class="eco" id="ecosystem">
+  <div class="wrap">
+    <div class="eyrow reveal">
+      <span class="kick">The Ecosystem</span>
+      <h2 class="disp">Built for engineers, by a lab.</h2>
+      <p class="lead">ForgeIQ is driven by real forging research. Every surrogate is trained on measured data, documented honestly, and delivered as one connected workbench.</p>
+    </div>
+    <div class="eco-grid">
+      <div class="eco-card reveal" style="--ec:var(--accent)"><div class="ic" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)"><svg class="li" data-lucide="brain-circuit"></svg></div><h3>Neural surrogates</h3><p>MLP, gradient-boosting and PINN models trained on real forging data return results in seconds, not weeks.</p></div>
+      <div class="eco-card reveal" style="--ec:var(--cog)"><div class="ic" style="background:linear-gradient(135deg,#2563eb,#4f46e5)"><svg class="li" data-lucide="git-branch"></svg></div><h3>Closed loop</h3><p>Auto Pipeline runs all four stages end-to-end with target-driven re-runs and full iteration history.</p></div>
+      <div class="eco-card reveal" style="--ec:var(--pmap)"><div class="ic" style="background:linear-gradient(135deg,#059669,#0d9488)"><svg class="li" data-lucide="flask-conical"></svg></div><h3>Lab-grade rigor</h3><p>Every formula and assumption is documented; feasibility is always checked against your real equipment.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="pipeline">
+  <div class="cta-bg"></div>
+  <div class="cta-blob" style="background:rgba(99,102,241,0.4);top:-160px;left:-80px"></div>
+  <div class="cta-blob" style="background:rgba(124,58,237,0.32);bottom:-200px;right:-60px"></div>
+  <div class="wrap cta-in">
+    <h2 class="disp reveal">Forge <span class="acc">smarter.</span></h2>
+    <p class="reveal">No install. Try the live workbench — no account required.</p>
+    <div class="hero-cta reveal">
+      <a href="dashboard.html" class="btn-primary">Launch the workbench <svg class="li" data-lucide="arrow-right"></svg></a>
+      <a href="#about" class="btn-ghost">Contact us</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="about">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a href="#" class="brand">Forge<span style="color:#818cf8">IQ</span></a>
+        <p>AI Metallurgy Simulation Platform. A closed-loop, AI-driven process-design workbench for hot-forging and cogging.</p>
+        <span class="foot-logo"><img src="assets/nsmlab-logo.png" alt="NSMLAB" /></span>
+      </div>
+      <div class="foot-col">
+        <h5>Programs</h5>
+        <a href="dashboard.html">Cogging</a><a href="dashboard.html">Processing Map</a><a href="dashboard.html">3D Preform</a><a href="dashboard.html">Auto Pipeline</a>
+      </div>
+      <div class="foot-col">
+        <h5>Resources</h5>
+        <a href="#">Documentation</a><a href="#">Capabilities</a><a href="#">Changelog</a><a href="#">GitHub</a>
+      </div>
+      <div class="foot-col">
+        <h5>Lab</h5>
+        <a href="#">About NSMLab</a><a href="#">Research</a><a href="#">Contact</a>
+        <div class="foot-social">
+          <a href="#"><svg class="li" data-lucide="github"></svg></a>
+          <a href="#"><svg class="li" data-lucide="linkedin"></svg></a>
+          <a href="#"><svg class="li" data-lucide="youtube"></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 ForgeIQ · NSMLab, Sogang University. All rights reserved.</span>
+      <span class="links"><a href="#">Privacy</a><a href="#">Cookies</a><a href="index.html">Dark version</a><a href="index-light.html">Light version</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+  // ---------- HERO PHOTO SLIDESHOW (3 real forge photos, slow cross-fade) ----------
+  (function heroSlides() {
+    const slides = [...document.querySelectorAll('.hero-slide')];
+    if (slides.length < 2) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let i = 0;
+    setInterval(() => {
+      slides[i].classList.remove('on');
+      i = (i + 1) % slides.length;
+      slides[i].classList.add('on');
+    }, 6000);
+  })();
+</script>
+</body>
+</html>

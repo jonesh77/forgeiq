@@ -25,6 +25,12 @@ const nextConfig: NextConfig = {
       { source: "/redesign/", destination: "/redesign/index.html" },
       { source: "/redesign-v2", destination: "/redesign-v2/index.html" },
       { source: "/redesign-v2/", destination: "/redesign-v2/index.html" },
+      // Design System (7) — four variants under /redesign-v3/*
+      { source: "/redesign-v3", destination: "/redesign-v3/index.html" },
+      { source: "/redesign-v3/", destination: "/redesign-v3/index.html" },
+      { source: "/redesign-v3/light", destination: "/redesign-v3/index-light.html" },
+      { source: "/redesign-v3/robotis", destination: "/redesign-v3/index-robotis.html" },
+      { source: "/redesign-v3/dashboard", destination: "/redesign-v3/dashboard.html" },
     ];
   },
 };

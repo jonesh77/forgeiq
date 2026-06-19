@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ForgeIQ — Precision Metallurgy, Engineered</title>
+<link rel="stylesheet" href="colors_and_type.css" />
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  :root {
+    --paper: #fbfcfe; --paper2: #f4f6fb; --ink: #0f172a; --ink2: #475569; --ink3: #94a3b8;
+    --line: rgba(15,23,42,0.10); --line2: rgba(15,23,42,0.055);
+    --blue: #2563eb; --indigo: #4f46e5; --bp: rgba(37,99,235,0.14);
+    --emerald: #059669; --violet: #7c3aed;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { text-decoration: none; color: inherit; }
+  ::selection { background: rgba(37,99,235,0.16); }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 36px; }
+  .disp { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.035em; line-height: 0.98; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .li svg { width: 1em; height: 1em; display: block; }
+
+  /* blueprint paper background — faint DOT grid that slowly drifts */
+  #paper { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(rgba(15,23,42,0.07) 1.2px, transparent 1.2px),
+      radial-gradient(var(--bp) 1.4px, transparent 1.4px);
+    background-size: 30px 30px, 150px 150px;
+    background-position: 0 0, 0 0;
+    animation: drift 50s linear infinite;
+  }
+  @keyframes drift { from { background-position: 0 0, 0 0; } to { background-position: 0 300px, 150px 300px; } }
+  @media (prefers-reduced-motion: reduce) { #paper { animation: none; } }
+  /* animated wash + constellation canvas (sits above the dot grid) */
+  #bp { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  body > *:not(#paper):not(#bp) { position: relative; z-index: 1; }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s cubic-bezier(0.16,1,0.3,1), transform .9s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* registration tick (blueprint corner mark) */
+  .kick { display: inline-flex; align-items: center; gap: 11px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--blue); }
+  .kick::before { content: ""; width: 22px; height: 1px; background: var(--blue); }
+
+  /* ---------- NAV ---------- */
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(251,252,254,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .nav-in { height: 74px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -0.03em; display: flex; align-items: center; gap: 10px; }
+  .brand span { color: var(--indigo); }
+  .brand .bt { font-family: var(--font-mono); font-size: 10px; font-weight: 400; letter-spacing: 0.1em; color: var(--ink3); border: 1px solid var(--line); padding: 2px 7px; border-radius: 5px; text-transform: uppercase; }
+  .nav-links { display: flex; align-items: center; gap: 34px; }
+  .nav-links a { font-size: 14px; color: var(--ink2); transition: color .2s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 600; transition: transform .2s, background .2s; }
+  .nav-cta:hover { transform: translateY(-1px); background: var(--indigo); }
+  @media (max-width: 880px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+  /* ---------- HERO ---------- */
+  .hero { padding: 84px 0 70px; }
+  .hero-in { display: grid; grid-template-columns: 1.02fr 0.98fr; gap: 56px; align-items: center; }
+  @media (max-width: 980px) { .hero-in { grid-template-columns: 1fr; gap: 36px; } }
+  .hero h1 { font-size: clamp(2.8rem, 6.4vw, 5.6rem); margin: 26px 0 28px; }
+  .hero h1 .acc { color: var(--indigo); }
+  .hero-sub { max-width: 500px; font-size: 19px; line-height: 1.62; color: var(--ink2); margin-bottom: 36px; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 26px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 15px; font-weight: 600; transition: transform .2s, box-shadow .3s, background .2s; }
+  .btn-primary:hover { transform: translateY(-2px); background: var(--indigo); box-shadow: 0 18px 40px -14px rgba(79,70,229,0.5); }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 24px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink); font-size: 15px; font-weight: 500; background: #fff; transition: border-color .2s, transform .2s; }
+  .btn-ghost:hover { border-color: var(--ink); transform: translateY(-2px); }
+  .hero-meta { display: flex; gap: 30px; margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--line); }
+  .hero-meta .v { font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: -0.02em; }
+  .hero-meta .v span { color: var(--indigo); }
+  .hero-meta .l { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+
+  /* blueprint schematic panel */
+  .schematic { position: relative; aspect-ratio: 1 / 1; border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(180deg, #fff, var(--paper2)); box-shadow: 0 30px 70px -40px rgba(15,23,42,0.4); overflow: hidden; }
+  .schematic .tl, .schematic .tr, .schematic .bl, .schematic .br { position: absolute; width: 14px; height: 14px; border-color: var(--blue); opacity: 0.5; }
+  .schematic .tl { top: 14px; left: 14px; border-top: 1.5px solid; border-left: 1.5px solid; }
+  .schematic .tr { top: 14px; right: 14px; border-top: 1.5px solid; border-right: 1.5px solid; }
+  .schematic .bl { bottom: 14px; left: 14px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
+  .schematic .br { bottom: 14px; right: 14px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+  .schematic .tag { position: absolute; top: 18px; right: 22px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; color: var(--ink3); text-transform: uppercase; }
+  .schematic svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .draw { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); animation: draw 2.2s cubic-bezier(0.5,0,0.2,1) forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) { .draw { animation: none; stroke-dashoffset: 0; } .scan { display: none; } }
+  .scan { animation: scanY 4.5s ease-in-out infinite; }
+  @keyframes scanY { 0% { transform: translateY(0); opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { transform: translateY(420px); opacity: 0; } }
+  .node { animation: pulse 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+  /* ---------- SECTION SHELL ---------- */
+  section { padding: 110px 0; border-top: 1px solid var(--line); }
+  .sec-head { max-width: 760px; }
+  .sec-head h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin: 22px 0 0; }
+  .sec-head .lead { font-size: 18px; line-height: 1.6; color: var(--ink2); margin-top: 22px; }
+
+  /* statement */
+  .statement p { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.8rem, 3.8vw, 3.2rem); line-height: 1.2; letter-spacing: -0.02em; max-width: 1000px; }
+  .statement p em { font-style: normal; color: var(--ink3); }
+  .statement p b { font-weight: 600; color: var(--indigo); }
+
+  /* programs */
+  .prog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; margin-top: 52px; }
+  @media (max-width: 820px) { .prog-grid { grid-template-columns: 1fr; } }
+  .pcard { position: relative; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 30px; overflow: hidden; transition: transform .3s, box-shadow .3s, border-color .3s; }
+  .pcard:hover { transform: translateY(-4px); box-shadow: 0 24px 50px -28px rgba(15,23,42,0.3); border-color: var(--accc); }
+  .pcard .num { position: absolute; top: 18px; right: 22px; font-family: var(--font-mono); font-size: 12px; color: var(--ink3); }
+  .pcard .ic { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 23px; }
+  .pcard h3 { font-family: var(--font-display); font-weight: 700; font-size: 23px; letter-spacing: -0.01em; margin: 20px 0 10px; }
+  .pcard p { font-size: 14.5px; line-height: 1.6; color: var(--ink2); }
+  .pcard .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
+  .pcard .tag { font-family: var(--font-mono); font-size: 11px; color: var(--ink2); background: var(--paper2); border: 1px solid var(--line); padding: 4px 10px; border-radius: 999px; }
+  .pcard .open { display: inline-flex; align-items: center; gap: 7px; margin-top: 22px; font-size: 14px; font-weight: 600; color: var(--accc); }
+  .pcard .bpline { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--accc); transform: scaleX(0); transform-origin: left; transition: transform .4s; }
+  .pcard:hover .bpline { transform: scaleX(1); }
+
+  /* metrics */
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: #fff; }
+  @media (max-width: 820px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
+  .metric { padding: 36px 30px; border-right: 1px solid var(--line); }
+  .metric:last-child { border-right: none; }
+  @media (max-width: 820px) { .metric:nth-child(2) { border-right: none; } .metric:nth-child(1), .metric:nth-child(2) { border-bottom: 1px solid var(--line); } }
+  .metric .v { font-family: var(--font-display); font-weight: 800; font-size: 46px; letter-spacing: -0.03em; }
+  .metric .v .u { color: var(--indigo); }
+  .metric .l { font-size: 13px; color: var(--ink2); margin-top: 8px; line-height: 1.4; }
+
+  /* pipeline flow (blueprint) */
+  .flow { display: flex; align-items: stretch; gap: 0; margin-top: 50px; border: 1px solid var(--line); border-radius: 18px; background: #fff; overflow: hidden; flex-wrap: wrap; }
+  .flow-step { flex: 1 1 200px; padding: 30px 26px; border-right: 1px dashed var(--line); position: relative; }
+  .flow-step:last-child { border-right: none; }
+  .flow-step .n { font-family: var(--font-mono); font-size: 12px; color: var(--blue); }
+  .flow-step h4 { font-family: var(--font-display); font-weight: 700; font-size: 18px; margin: 12px 0 8px; }
+  .flow-step p { font-size: 13px; color: var(--ink2); line-height: 1.5; }
+  .flow-step .ar { position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; background: var(--indigo); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; z-index: 2; }
+  @media (max-width: 720px) { .flow-step .ar { display: none; } }
+
+  /* backed */
+  .backed-card { display: inline-flex; align-items: center; gap: 22px; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 24px 30px; margin-top: 36px; }
+  .backed-card img { height: 50px; }
+  .backed-card .t { font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+  .backed-card .s { font-size: 13px; color: var(--ink2); margin-top: 3px; }
+
+  /* final */
+  .final { text-align: center; }
+  .final h2 { font-size: clamp(2.4rem, 6vw, 5rem); }
+  .final h2 .acc { color: var(--indigo); }
+  .final .lead { font-size: 18px; color: var(--ink2); margin: 22px auto 34px; }
+  .final .hero-cta { justify-content: center; }
+
+  footer { border-top: 1px solid var(--line); padding: 36px 0; }
+  .foot-in { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  .foot-links { display: flex; gap: 22px; font-size: 14px; color: var(--ink2); }
+  .foot-links a:hover { color: var(--ink); }
+  .foot-copy { font-size: 12px; color: var(--ink3); }
+</style>
+</head>
+<body>
+<div id="paper"></div>
+<canvas id="bp"></canvas>
+
+<nav>
+  <div class="wrap nav-in">
+    <a href="#" class="brand">Forge<span>IQ</span> <span class="bt">v0.1 · beta</span></a>
+    <div class="nav-links">
+      <a href="#programs">Programs</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#backed">About</a>
+      <a href="dashboard.html" class="nav-cta">Launch app <svg class="li" data-lucide="arrow-up-right"></svg></a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <div class="kick reveal">Precision Metallurgy · AI Surrogates</div>
+      <h1 class="disp reveal">Design forgings,<br><span class="acc">not meshes.</span></h1>
+      <p class="hero-sub reveal">Trained neural surrogates replace the slow finite-element loop — explore the design space, validate a pass schedule, and ship a 3D preform in a single session.</p>
+      <div class="hero-cta reveal">
+        <a href="dashboard.html" class="btn-primary">Launch the workbench <svg class="li" data-lucide="arrow-right"></svg></a>
+        <a href="#pipeline" class="btn-ghost"><svg class="li" data-lucide="git-branch"></svg> See the pipeline</a>
+      </div>
+      <div class="hero-meta reveal">
+        <div><div class="v"><span>≤</span><span data-count="60">60</span><span class="u">s</span></div><div class="l">Per surrogate run</div></div>
+        <div><div class="v"><span data-count="96.1" data-dec="1">96.1</span><span class="u">%</span></div><div class="l">Accuracy</div></div>
+        <div><div class="v"><span data-count="4">4</span></div><div class="l">Programs</div></div>
+      </div>
+    </div>
+    <div class="schematic reveal">
+      <span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span>
+      <span class="tag">FIG. 01 — TURBINE DISK · AXISYM.</span>
+      <svg viewBox="0 0 440 440" fill="none">
+        <!-- center axis -->
+        <line x1="220" y1="40" x2="220" y2="400" stroke="#2563eb" stroke-width="1" stroke-dasharray="2 6" opacity="0.5" />
+        <!-- dimension lines -->
+        <g stroke="#94a3b8" stroke-width="1">
+          <line x1="96" y1="372" x2="344" y2="372" />
+          <path d="M96 368 L96 376 M344 368 L344 376" />
+          <line x1="372" y1="150" x2="372" y2="300" />
+          <path d="M368 150 L376 150 M368 300 L376 300" />
+        </g>
+        <text x="220" y="392" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" fill="#475569">Ø 420 mm</text>
+        <text x="392" y="228" font-family="ui-monospace,monospace" font-size="12" fill="#475569" transform="rotate(90 392 228)">H 150</text>
+        <!-- forging cross-section profile (right half) -->
+        <path class="draw" style="--len:680" d="M220 150 L300 150 Q330 150 330 185 L330 220 Q330 235 314 240 L292 248 Q282 252 282 264 L282 286 Q282 300 300 300 L320 300" stroke="#4f46e5" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+        <!-- mirror (left half) -->
+        <path class="draw" style="--len:680;animation-delay:.3s" d="M220 150 L140 150 Q110 150 110 185 L110 220 Q110 235 126 240 L148 248 Q158 252 158 264 L158 286 Q158 300 140 300 L120 300" stroke="#4f46e5" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+        <!-- top & bottom caps -->
+        <path class="draw" style="--len:220;animation-delay:.5s" d="M120 300 L320 300" stroke="#4f46e5" stroke-width="2.5" />
+        <!-- grain-flow construction lines -->
+        <g class="draw" style="--len:900;animation-delay:.8s" stroke="#2563eb" stroke-width="1" opacity="0.4">
+          <path d="M150 170 Q220 200 290 170" /><path d="M150 200 Q220 235 290 200" /><path d="M165 240 Q220 268 275 240" />
+        </g>
+        <!-- nodes -->
+        <circle class="node" cx="220" cy="150" r="4" fill="#4f46e5" />
+        <circle class="node" cx="330" cy="185" r="4" fill="#059669" style="animation-delay:.6s" />
+        <circle class="node" cx="282" cy="264" r="4" fill="#7c3aed" style="animation-delay:1.2s" />
+        <!-- annotations -->
+        <text x="40" y="110" font-family="ui-monospace,monospace" font-size="11" fill="#059669">η = 0.42 ✓</text>
+        <text x="40" y="130" font-family="ui-monospace,monospace" font-size="11" fill="#4f46e5">ASTM 6</text>
+        <text x="300" y="110" font-family="ui-monospace,monospace" font-size="11" fill="#2563eb">void → 2.1%</text>
+        <text x="300" y="130" font-family="ui-monospace,monospace" font-size="11" fill="#7c3aed">grade A</text>
+        <!-- scan line -->
+        <rect class="scan" x="0" y="40" width="440" height="2" fill="#4f46e5" opacity="0.35" />
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- STATEMENT -->
+<section class="statement">
+  <div class="wrap">
+    <div class="kick reveal">The bottleneck</div>
+    <p class="reveal" style="margin-top:32px">Every forging shop is racing toward <b>first-time-right</b> design — <em>and the cost is weeks of finite-element iteration.</em> ForgeIQ removes that bottleneck with trained surrogates, delivered as one closed-loop workbench.</p>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section id="programs">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kick">The workbench</div>
+      <h2 class="disp">Four programs, one workflow.</h2>
+      <p class="lead">Each program is a trained surrogate for one stage of forging design. Run them solo, or chain them in the Auto Pipeline.</p>
+    </div>
+    <div class="prog-grid">
+      <a href="dashboard.html" class="pcard reveal" style="--accc:#2563eb">
+        <span class="num">01</span>
+        <div class="ic" style="background:linear-gradient(135deg,#2563eb,#4f46e5)"><svg class="li" data-lucide="drafting-compass"></svg></div>
+        <h3>Cogging</h3>
+        <p>MLP & gradient-boosting surrogates predict void closure in open-die forging, plus an equipment-aware pass-schedule optimizer.</p>
+        <div class="tags"><span class="tag">Void closure</span><span class="tag">Pass schedule</span><span class="tag">4 materials</span></div>
+        <span class="open">Open program <svg class="li" data-lucide="arrow-right"></svg></span>
+        <span class="bpline"></span>
+      </a>
+      <a href="dashboard.html" class="pcard reveal" style="--accc:#059669">
+        <span class="num">02</span>
+        <div class="ic" style="background:linear-gradient(135deg,#059669,#0d9488)"><svg class="li" data-lucide="area-chart"></svg></div>
+        <h3>Processing Map</h3>
+        <p>Prasad-criterion power-dissipation (η) and instability (ξ) heatmaps over temperature and strain rate. The PINN surrogate finds the safe window.</p>
+        <div class="tags"><span class="tag">PINN</span><span class="tag">η / ξ maps</span><span class="tag">Safe window</span></div>
+        <span class="open">Open program <svg class="li" data-lucide="arrow-right"></svg></span>
+        <span class="bpline"></span>
+      </a>
+      <a href="dashboard.html" class="pcard reveal" style="--accc:#7c3aed">
+        <span class="num">03</span>
+        <div class="ic" style="background:linear-gradient(135deg,#7c3aed,#c026d3)"><svg class="li" data-lucide="box"></svg></div>
+        <h3>3D Preform</h3>
+        <p>An attention U-Net turns a target shape into a watertight preform mesh, graded A–D for manufacturability from genus, wall thickness and bbox.</p>
+        <div class="tags"><span class="tag">Attention U-Net</span><span class="tag">Watertight</span><span class="tag">Grade A–D</span></div>
+        <span class="open">Open program <svg class="li" data-lucide="arrow-right"></svg></span>
+        <span class="bpline"></span>
+      </a>
+      <a href="dashboard.html" class="pcard reveal" style="--accc:#4f46e5">
+        <span class="num">04</span>
+        <div class="ic" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)"><svg class="li" data-lucide="sparkles"></svg></div>
+        <h3>Auto Pipeline</h3>
+        <p>Chain all four surrogates into a single target-driven closed loop, re-running toward your spec until the preform grades out — with full iteration history.</p>
+        <div class="tags"><span class="tag">Closed loop</span><span class="tag">Iteration history</span><span class="tag">~8s</span></div>
+        <span class="open">Open program <svg class="li" data-lucide="arrow-right"></svg></span>
+        <span class="bpline"></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section>
+  <div class="wrap">
+    <div class="metrics-grid reveal">
+      <div class="metric"><div class="v"><span data-count="60" data-prefix="≤">≤60</span><span class="u">s</span></div><div class="l">Per surrogate run, not weeks</div></div>
+      <div class="metric"><div class="v"><span data-count="96.1" data-dec="1">96.1</span><span class="u">%</span></div><div class="l">Surrogate accuracy</div></div>
+      <div class="metric"><div class="v"><span data-count="4">4</span></div><div class="l">Programs in one loop</div></div>
+      <div class="metric"><div class="v"><span data-count="14" data-prefix="−">−14</span><span class="u">d</span></div><div class="l">Cut from each iteration</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section id="pipeline">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kick">Auto Pipeline</div>
+      <h2 class="disp">One click. Four surrogates.<br>A finished preform.</h2>
+    </div>
+    <div class="flow reveal">
+      <div class="flow-step"><div class="n">01</div><h4>Processing map</h4><p>PINN finds the safe (T, ε̇) window.</p><span class="ar"><svg class="li" data-lucide="arrow-right"></svg></span></div>
+      <div class="flow-step"><div class="n">02</div><h4>Correction</h4><p>Calibrate against measured points.</p><span class="ar"><svg class="li" data-lucide="arrow-right"></svg></span></div>
+      <div class="flow-step"><div class="n">03</div><h4>Pass schedule</h4><p>Equipment-aware feasibility check.</p><span class="ar"><svg class="li" data-lucide="arrow-right"></svg></span></div>
+      <div class="flow-step"><div class="n">04</div><h4>3D preform</h4><p>Voxel → watertight STL · grade A.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- BACKED -->
+<section id="backed">
+  <div class="wrap">
+    <div class="kick reveal">Built at</div>
+    <div class="backed-card reveal">
+      <img src="assets/nsmlab-logo.png" alt="NSMLAB" />
+      <div>
+        <div class="t">NSMLab</div>
+        <div class="s">Net Shape Manufacturing Laboratory · Sogang University</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final">
+  <div class="wrap">
+    <h2 class="disp reveal">Forge <span class="acc">smarter.</span></h2>
+    <p class="lead reveal">No install. Try the live workbench — no account required.</p>
+    <div class="hero-cta reveal">
+      <a href="dashboard.html" class="btn-primary">Launch the workbench <svg class="li" data-lucide="arrow-right"></svg></a>
+      <a href="index.html" class="btn-ghost"><svg class="li" data-lucide="moon"></svg> View dark version</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a href="#" class="brand" style="font-size:18px">Forge<span>IQ</span></a>
+    <div class="foot-links"><a href="#programs">Programs</a><a href="#pipeline">Pipeline</a><a href="#backed">About</a></div>
+    <div class="foot-copy">© 2026 ForgeIQ · NSMLab, Sogang University</div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- LIGHT AMBIENT BACKGROUND ----------
+  // Soft drifting color washes + faint ink-particle constellation on paper.
+  (function bp() {
+    const cv = document.getElementById('bp'); if (!cv) return;
+    const ctx = cv.getContext('2d');
+    let W=0,H=0,DPR=Math.min(window.devicePixelRatio||1,2), parts=[];
+    function spawn(any){ return { x:Math.random()*W, y:any?Math.random()*H:H+10, vx:(Math.random()-0.5)*0.12, vy:-(0.04+Math.random()*0.18), r:0.8+Math.random()*1.6, a:0.18+Math.random()*0.30, tw:Math.random()*6.28 }; }
+    function resize(){ W=window.innerWidth; H=window.innerHeight; cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0); const c=Math.round(Math.min(60,Math.max(24,W*H/40000))); parts=Array.from({length:c},()=>spawn(true)); }
+    function wash(x,y,r,c){ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,c); g.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=g; ctx.fillRect(x-r,y-r,r*2,r*2); }
+    function frame(now){
+      ctx.clearRect(0,0,W,H);
+      const t=now*0.0003;
+      // soft premium washes — very faint on white
+      wash(W*(0.28+0.2*Math.sin(t)),        H*(0.3+0.14*Math.cos(t*0.8)),  Math.max(W,H)*0.5, 'rgba(79,70,229,0.07)');
+      wash(W*(0.76+0.16*Math.cos(t*0.7)),   H*(0.5+0.18*Math.sin(t*0.9)),  Math.max(W,H)*0.45,'rgba(13,148,136,0.05)');
+      wash(W*(0.55+0.22*Math.sin(t*0.55)),  H*(0.82+0.1*Math.cos(t)),      Math.max(W,H)*0.45,'rgba(124,58,237,0.05)');
+      // ink constellation
+      for(let i=0;i<parts.length;i++){ for(let j=i+1;j<parts.length;j++){ const a=parts[i],b=parts[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy; if(d2<150*150){ const al=(1-Math.sqrt(d2)/150)*0.07; ctx.strokeStyle='rgba(37,99,235,'+al+')'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } } }
+      for(const p of parts){ if(!reduce){ p.x+=p.vx; p.y+=p.vy; p.tw+=0.04; if(p.y<-10||p.x<-10||p.x>W+10) Object.assign(p,spawn(false)); } const tw=0.6+0.4*Math.sin(p.tw); ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.2832); ctx.fillStyle='rgba(37,99,235,'+(p.a*tw)+')'; ctx.fill(); }
+      if(!reduce) requestAnimationFrame(frame);
+    }
+    resize(); window.addEventListener('resize', resize, { passive:true }); requestAnimationFrame(frame);
+  })();
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); if (e.target.querySelector('[data-count]')) countUp(e.target); } });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  function countUp(scope) {
+    scope.querySelectorAll('[data-count]').forEach((el) => {
+      const target = parseFloat(el.dataset.count), dec = parseInt(el.dataset.dec || '0', 10), prefix = el.dataset.prefix || '';
+      if (reduce) { el.textContent = prefix + target.toFixed(dec); return; }
+      const dur = 1400; let t0;
+      const tick = (t) => { if (!t0) t0 = t; const p = Math.min(1, (t - t0) / dur); const e = 1 - Math.pow(1 - p, 3); el.textContent = prefix + (target * e).toFixed(dec); if (p < 1) requestAnimationFrame(tick); else el.textContent = prefix + target.toFixed(dec); };
+      requestAnimationFrame(tick);
+    });
+  }
+</script>
+</body>
+</html>
