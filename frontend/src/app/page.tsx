@@ -1,11 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import logo from "../../public/logo.png";
 import { useUser } from "@/lib/user";
-import { NsmLogo } from "@/components/our/nsm-logo";
 import { LangSwitcher } from "@/components/our/lang-switcher";
 import { useT } from "@/lib/i18n";
 import { logout } from "./auth/lib/actions";
@@ -13,46 +9,71 @@ import { toggleAiAssistant } from "@/components/our/ai-assistant";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PiCompassTool, PiCube, PiBrain, PiLightning, PiGlobeStand, PiBookOpenText, PiBookmarkSimple, PiClockCounterClockwise, PiFlask, PiArrowsClockwise } from "react-icons/pi";
-import { TbChartArea, TbAtom2 } from "react-icons/tb";
+import { PiBrain, PiFlask, PiGitBranch } from "react-icons/pi";
 import { HiSparkles } from "react-icons/hi2";
-import { LuArrowRight, LuMessagesSquare, LuPlay, LuX, LuMaximize2, LuExternalLink } from "react-icons/lu";
+import { LuArrowRight, LuLifeBuoy, LuYoutube, LuLinkedin } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa6";
-import { useCountUp, parseStatString } from "@/lib/use-count-up";
+import { useEffect, useState } from "react";
 import { useInView } from "@/lib/use-in-view";
-import { Reveal } from "@/components/our/reveal";
 
+/**
+ * Robotis-style ecosystem landing page — main site landing.
+ * Promoted from /robotis on 2026-06-19.
+ */
 export default function LandingPage() {
   const user = useUser();
   const { t } = useT();
 
+  // Hero photo slideshow (3 photos cross-fade every 6s)
+  const HERO_PHOTOS = [
+    "https://images.unsplash.com/photo-1571590946238-a0ba990d12a9?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1572277603731-6941cdb65597?auto=format&fit=crop&w=1600&q=80",
+    "/redesign-v3/assets/bg-forge.jpg",
+  ];
+  const [slide, setSlide] = useState(0);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => setSlide((s) => (s + 1) % HERO_PHOTOS.length), 6000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <div className="font-public min-h-screen bg-white text-slate-900 overflow-x-hidden">
-      {/* TOP BAR */}
-      <nav className="fixed top-0 inset-x-0 z-40 bg-white/70 backdrop-blur-xl border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center leading-tight">
-            <div className="flex flex-col">
-              <div className="text-xl font-bold text-slate-900 tracking-tight font-montserrat">
-                Forge<span className="text-indigo-600">IQ</span>
-                <span className="hidden md:inline text-[10px] text-slate-500 ml-2 font-normal align-middle">{t("home.nav.by_nsmlab")}</span>
-              </div>
-              <div className="hidden md:block text-[10px] text-indigo-600/80 font-semibold tracking-wider uppercase mt-0.5">{t("home.nav.tagline")}</div>
-            </div>
+      {/* TOP BAR — dark, lang + support */}
+      <div className="bg-slate-950 text-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-9 flex items-center justify-end gap-5 text-xs">
+          <a href="#footer" className="text-white/60 hover:text-white inline-flex items-center gap-1.5">
+            <LuLifeBuoy /> {t("home.nav.try_demo")}
+          </a>
+          <LangSwitcher />
+        </div>
+      </div>
+
+      {/* NAV — sticky, dark navy bg (so the indigo-gradient F emblem keeps its
+          original colours, and the bar reads as one piece with the top utility strip) */}
+      <nav className="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-white/10 text-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-[76px] flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            {/* Original gradient emblem (indigo→violet F + accent dot) */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/icon.svg" alt="" className="h-9 w-9 rounded-lg" />
+            <span className="text-2xl font-extrabold font-montserrat tracking-tight">
+              Forge<span className="text-indigo-400">IQ</span>
+            </span>
           </Link>
-          <div className="flex items-center gap-2">
-            <a href="#programs" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.programs")}</a>
-            <a href="#demo" className="hidden md:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.try_demo")}</a>
-            <a href="#capabilities" className="hidden lg:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.capabilities")}</a>
-            <a href="#team" className="hidden lg:inline text-sm text-slate-600 hover:text-slate-900 px-3 h-9 leading-9">{t("home.nav.team")}</a>
-            <LangSwitcher />
-            <button onClick={toggleAiAssistant} className="hidden md:flex items-center gap-1.5 cursor-pointer px-3 h-9 rounded-md text-sm font-medium bg-gradient-to-br from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 text-indigo-700 border border-indigo-200/60">
-              <HiSparkles className="text-amber-500" />{t("home.nav.ask_ai")}
+          <div className="flex items-center gap-1">
+            <a href="#programs" className="hidden md:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-white/70 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/5">{t("home.nav.programs")}</a>
+            <a href="#ecosystem" className="hidden md:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-white/70 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/5">Ecosystem</a>
+            <a href="#pipeline" className="hidden lg:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-white/70 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/5">Pipeline</a>
+            <a href="#footer" className="hidden lg:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-white/70 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/5">{t("home.nav.team")}</a>
+            <button onClick={toggleAiAssistant} className="hidden md:inline-flex items-center gap-1.5 cursor-pointer px-3 h-9 rounded-md text-sm font-medium bg-white/10 hover:bg-white/15 text-indigo-200 border border-white/15">
+              <HiSparkles className="text-amber-400" />{t("home.nav.ask_ai")}
             </button>
             {user?.isSignedIn ? (
               <UserMenu name={user.name} email={user.email} />
             ) : (
-              <Link href="/auth/login" className="inline-flex items-center gap-1 px-3 h-9 rounded-md text-sm font-medium bg-slate-900 hover:bg-slate-800 text-white">
+              <Link href="/auth/login" className="ml-1 inline-flex items-center gap-2 h-[42px] px-5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[13.5px] font-semibold tracking-wider uppercase transition-all hover:-translate-y-px">
                 {t("home.nav.sign_in")} <LuArrowRight />
               </Link>
             )}
@@ -61,377 +82,351 @@ export default function LandingPage() {
       </nav>
 
       {/* HERO */}
-      <section className="relative isolate min-h-[100vh] flex items-center pt-24 pb-16 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white overflow-hidden">
-        {/* Background grid + blobs */}
-        <div className="absolute inset-0 bg-grid opacity-50"></div>
-        <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-indigo-600/20 blur-3xl animate-drift"></div>
-        <div className="absolute bottom-0 -right-32 w-[500px] h-[500px] rounded-full bg-violet-600/20 blur-3xl animate-drift" style={{ animationDelay: "4s" }}></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-blue-500/10 blur-3xl"></div>
-
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 w-full">
-          <div className="text-center max-w-4xl mx-auto animate-fade-up">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs text-indigo-200 mb-6">
-              <HiSparkles className="text-amber-400" />
-              {t("home.hero.badge")}
-            </div>
-            <div
-              className="mb-4 inline-block text-xs uppercase tracking-[0.3em] text-indigo-200/70"
-              dangerouslySetInnerHTML={{ __html: t("home.hero.kicker") }}
+      <header className="relative bg-slate-950 text-white overflow-hidden">
+        {/* Photo slideshow */}
+        <div className="absolute inset-0 z-0">
+          {HERO_PHOTOS.map((src, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={src}
+              src={src}
+              alt=""
+              referrerPolicy="no-referrer"
+              className={
+                "absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] " +
+                (i === slide ? "opacity-40" : "opacity-0")
+              }
+              style={{ filter: "grayscale(0.15) contrast(1.04)", animation: "kenburns 24s ease-in-out infinite alternate" }}
             />
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight font-montserrat leading-[1.05]">
-              {t("home.hero.title1")}<br />
-              <span className="text-shimmer">{t("home.hero.title2")}</span><br />
-              <span className="text-slate-300">{t("home.hero.title3")}</span>
-            </h1>
-            <p className="mt-8 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              {t("home.hero.desc")} <strong className="text-white">{t("home.hero.desc_strong")}</strong>
-            </p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <a href="#programs" className="group inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all hover:scale-105">
-                {t("home.hero.cta_primary")} <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
-              </a>
-              <a href="#demo" className="group inline-flex items-center gap-2 h-12 px-6 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-semibold text-sm transition-all hover:scale-105 shadow-lg shadow-indigo-500/30">
-                <LuPlay />{t("home.hero.cta_demo")} <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
-              </a>
-              <button onClick={toggleAiAssistant} className="cursor-pointer inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-medium text-sm transition-all">
-                <HiSparkles className="text-amber-400" />{t("home.hero.cta_ai")}
-              </button>
-            </div>
-
-            <HeroStats
-              stats={[
-                { raw: t("home.hero.stat1_v"), label: t("home.hero.stat1_l") },
-                { raw: t("home.hero.stat2_v"), label: t("home.hero.stat2_l") },
-                { raw: t("home.hero.stat3_v"), label: t("home.hero.stat3_l") },
-              ]}
-            />
-          </div>
+          ))}
+          {/* Drifting glows */}
+          <div className="absolute -top-44 -left-28 w-[620px] h-[620px] rounded-full bg-indigo-600/30 blur-[100px] animate-drift" />
+          <div className="absolute -bottom-52 -right-24 w-[560px] h-[560px] rounded-full bg-violet-600/20 blur-[100px] animate-drift" style={{ animationDelay: "6s" }} />
+          {/* Diagonal text overlay */}
+          <div className="absolute inset-0 z-[2] bg-gradient-to-r from-slate-950 from-34% via-slate-950/60 via-70% to-slate-950/35" />
         </div>
-      </section>
 
-      {/* WHY */}
-      <section className="py-24 px-6 lg:px-10 bg-slate-50 border-y border-slate-200">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto">
-            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.why.eyebrow")}</p>
-            <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900 leading-tight">
-              {t("home.why.title1")}<br />{t("home.why.title2")} <em className="text-indigo-600 not-italic">{t("home.why.title3")}</em>.
-            </h2>
-            <p className="mt-6 text-lg text-slate-600 leading-relaxed">
-              {t("home.why.desc")}
-            </p>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-32 lg:py-40 max-w-3xl">
+          <div className="font-semibold text-sm tracking-[0.18em] uppercase text-indigo-400">
+            AI Metallurgy Ecosystem · <span className="text-indigo-300">NSMLab</span>
           </div>
-
-          <div className="mt-16 grid md:grid-cols-3 gap-6">
-            <Reveal delay={0}>
-              <BenefitCard
-                icon={<PiBrain className="text-2xl" />}
-                title={t("home.why.b1_title")}
-                text={t("home.why.b1_text")}
-              />
-            </Reveal>
-            <Reveal delay={90}>
-              <BenefitCard
-                icon={<PiLightning className="text-2xl" />}
-                title={t("home.why.b2_title")}
-                text={t("home.why.b2_text")}
-              />
-            </Reveal>
-            <Reveal delay={180}>
-              <BenefitCard
-                icon={<PiFlask className="text-2xl" />}
-                title={t("home.why.b3_title")}
-                text={t("home.why.b3_text")}
-              />
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* PROGRAMS — the 3 main service cards */}
-      <section id="programs" className="py-24 px-6 lg:px-10 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.programs.eyebrow")}</p>
-            <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900">
-              {t("home.programs.title")}
-            </h2>
-            <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-              {t("home.programs.desc")}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <Reveal delay={0}>
-              <ProgramCard
-                href="/cogging"
-                accent="blue"
-                order="01"
-                icon={<PiCompassTool />}
-                title={t("home.programs.cog.title")}
-                tag={t("home.programs.cog.tag")}
-                desc={t("home.programs.cog.desc")}
-                features={[t("home.programs.cog.f1"), t("home.programs.cog.f2"), t("home.programs.cog.f3")]}
-                openLabel={t("home.programs.open")}
-              />
-            </Reveal>
-            <Reveal delay={110}>
-              <ProgramCard
-                href="/processing_map"
-                accent="emerald"
-                order="02"
-                icon={<TbChartArea />}
-                title={t("home.programs.pmap.title")}
-                tag={t("home.programs.pmap.tag")}
-                desc={t("home.programs.pmap.desc")}
-                features={[t("home.programs.pmap.f1"), t("home.programs.pmap.f2"), t("home.programs.pmap.f3")]}
-                openLabel={t("home.programs.open")}
-              />
-            </Reveal>
-            <Reveal delay={220}>
-              <ProgramCard
-                href="/3d_preform"
-                accent="violet"
-                order="03"
-                icon={<PiCube />}
-                title={t("home.programs.pre.title")}
-                tag={t("home.programs.pre.tag")}
-                desc={t("home.programs.pre.desc")}
-                features={[t("home.programs.pre.f1"), t("home.programs.pre.f2"), t("home.programs.pre.f3")]}
-                openLabel={t("home.programs.open")}
-              />
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* AUTO PIPELINE — featured block */}
-      <section className="py-24 px-6 lg:px-10 bg-gradient-to-br from-slate-100 via-indigo-50 to-violet-50 border-y border-slate-200 relative overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-indigo-300/30 blur-3xl animate-drift"></div>
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-violet-300/30 blur-3xl animate-drift" style={{ animationDelay: "5s" }}></div>
-
-        <div className="relative max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-indigo-200 text-[10px] font-bold uppercase tracking-widest text-indigo-700 mb-4">
-                <HiSparkles className="text-amber-500" />{t("home.pipeline.badge")}
-              </div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900 leading-[1.05]">
-                {t("home.pipeline.title1")}<br />
-                <span className="text-indigo-600">{t("home.pipeline.title2")}</span><br />
-                <span className="text-slate-500">{t("home.pipeline.title3")}</span>
-              </h2>
-              <p
-                className="mt-5 text-lg text-slate-600 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: t("home.pipeline.desc") }}
-              />
-              <ul className="mt-6 space-y-2 text-sm text-slate-700">
-                <PipelineStep n="1" title={t("home.pipeline.s1_t")} desc={t("home.pipeline.s1_d")} />
-                <PipelineStep n="2" title={t("home.pipeline.s2_t")} desc={t("home.pipeline.s2_d")} />
-                <PipelineStep n="3" title={t("home.pipeline.s3_t")} desc={t("home.pipeline.s3_d")} />
-                <PipelineStep n="4" title={t("home.pipeline.s4_t")} desc={t("home.pipeline.s4_d")} />
-                <PipelineStep n="5" title={t("home.pipeline.s5_t")} desc={t("home.pipeline.s5_d")} />
-              </ul>
-
-              <div className="mt-8">
-                <Link href="/workflow" className="group inline-flex items-center gap-2 h-12 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition-all hover:scale-105">
-                  <LuPlay />{t("home.pipeline.cta")} <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Pipeline visual */}
-            <div className="relative">
-              <div className="aspect-square max-w-md mx-auto bg-white rounded-3xl border border-slate-200 shadow-2xl shadow-indigo-500/10 p-6 flex flex-col gap-3 overflow-hidden">
-                <div className="text-[10px] font-mono text-slate-400 flex items-center justify-between">
-                  <span>pipeline.log</span>
-                  <span className="flex gap-1">
-                    <span className="w-2 h-2 rounded-full bg-red-400"></span>
-                    <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                  </span>
-                </div>
-                <FakeLog when="13:24:01" status="done" color="emerald" text={t("home.pipeline.log1")} detail={t("home.pipeline.log1_d")} />
-                <FakeLog when="13:24:03" status="done" color="emerald" text={t("home.pipeline.log2")} detail={t("home.pipeline.log2_d")} />
-                <FakeLog when="13:24:08" status="done" color="emerald" text={t("home.pipeline.log3")} detail={t("home.pipeline.log3_d")} />
-                <div className="mt-2 grid grid-cols-3 gap-2">
-                  <Kpi v="96.1%" l={t("home.pipeline.k1")} />
-                  <Kpi v="7" l={t("home.pipeline.k2")} />
-                  <Kpi v="✓" l={t("home.pipeline.k3")} emerald />
-                </div>
-                <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
-                  <span>{t("home.pipeline.iter")}</span>
-                  <span className="text-indigo-600 font-semibold flex items-center gap-1"><PiArrowsClockwise />{t("home.pipeline.rerun")}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SCREENSHOTS */}
-      <section id="demo" className="py-24 px-6 lg:px-10 bg-white border-y border-slate-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.screens.eyebrow")}</p>
-            <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900">
-              {t("home.screens.title")}
-            </h2>
-            <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-              {t("home.screens.desc")}
-            </p>
-          </div>
-
-          <ScreenshotsGallery />
-        </div>
-      </section>
-
-      {/* DEMO VIDEO */}
-      <section className="py-24 px-6 lg:px-10 bg-slate-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12 max-w-3xl mx-auto">
-            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.demo.eyebrow")}</p>
-            <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900">
-              {t("home.demo.title")}
-            </h2>
-            <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-              {t("home.demo.desc")}
-            </p>
-          </div>
-
-          {/* Bundled ForgeIQ explainer — runtime-unpacked React/Babel HTML in /public */}
-          <div className="relative aspect-video w-full rounded-3xl border border-slate-200 bg-slate-950 shadow-2xl shadow-indigo-500/10 overflow-hidden">
-            <iframe
-              src="/video/index.html"
-              title="ForgeIQ explainer"
-              className="absolute inset-0 w-full h-full"
-              allow="autoplay; fullscreen"
-              loading="lazy"
-            />
-            <a
-              href="/video/index.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 h-9 px-3 rounded-md bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-medium transition-colors"
-              title={t("home.demo.cta_try")}
-            >
-              <LuExternalLink />
-            </a>
-          </div>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/workflow" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition-all">
-              <LuPlay />{t("home.demo.cta_workflow")}
-            </Link>
-            <a href="#programs" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm transition-all">
-              {t("home.demo.cta_try")} <LuArrowRight />
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* CAPABILITIES */}
-      <section id="capabilities" className="py-24 px-6 lg:px-10 bg-slate-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-dots opacity-40"></div>
-        <div className="relative max-w-7xl mx-auto">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <p className="text-sm font-semibold text-indigo-300 uppercase tracking-widest">{t("home.cap.eyebrow")}</p>
-            <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-white">
-              {t("home.cap.title1")}<br />{t("home.cap.title2")}
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Feat icon={<HiSparkles />} title={t("home.cap.f1_t")} text={t("home.cap.f1_d")} />
-            <Feat icon={<PiClockCounterClockwise />} title={t("home.cap.f2_t")} text={t("home.cap.f2_d")} />
-            <Feat icon={<PiBookmarkSimple />} title={t("home.cap.f3_t")} text={t("home.cap.f3_d")} />
-            <Feat icon={<PiBookOpenText />} title={t("home.cap.f4_t")} text={t("home.cap.f4_d")} />
-            <Feat icon={<LuMessagesSquare />} title={t("home.cap.f5_t")} text={t("home.cap.f5_d")} />
-            <Feat icon={<PiBrain />} title={t("home.cap.f6_t")} text={t("home.cap.f6_d")} />
-            <Feat icon={<PiGlobeStand />} title={t("home.cap.f7_t")} text={t("home.cap.f7_d")} />
-            <Feat icon={<TbAtom2 />} title={t("home.cap.f8_t")} text={t("home.cap.f8_d")} />
-          </div>
-        </div>
-      </section>
-
-      {/* TEAM */}
-      <section id="team" className="py-24 px-6 lg:px-10 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">{t("home.team.eyebrow")}</p>
-            <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight font-montserrat text-slate-900">
-              {t("home.team.title")} <span className="text-indigo-600">— Developed by Y. Alibek</span>
-            </h2>
-            <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              {t("home.team.desc")}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            <CreditCard
-              role={t("home.team.role1")}
-              org={t("home.team.org1")}
-              note={t("home.team.note1")}
-            />
-            <CreditCard
-              role={t("home.team.role2")}
-              org={t("home.team.org2")}
-              note={t("home.team.note2")}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className="py-24 px-6 lg:px-10 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid opacity-30"></div>
-        <div className="relative max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight font-montserrat">
-            {t("home.cta.title1")}<br />
-            <span className="text-indigo-200">{t("home.cta.title2")}</span>
-          </h2>
-          <p className="mt-6 text-indigo-100 text-lg">
-            {t("home.cta.desc")}
+          <h1 className="font-montserrat font-extrabold tracking-tight leading-[1.02] mt-6 mb-8 text-5xl md:text-6xl lg:text-[6rem]">
+            {t("home.hero.title1")}<br />
+            <span className="text-white/50">{t("home.hero.title2")}</span>
+          </h1>
+          <p className="max-w-2xl text-lg lg:text-[19px] leading-relaxed text-white/70">
+            <strong className="text-white font-semibold">ForgeIQ — DYNAMIXEL of metallurgy.</strong> {t("home.hero.desc")}
           </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/cogging" className="inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all hover:scale-105">
-              <PiCompassTool />{t("home.cta.start_cogging")}
+          <div className="flex flex-wrap gap-3.5 mt-10">
+            <Link href="/workflow" className="inline-flex items-center gap-2.5 h-14 px-7 rounded-lg bg-white text-slate-900 font-bold text-[15px] hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-16px_rgba(255,255,255,0.35)] transition-all">
+              {t("home.hero.cta_primary")} <LuArrowRight />
             </Link>
-            <Link href="/processing_map" className="inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 text-white font-medium text-sm">
-              <TbChartArea />{t("nav.processing_map")}
+            <a href="#programs" className="inline-flex items-center gap-2.5 h-14 px-6 rounded-lg border border-white/25 text-white font-semibold text-[15px] hover:bg-white/8 hover:border-white/50 transition-all">
+              Explore programs
+            </a>
+          </div>
+        </div>
+
+        {/* Stat strip — 4 metrics */}
+        <div className="relative z-10 border-t border-white/10">
+          <div className="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-2 md:grid-cols-4">
+            <Stat v="≤60" unit="s" l={t("home.hero.stat1_l")} />
+            <Stat v="96.1" unit="%" l={t("home.hero.stat2_l")} />
+            <Stat v="4" l={t("home.hero.stat3_l")} />
+            <Stat v="−14" unit="d" l="Cut per iteration" />
+          </div>
+        </div>
+      </header>
+
+      {/* INTRO — big single statement */}
+      <section className="py-24 text-center border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <p className="font-montserrat font-bold text-2xl md:text-4xl lg:text-[2.8rem] leading-tight tracking-tight max-w-4xl mx-auto">
+            <strong className="text-indigo-600">ForgeIQ</strong> is the answer you&apos;ve been looking for. Designed with a deep understanding of the precision and process data demanded by modern forging — for engineers who refuse to wait weeks per iteration.
+          </p>
+        </div>
+      </section>
+
+      {/* PROGRAMS — 4 alternating series */}
+      <div id="programs">
+        <ProgramSeries
+          num="01"
+          accent="blue"
+          tag="Cogging"
+          title={t("home.programs.cog.title")}
+          subtitle="Void closure, predicted per pass."
+          desc="MLP and gradient-boosting surrogates estimate final void volume from grain size, weight factor and your per-pass schedule — then check every pass against your press, in seconds."
+          specs={[{ v: "<3s", l: "Per prediction" }, { v: "±1.4%", l: "Mean error" }]}
+          href="/cogging"
+          openLabel={t("home.programs.open")}
+          viz={<CoggingViz />}
+          figLabel="FIG.01 · void closure"
+        />
+        <ProgramSeries
+          flip
+          num="02"
+          accent="emerald"
+          tag="Processing Map"
+          title={t("home.programs.pmap.title")}
+          subtitle="Find the safe forging window."
+          desc="Prasad-criterion power-dissipation (η) and instability (ξ) heatmaps over temperature and strain rate. The PINN surrogate reveals exactly where the material flows safely."
+          specs={[{ v: "0.42", l: "Peak η" }, { v: "PINN", l: "Surrogate" }]}
+          href="/processing_map"
+          openLabel={t("home.programs.open")}
+          viz={<PmapViz />}
+          figLabel="FIG.02 · η / ξ map"
+        />
+        <ProgramSeries
+          num="03"
+          accent="violet"
+          tag="3D Preform"
+          title={t("home.programs.pre.title")}
+          subtitle="From voxels to a graded STL."
+          desc="An attention U-Net turns a target shape into a watertight preform mesh — returning a manufacturability grade from A to D based on genus, wall thickness and bounding box."
+          specs={[{ v: "A", l: "Grade" }, { v: "48k", l: "Faces" }]}
+          href="/3d_preform"
+          openLabel={t("home.programs.open")}
+          viz={<PreformViz />}
+          figLabel="FIG.03 · preform mesh"
+        />
+        <ProgramSeries
+          flip
+          num="04"
+          accent="indigo"
+          tag="Auto Pipeline"
+          title={t("home.pipeline.badge")}
+          subtitle="One click, a finished preform."
+          desc="Chain all four surrogates into a single target-driven closed loop — re-running toward your spec until the preform grades out, with full iteration history."
+          specs={[{ v: "~8s", l: "Full loop" }, { v: "4", l: "Stages" }]}
+          href="/workflow"
+          openLabel={t("home.pipeline.cta")}
+          viz={<PipelineViz />}
+          figLabel="FIG.04 · pipeline"
+        />
+      </div>
+
+      {/* ECOSYSTEM */}
+      <section id="ecosystem" className="py-24 text-center">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="flex flex-col items-center">
+            <span className="font-bold text-[13px] tracking-[0.16em] uppercase text-indigo-600">The Ecosystem</span>
+            <h2 className="font-montserrat font-extrabold text-3xl md:text-5xl mt-4 tracking-tight">Built for engineers, by a lab.</h2>
+            <p className="text-lg text-slate-600 mt-5 max-w-2xl leading-relaxed">{t("home.why.desc")}</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 mt-14 text-left">
+            <EcoCard
+              gradient="from-indigo-600 to-violet-600"
+              icon={<PiBrain />}
+              title={t("home.why.b1_title")}
+              text={t("home.why.b1_text")}
+            />
+            <EcoCard
+              gradient="from-blue-600 to-indigo-600"
+              icon={<PiGitBranch />}
+              title={t("home.why.b2_title")}
+              text={t("home.why.b2_text")}
+            />
+            <EcoCard
+              gradient="from-emerald-600 to-teal-600"
+              icon={<PiFlask />}
+              title={t("home.why.b3_title")}
+              text={t("home.why.b3_text")}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* CTA BANNER */}
+      <section id="pipeline" className="relative bg-slate-950 text-white overflow-hidden">
+        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+        <div className="absolute -top-40 -left-20 w-[520px] h-[520px] rounded-full bg-indigo-500/40 blur-[90px]" />
+        <div className="absolute -bottom-52 -right-16 w-[520px] h-[520px] rounded-full bg-violet-600/32 blur-[90px]" />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-28 text-center">
+          <h2 className="font-montserrat font-extrabold text-4xl md:text-6xl lg:text-7xl tracking-tight">
+            {t("home.cta.title1")} <span className="text-indigo-300">{t("home.cta.title2")}</span>
+          </h2>
+          <p className="text-lg text-white/70 mt-6 mb-9">{t("home.cta.desc")}</p>
+          <div className="flex flex-wrap gap-3.5 justify-center">
+            <Link href="/workflow" className="inline-flex items-center gap-2.5 h-14 px-7 rounded-lg bg-white text-slate-900 font-bold text-[15px] hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-16px_rgba(255,255,255,0.35)] transition-all">
+              {t("home.hero.cta_primary")} <LuArrowRight />
             </Link>
-            <Link href="/3d_preform" className="inline-flex items-center gap-2 h-12 px-6 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 text-white font-medium text-sm">
-              <PiCube />{t("nav.preform_3d")}
-            </Link>
+            <a href="#footer" className="inline-flex items-center gap-2.5 h-14 px-6 rounded-lg border border-white/25 text-white font-semibold text-[15px] hover:bg-white/8 transition-all">
+              Contact us
+            </a>
           </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="py-10 px-6 lg:px-10 bg-slate-950 text-slate-400 text-sm">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-5">
-            <NsmLogo variant="dark" />
-            <div className="h-10 w-px bg-slate-700"></div>
+      <footer id="footer" className="bg-slate-900 text-white/60">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10 py-16 border-b border-white/10">
             <div>
-              <div className="text-white font-semibold text-sm font-montserrat">
+              <Link href="/" className="text-white text-[22px] font-extrabold font-montserrat">
                 Forge<span className="text-indigo-400">IQ</span>
-                <span className="text-[10px] text-indigo-300 ml-2 font-normal align-middle">— {t("home.nav.tagline")}</span>
+              </Link>
+              <p className="text-[13.5px] leading-relaxed mt-4 max-w-xs">
+                AI Metallurgy Simulation Platform. A closed-loop, AI-driven process-design workbench for hot-forging and cogging — built by Y. Alibek with research support from NSMLab, Sogang University.
+              </p>
+              <div className="flex items-center gap-2.5 mt-5">
+                {/* ForgeIQ emblem — original indigo→violet gradient mark (icon.svg) */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/icon.svg" alt="ForgeIQ" className="h-12 w-12 block" />
+                {/* NSMLab supporting lab lockup — kept in white pill since the source PNG has white background */}
+                <span className="inline-flex bg-white rounded-lg p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/redesign-v3/assets/nsmlab-logo.png" alt="NSMLAB" className="h-7 block" />
+                </span>
               </div>
-              <div className="text-[11px] mt-0.5">© {new Date().getFullYear()} · Developed by Y. Alibek</div>
+            </div>
+            <FootCol heading={t("home.nav.programs")} links={[
+              ["/cogging", t("home.programs.cog.title")],
+              ["/processing_map", t("home.programs.pmap.title")],
+              ["/3d_preform", t("home.programs.pre.title")],
+              ["/workflow", t("home.pipeline.badge")],
+            ]} />
+            <FootCol heading="Resources" links={[
+              ["#", "Documentation"],
+              ["#", t("home.nav.capabilities")],
+              ["#", "Changelog"],
+              ["https://github.com/jonesh77/forgeiq", "GitHub"],
+            ]} />
+            <div>
+              <h5 className="text-white font-bold text-xs tracking-[0.12em] uppercase mb-4">Lab</h5>
+              <a href="#" className="block text-sm py-1.5 hover:text-white">About NSMLab</a>
+              <a href="#" className="block text-sm py-1.5 hover:text-white">Research</a>
+              <a href="#" className="block text-sm py-1.5 hover:text-white">Contact</a>
+              <div className="flex gap-3 mt-5">
+                <a href="https://github.com/jonesh77/forgeiq" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><FaGithub /></a>
+                <a href="#" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><LuLinkedin /></a>
+                <a href="#" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><LuYoutube /></a>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-5">
-            <a href="#programs" className="hover:text-white">{t("home.nav.programs")}</a>
-            <a href="#capabilities" className="hover:text-white">{t("home.nav.capabilities")}</a>
-            <a href="#team" className="hover:text-white">{t("home.nav.team")}</a>
+          <div className="flex flex-wrap items-center justify-between gap-4 py-6 text-[12.5px]">
+            <span>© {new Date().getFullYear()} ForgeIQ — Developed by Y. Alibek · Supported by NSMLab, Sogang University. All rights reserved.</span>
+            <span className="flex gap-5">
+              <a href="#" className="hover:text-white">Privacy</a>
+              <a href="#" className="hover:text-white">Cookies</a>
+              <Link href="/classic" className="hover:text-white">Classic version</Link>
+            </span>
           </div>
         </div>
       </footer>
+
+      <style jsx>{`
+        @keyframes kenburns {
+          from { transform: scale(1.06); }
+          to { transform: scale(1.16) translate(-2%, -2%); }
+        }
+      `}</style>
     </div>
   );
 }
 
 /* ---------- helpers ---------- */
+
+function Stat({ v, unit, l }: { v: string; unit?: string; l: string }) {
+  return (
+    <div className="py-6 border-r last:border-r-0 border-white/10">
+      <div className="font-montserrat font-extrabold text-3xl text-white tracking-tight">
+        {v}{unit && <span className="text-indigo-300">{unit}</span>}
+      </div>
+      <div className="text-[12.5px] text-white/55 mt-1.5">{l}</div>
+    </div>
+  );
+}
+
+const ACCENT_STYLE: Record<string, { bg: string; text: string }> = {
+  blue: { bg: "bg-blue-500/10", text: "text-blue-600" },
+  emerald: { bg: "bg-emerald-500/10", text: "text-emerald-600" },
+  violet: { bg: "bg-violet-500/10", text: "text-violet-600" },
+  indigo: { bg: "bg-indigo-500/10", text: "text-indigo-600" },
+};
+
+function ProgramSeries({
+  num, accent, tag, subtitle, desc, specs, href, openLabel, viz, figLabel, flip,
+}: {
+  num: string; accent: keyof typeof ACCENT_STYLE; tag: string; title: string;
+  subtitle: string; desc: string; specs: { v: string; l: string }[];
+  href: string; openLabel: string; viz: React.ReactNode; figLabel: string; flip?: boolean;
+}) {
+  const a = ACCENT_STYLE[accent];
+  // Two refs — text and visual reveal independently, sliding in from opposite
+  // sides (text from text-side, visual from visual-side) with a soft pop-up.
+  const [txtRef, txtSeen] = useInView<HTMLDivElement>(0.18);
+  const [vizRef, vizSeen] = useInView<HTMLDivElement>(0.18);
+  const txtFromLeft = !flip;
+  const txtTransform = txtSeen ? "translate3d(0,0,0)" : `translate3d(${txtFromLeft ? "-80px" : "80px"}, 28px, 0)`;
+  const vizTransform = vizSeen ? "translate3d(0,0,0)" : `translate3d(${txtFromLeft ? "80px" : "-80px"}, 28px, 0)`;
+  const ease = "transform 1s cubic-bezier(0.16,1,0.3,1), opacity 1s ease";
+  return (
+    <section className={"border-b border-slate-200 overflow-hidden " + (flip ? "bg-slate-50" : "bg-white")}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-24 lg:py-28 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div
+          ref={txtRef}
+          className={flip ? "lg:order-2" : ""}
+          style={{ transform: txtTransform, opacity: txtSeen ? 1 : 0, transition: ease, willChange: "transform, opacity" }}
+        >
+          <span className={"inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase " + a.bg + " " + a.text}>
+            {num} · {tag}
+          </span>
+          <h2 className="font-montserrat font-extrabold text-3xl md:text-5xl mt-5 mb-4 tracking-tight leading-tight">
+            {subtitle.split("\n").map((line, i) => <span key={i}>{line}<br /></span>)}
+          </h2>
+          <p className="text-[17px] text-slate-600 leading-relaxed max-w-lg">{desc}</p>
+          <div className="flex gap-8 my-7">
+            {specs.map((s, i) => (
+              <div key={i}>
+                <div className={"font-montserrat font-extrabold text-2xl tracking-tight " + (i === 0 ? a.text : "text-slate-900")}>{s.v}</div>
+                <div className="text-xs text-slate-500 mt-1 uppercase tracking-wider">{s.l}</div>
+              </div>
+            ))}
+          </div>
+          <Link href={href} className="inline-flex items-center gap-3.5 font-bold text-base text-slate-900 hover:text-indigo-600 group">
+            {openLabel}
+            <span className={"w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center group-hover:bg-indigo-600 group-hover:translate-x-1 transition-all"}>
+              <LuArrowRight />
+            </span>
+          </Link>
+        </div>
+        <div
+          ref={vizRef}
+          className={"relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 aspect-[4/3] shadow-2xl shadow-slate-900/40 " + (flip ? "lg:order-1" : "")}
+          style={{ transform: vizTransform, opacity: vizSeen ? 1 : 0, transition: ease, willChange: "transform, opacity" }}
+        >
+          <span className="absolute top-4 left-5 font-mono text-xs text-white bg-slate-950/60 px-2.5 py-1 rounded backdrop-blur-sm z-10">
+            {figLabel}
+          </span>
+          {viz}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function EcoCard({ gradient, icon, title, text }: { gradient: string; icon: React.ReactNode; title: string; text: string }) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-7 transition-all hover:-translate-y-1 hover:shadow-[0_24px_50px_-28px_rgba(10,13,20,0.3)] hover:border-indigo-200">
+      <div className={"w-12 h-12 rounded-xl bg-gradient-to-br text-white text-xl flex items-center justify-center " + gradient}>
+        {icon}
+      </div>
+      <h3 className="font-montserrat font-bold text-lg mt-5 mb-2">{title}</h3>
+      <p className="text-sm text-slate-600 leading-relaxed">{text}</p>
+    </div>
+  );
+}
+
+function FootCol({ heading, links }: { heading: string; links: [string, string][] }) {
+  return (
+    <div>
+      <h5 className="text-white font-bold text-xs tracking-[0.12em] uppercase mb-4">{heading}</h5>
+      {links.map(([href, label]) => (
+        <Link key={href + label} href={href} className="block text-sm py-1.5 hover:text-white">{label}</Link>
+      ))}
+    </div>
+  );
+}
 
 function UserMenu({ name, email }: { name: string; email: string }) {
   const { t } = useT();
@@ -463,264 +458,128 @@ function UserMenu({ name, email }: { name: string; email: string }) {
   );
 }
 
-function HeroStats({ stats }: { stats: { raw: string; label: string }[] }) {
-  const [ref, seen] = useInView<HTMLDivElement>(0.4);
+/* ---------- visualisations ---------- */
+
+function CoggingViz() {
   return (
-    <div ref={ref} className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
-      {stats.map((s, i) => (
-        <Stat key={i} raw={s.raw} label={s.label} start={seen} />
-      ))}
-    </div>
+    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
+      <defs>
+        <linearGradient id="barCog" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#60a5fa" />
+          <stop offset="100%" stopColor="#2563eb" />
+        </linearGradient>
+      </defs>
+      <rect width="400" height="300" fill="#0a0d14" />
+      <g stroke="rgba(255,255,255,0.08)" strokeWidth="1">
+        {[60, 110, 160, 210].map((y) => <line key={y} x1="48" y1={y} x2="372" y2={y} />)}
+      </g>
+      <line x1="48" y1="248" x2="372" y2="248" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+      <g fill="url(#barCog)">
+        {[
+          [60, 86, 162], [104, 118, 130], [148, 150, 98], [192, 178, 70],
+          [236, 200, 48], [280, 216, 32], [324, 228, 20],
+        ].map(([x, y, h]) => <rect key={x} x={x} y={y} width="30" height={h} rx="4" />)}
+      </g>
+      <polyline points="75,86 119,118 163,150 207,178 251,200 295,216 339,228" fill="none" stroke="#a5b4fc" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <g fill="#a5b4fc"><circle cx="75" cy="86" r="3.5" /><circle cx="339" cy="228" r="3.5" /></g>
+      <text x="48" y="272" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11">P1</text>
+      <text x="339" y="272" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11" textAnchor="middle">P7</text>
+      <text x="16" y="92" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11">void%</text>
+    </svg>
   );
 }
 
-function Stat({ raw, label, start }: { raw: string; label: string; start: boolean }) {
-  const parsed = parseStatString(raw);
-  const n = useCountUp(parsed.num, { decimals: parsed.decimals, start, duration: 1300 });
+function PmapViz() {
   return (
-    <div className="text-center">
-      <div className="text-3xl md:text-4xl font-bold font-montserrat text-white tabular-nums">
-        {parsed.prefix}{n}{parsed.suffix}
-      </div>
-      <div className="text-xs uppercase tracking-widest text-slate-400 mt-1">{label}</div>
-    </div>
+    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
+      <defs>
+        <radialGradient id="etaField" cx="63%" cy="40%" r="68%">
+          <stop offset="0%" stopColor="#6ee7b7" />
+          <stop offset="30%" stopColor="#10b981" />
+          <stop offset="55%" stopColor="#0d9488" />
+          <stop offset="74%" stopColor="#d97706" />
+          <stop offset="100%" stopColor="#b91c1c" />
+        </radialGradient>
+      </defs>
+      <rect x="40" y="22" width="330" height="230" fill="#0a0d14" />
+      <rect x="40" y="22" width="330" height="230" fill="url(#etaField)" opacity="0.92" />
+      <g stroke="rgba(10,13,20,0.28)" strokeWidth="1">
+        {[87, 134, 181, 228, 275, 322].map((x) => <line key={x} x1={x} y1="22" x2={x} y2="252" />)}
+        {[60, 98, 136, 174, 212].map((y) => <line key={y} x1="40" y1={y} x2="370" y2={y} />)}
+      </g>
+      <rect x="233" y="58" width="110" height="94" rx="5" fill="none" stroke="#fff" strokeWidth="2.5" strokeDasharray="7 5" />
+      <text x="288" y="50" fill="#fff" fontFamily="monospace" fontSize="12" fontWeight="700" textAnchor="middle">SAFE WINDOW</text>
+      <text x="40" y="272" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11">900°C</text>
+      <text x="370" y="272" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11" textAnchor="end">1250°C</text>
+      <text x="16" y="30" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11">ε̇</text>
+    </svg>
   );
 }
 
-type ScreenshotItem = {
-  src: string;
-  titleKey: string;
-  descKey: string;
-  href: string;
-  hrefKey: string;
-};
-
-const SCREENSHOTS: ScreenshotItem[] = [
-  { src: "/screenshots/01_architecture.png",         titleKey: "home.screens.s1_title", descKey: "home.screens.s1_desc", href: "/workflow",       hrefKey: "home.screens.open_workflow" },
-  { src: "/screenshots/02_workflow_pipeline.png",    titleKey: "home.screens.s2_title", descKey: "home.screens.s2_desc", href: "/workflow",       hrefKey: "home.screens.open_workflow" },
-  { src: "/screenshots/03_before_after.png",         titleKey: "home.screens.s3_title", descKey: "home.screens.s3_desc", href: "/workflow",       hrefKey: "home.screens.open_workflow" },
-  { src: "/screenshots/05_mesh_quality_grades.png",  titleKey: "home.screens.s4_title", descKey: "home.screens.s4_desc", href: "/3d_preform",     hrefKey: "home.screens.open_preform" },
-  { src: "/screenshots/07_unet_architecture.png",    titleKey: "home.screens.s5_title", descKey: "home.screens.s5_desc", href: "/3d_preform",     hrefKey: "home.screens.open_preform" },
-  { src: "/screenshots/09_performance_comparison.png", titleKey: "home.screens.s6_title", descKey: "home.screens.s6_desc", href: "/compare",      hrefKey: "home.screens.open_compare" },
-];
-
-function ScreenshotsGallery() {
-  const { t } = useT();
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (openIdx === null) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpenIdx(null); };
-    window.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [openIdx]);
-
-  const active = openIdx === null ? null : SCREENSHOTS[openIdx];
-
+function PreformViz() {
+  const cubePositions = [
+    [0, -48], [-44, -24], [44, -24], [0, 0], [-44, 24], [44, 24], [0, 48], [0, -36], [0, -12],
+  ];
   return (
-    <>
-      <p className="text-center text-xs text-slate-500 mb-6 -mt-8">
-        {t("home.screens.zoom_hint")}
-      </p>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {SCREENSHOTS.map((s, i) => (
-          <Shot
-            key={s.src}
-            src={s.src}
-            title={t(s.titleKey as any)}
-            desc={t(s.descKey as any)}
-            onClick={() => setOpenIdx(i)}
-          />
+    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
+      <defs>
+        <linearGradient id="vxTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#c4b5fd" /><stop offset="100%" stopColor="#a78bfa" /></linearGradient>
+        <linearGradient id="vxL" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#8b5cf6" /><stop offset="100%" stopColor="#7c3aed" /></linearGradient>
+        <linearGradient id="vxR" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#6d28d9" /><stop offset="100%" stopColor="#5b21b6" /></linearGradient>
+      </defs>
+      <rect width="400" height="300" fill="#0a0d14" />
+      <g transform="translate(200,168)" strokeLinejoin="round">
+        {cubePositions.map(([dx, dy], i) => (
+          <g key={i} transform={`translate(${dx},${dy})`}>
+            <polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)" />
+            <polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)" />
+            <polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)" />
+          </g>
         ))}
-      </div>
-
-      {active && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-[100] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 animate-fade-up"
-          onClick={() => setOpenIdx(null)}
-        >
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); setOpenIdx(null); }}
-            title={t("home.screens.close")}
-            className="absolute top-4 right-4 cursor-pointer w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-colors"
-          >
-            <LuX className="text-xl" />
-          </button>
-
-          <div
-            className="relative max-w-6xl w-full max-h-[90vh] flex flex-col gap-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex-1 min-h-0 bg-white rounded-2xl overflow-hidden border border-white/10 shadow-2xl flex items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={active.src}
-                alt={t(active.titleKey as any)}
-                className="max-w-full max-h-[80vh] object-contain"
-              />
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 text-white">
-              <div>
-                <h3 className="text-base font-semibold font-montserrat">{t(active.titleKey as any)}</h3>
-                <p className="text-sm text-slate-300 mt-0.5">{t(active.descKey as any)}</p>
-              </div>
-              <Link
-                href={active.href}
-                onClick={() => setOpenIdx(null)}
-                className="shrink-0 inline-flex items-center gap-2 h-10 px-5 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all hover:scale-105"
-              >
-                {t(active.hrefKey as any)} <LuArrowRight />
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+      </g>
+      <line x1="0" y1="150" x2="400" y2="150" stroke="#c4b5fd" strokeWidth="1.5" opacity="0.35">
+        <animate attributeName="y1" values="70;230;70" dur="4s" repeatCount="indefinite" />
+        <animate attributeName="y2" values="70;230;70" dur="4s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;0.5;0" dur="4s" repeatCount="indefinite" />
+      </line>
+    </svg>
   );
 }
 
-function Shot({ src, title, desc, onClick }: { src: string; title: string; desc: string; onClick?: () => void }) {
+function PipelineViz() {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group text-left rounded-2xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:border-indigo-200 hover:-translate-y-1 transition-all duration-300 cursor-zoom-in"
-    >
-      <div className="relative aspect-[16/10] bg-slate-50 border-b border-slate-100 overflow-hidden flex items-center justify-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-        <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-slate-900/70 backdrop-blur-sm text-white text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-          <LuMaximize2 className="text-[11px]" /> Zoom
-        </span>
-      </div>
-      <div className="p-5">
-        <h3 className="text-base font-semibold text-slate-900 font-montserrat">{title}</h3>
-        <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">{desc}</p>
-      </div>
-    </button>
-  );
-}
-
-function BenefitCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
-  return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-6 hover:shadow-lg hover:border-indigo-200 transition-all duration-300">
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 text-indigo-600 flex items-center justify-center">
-        {icon}
-      </div>
-      <h3 className="mt-4 text-xl font-semibold text-slate-900">{title}</h3>
-      <p className="mt-2 text-slate-600 leading-relaxed">{text}</p>
-    </div>
-  );
-}
-
-const PROGRAM_ACCENT = {
-  blue: { bg: "from-blue-600 to-indigo-600", chip: "bg-blue-100 text-blue-800", glow: "glow-blue" },
-  emerald: { bg: "from-emerald-600 to-teal-600", chip: "bg-emerald-100 text-emerald-800", glow: "glow-emerald" },
-  violet: { bg: "from-violet-600 to-fuchsia-600", chip: "bg-violet-100 text-violet-800", glow: "glow-violet" },
-};
-
-function ProgramCard({
-  href, accent, order, icon, title, tag, desc, features, openLabel,
-}: {
-  href: string; accent: keyof typeof PROGRAM_ACCENT; order: string;
-  icon: React.ReactNode; title: string; tag: string; desc: string; features: string[]; openLabel: string;
-}) {
-  const a = PROGRAM_ACCENT[accent];
-  return (
-    <Link
-      href={href}
-      className={
-        "group relative block rounded-2xl border border-slate-200 bg-white p-7 overflow-hidden " + a.glow
-      }
-    >
-      <div className="absolute top-0 right-0 text-[140px] font-bold font-montserrat text-slate-100 leading-none -mr-4 -mt-6 select-none pointer-events-none">
-        {order}
-      </div>
-
-      <div className={"relative w-12 h-12 rounded-xl bg-gradient-to-br " + a.bg + " text-white flex items-center justify-center text-xl"}>
-        {icon}
-      </div>
-
-      <div className={"relative inline-block mt-5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider " + a.chip}>
-        {tag}
-      </div>
-      <h3 className="relative mt-3 text-2xl font-bold tracking-tight text-slate-900 font-montserrat">{title}</h3>
-      <p className="relative mt-3 text-sm text-slate-600 leading-relaxed">{desc}</p>
-
-      <div className="relative mt-5 flex flex-wrap gap-1.5">
-        {features.map((f) => (
-          <span key={f} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">{f}</span>
+    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
+      <defs>
+        <linearGradient id="node" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#818cf8" />
+          <stop offset="100%" stopColor="#6366f1" />
+        </linearGradient>
+        <marker id="ar" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#6366f1" />
+        </marker>
+      </defs>
+      <rect width="400" height="300" fill="#0a0d14" />
+      <g fill="none" stroke="#4f46e5" strokeWidth="2.5" markerEnd="url(#ar)">
+        <path d="M150,80 H250" />
+        <path d="M278,108 V192" />
+        <path d="M250,220 H150" />
+        <path d="M122,192 V108" />
+      </g>
+      <g fontFamily="monospace" fontSize="11" fill="#fff" textAnchor="middle">
+        {[
+          [110, 80, "1", "map"],
+          [290, 80, "2", "correct"],
+          [290, 220, "3", "schedule"],
+          [110, 220, "4", "preform"],
+        ].map(([x, y, n, label]) => (
+          <g key={n} transform={`translate(${x},${y})`}>
+            <circle r="26" fill="url(#node)" />
+            <text dy="-2">{n}</text>
+            <text dy="42" fill="rgba(255,255,255,0.7)">{label}</text>
+          </g>
         ))}
-      </div>
-
-      <div className={"relative mt-7 inline-flex items-center gap-2 text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r " + a.bg + " group-hover:gap-3 transition-all"}>
-        {openLabel} <LuArrowRight className="text-slate-700 group-hover:translate-x-1 transition-transform" />
-      </div>
-    </Link>
-  );
-}
-
-function Feat({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
-  return (
-    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
-      <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500/30 to-violet-500/30 text-indigo-200 flex items-center justify-center text-lg">
-        {icon}
-      </div>
-      <h3 className="mt-3 text-sm font-semibold text-white">{title}</h3>
-      <p className="mt-1 text-xs text-slate-400 leading-relaxed">{text}</p>
-    </div>
-  );
-}
-
-function PipelineStep({ n, title, desc }: { n: string; title: string; desc: string }) {
-  return (
-    <li className="flex gap-3">
-      <div className="shrink-0 w-7 h-7 rounded-full bg-white border border-indigo-200 text-indigo-700 text-xs font-bold flex items-center justify-center">{n}</div>
-      <div>
-        <span className="font-semibold text-slate-900">{title}</span>
-        <span className="text-slate-600"> — {desc}</span>
-      </div>
-    </li>
-  );
-}
-
-function FakeLog({ when, status, color, text, detail }: { when: string; status: string; color: string; text: string; detail: string }) {
-  return (
-    <div className="text-[11px] font-mono leading-snug">
-      <div className="flex items-center gap-2">
-        <span className="text-slate-400">[{when}]</span>
-        <span className={`px-1.5 py-0.5 rounded text-[9px] uppercase font-bold bg-${color}-100 text-${color}-700`}>{status}</span>
-        <span className="text-slate-700">{text}</span>
-      </div>
-      <div className="text-slate-500 ml-12 mt-0.5">{detail}</div>
-    </div>
-  );
-}
-
-function Kpi({ v, l, emerald }: { v: string; l: string; emerald?: boolean }) {
-  return (
-    <div className={"rounded-lg border p-2 text-center " + (emerald ? "bg-emerald-50 border-emerald-200" : "bg-slate-50 border-slate-200")}>
-      <div className={"text-base font-bold font-montserrat " + (emerald ? "text-emerald-700" : "text-slate-900")}>{v}</div>
-      <div className="text-[9px] uppercase tracking-widest text-slate-500 mt-0.5">{l}</div>
-    </div>
-  );
-}
-
-function CreditCard({ role, org, note }: { role: string; org: string; note: string }) {
-  return (
-    <div className="border border-slate-200 rounded-2xl p-6 bg-gradient-to-br from-slate-50 to-white">
-      <p className="text-xs font-semibold uppercase tracking-widest text-indigo-600">{role}</p>
-      <h3 className="mt-2 text-lg font-semibold text-slate-900">{org}</h3>
-      <p className="mt-1 text-sm text-slate-600">{note}</p>
-    </div>
+      </g>
+      <text x="200" y="154" fill="#a5b4fc" fontFamily="monospace" fontSize="12" fontWeight="700" textAnchor="middle">CLOSED LOOP</text>
+    </svg>
   );
 }
