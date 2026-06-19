@@ -1,0 +1,31 @@
+# Test-only dependencies for the ForgeIQ backend suite.
+# Install with:  pip install -r requirements-dev.txt
+#
+# The core tests (processing map, train-data correction, cogging pipeline)
+# need only the packages below. The pass-schedule and API-contract tests
+# additionally require TensorFlow (already in backend1/requirements.txt);
+# they skip automatically if it is absent.
+
+pytest==8.3.4
+numpy
+pandas
+scipy
+plotly
+openpyxl
+xlsxwriter
+scikit-learn
+matplotlib
+joblib
+# optional — gradient boosting uses it if present, else falls back to sklearn
+xgboost
+
+# ── backend2 (3D preform) test deps ──────────────────────────────────────────
+# Importing the 3D logic also needs TensorFlow (declared in backend2/requirements.txt).
+numpy-stl
+scikit-image
+trimesh
+# Mesh post-processing (taubin smoothing / decimation). Need system OpenGL libs
+# (e.g. `apt-get install -y libgl1 libglu1-mesa`); the related tests skip
+# automatically if those native libs are missing.
+pymeshlab
+pyvista

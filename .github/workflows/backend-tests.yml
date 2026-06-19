@@ -1,0 +1,51 @@
+name: backend-tests
+
+# Runs the ForgeIQ backend test suite automatically on every push and PR.
+# A green badge here is the single most convincing signal to a reviewer,
+# collaborator, or buyer that "the programs work correctly".
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  core-tests:
+    # Fast suite — no TensorFlow. Proves the physics, the correction formula,
+    # and the full cogging training pipeline on the real sample data.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install test deps
+        run: pip install -r requirements-dev.txt
+      - name: Run core tests
+        run: |
+          pytest tests/test_processing_map.py \
+                 tests/test_train_data_correction.py \
+                 tests/test_cogging_pipeline.py -v
+
+  full-tests:
+    # Full suite including the TensorFlow-dependent backend1 (pass schedule,
+    # API) and backend2 (3D geometry, U-Net, API) tests. Heavier — installs TF
+    # and native OpenGL libs for the mesh post-processing tests.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install native OpenGL libs (for pyvista / pymeshlab)
+        run: sudo apt-get update && sudo apt-get install -y libgl1 libglu1-mesa
+      - name: Install test + backend deps
+        run: |
+          pip install -r requirements-dev.txt
+          pip install tensorflow-cpu
+      - name: Run the full suite
+        run: pytest -v

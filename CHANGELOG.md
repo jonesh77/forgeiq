@@ -6,6 +6,31 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### Fixed
+
+- **Docs — backend2 framework corrected.** The README listed `backend2` as
+  using **PyTorch**, but the 3D Attention-U-Net pipeline runs on
+  **TensorFlow / Keras** (no `torch` import exists anywhere in the codebase).
+  Corrected both the architecture table and the Tech Stack list, and aligned
+  the dependency lists with `backend2/requirements.txt`
+  (numpy-stl · scikit-image · pymeshlab · trimesh · pyvista). CAPABILITIES.md
+  and CHANGELOG were already correct.
+
+### Added
+
+- **Backend test suite (`tests/`, 75 tests).** Automated correctness tests that
+  run the real backend modules against the real `sample_data/`:
+  processing-map physics (Prasad η / ξ), train-data correction formula, the full
+  cogging training pipeline, the pass-schedule optimizer, the 3D-preform geometry
+  pipeline (parsing → voxelisation → STL → quality grading), the custom 3D
+  losses, the Attention-U-Net I/O contract, and API contract checks for both
+  Flask services. Plus `pytest.ini`, `requirements-dev.txt`, and a GitHub Actions
+  workflow (`.github/workflows/backend-tests.yml`).
+
+---
+
 ## [v0.1.0-beta] — 2026-06-02
 
 > **Initial public beta.** First publicly tagged release of ForgeIQ — AI Metallurgy Simulation Platform.

@@ -117,7 +117,7 @@ Reproducible sample files ship with the repo under [`sample_data/`](./sample_dat
 |---|---|---|---|
 | `frontend` | Next.js 15 + React 19 + TypeScript | **3000** | UI, auth (MongoDB + iron-session), i18n (en / uz / ko), AI assistant |
 | `backend1` | Flask + TensorFlow/Keras + scikit-learn + XGBoost | **5000** | Cogging models, processing-map graphs, pass-schedule optimizer |
-| `backend2` | Flask + numpy-stl + pymeshlab + PyTorch | **5001** | Voxel → STL Attention-U-Net pipeline, mesh-quality grading |
+| `backend2` | Flask + TensorFlow/Keras + numpy-stl + scikit-image + pymeshlab + trimesh | **5001** | Voxel → STL Attention-U-Net pipeline, mesh-quality grading |
 
 Production deployment:
 - **Frontend** → Vercel (auto-deploy from `main`)
@@ -198,7 +198,7 @@ Generate a strong `SESSION_PASSWORD` (PowerShell):
 
 **Frontend** — Next.js 15.4 · React 19 · TypeScript · TailwindCSS · iron-session · Phosphor + Lucide + Tabler icons · three.js (STL viewer) · plotly.js (charts)
 **Backend1** — Flask · TensorFlow / Keras · scikit-learn · XGBoost · HistGradientBoostingRegressor (quantile UQ) · openpyxl · matplotlib · waitress
-**Backend2** — Flask · PyTorch · numpy-stl · pymeshlab · scipy · waitress
+**Backend2** — Flask · TensorFlow / Keras (3D Attention U-Net) · numpy-stl · scikit-image · pymeshlab · trimesh · pyvista · scipy · waitress
 **Infrastructure** — Vercel · Hetzner Cloud · Docker Compose · Caddy · MongoDB Atlas · Cloudflare DNS · Let's Encrypt
 
 ---
