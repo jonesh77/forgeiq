@@ -51,28 +51,30 @@ export default function RobotisLanding() {
         </div>
       </div>
 
-      {/* NAV — sticky, white bg */}
-      <nav className="sticky top-0 z-40 bg-white/92 backdrop-blur-md border-b border-slate-200">
+      {/* NAV — sticky, dark navy bg (so the indigo-gradient F emblem keeps its
+          original colours, and the bar reads as one piece with the top utility strip) */}
+      <nav className="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-white/10 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 h-[76px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
+            {/* Original gradient emblem (indigo→violet F + accent dot) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/forgeiq-mark.svg" alt="" className="h-9 w-9 rounded-lg" />
+            <img src="/icon.svg" alt="" className="h-9 w-9 rounded-lg" />
             <span className="text-2xl font-extrabold font-montserrat tracking-tight">
-              Forge<span className="text-indigo-600">IQ</span>
+              Forge<span className="text-indigo-400">IQ</span>
             </span>
           </Link>
           <div className="flex items-center gap-1">
-            <a href="#programs" className="hidden md:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-slate-600 hover:text-slate-900 px-4 py-2.5 rounded-lg hover:bg-slate-50">{t("home.nav.programs")}</a>
-            <a href="#ecosystem" className="hidden md:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-slate-600 hover:text-slate-900 px-4 py-2.5 rounded-lg hover:bg-slate-50">Ecosystem</a>
-            <a href="#pipeline" className="hidden lg:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-slate-600 hover:text-slate-900 px-4 py-2.5 rounded-lg hover:bg-slate-50">Pipeline</a>
-            <a href="#footer" className="hidden lg:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-slate-600 hover:text-slate-900 px-4 py-2.5 rounded-lg hover:bg-slate-50">{t("home.nav.team")}</a>
-            <button onClick={toggleAiAssistant} className="hidden md:inline-flex items-center gap-1.5 cursor-pointer px-3 h-9 rounded-md text-sm font-medium bg-gradient-to-br from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 text-indigo-700 border border-indigo-200/60">
-              <HiSparkles className="text-amber-500" />{t("home.nav.ask_ai")}
+            <a href="#programs" className="hidden md:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-white/70 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/5">{t("home.nav.programs")}</a>
+            <a href="#ecosystem" className="hidden md:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-white/70 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/5">Ecosystem</a>
+            <a href="#pipeline" className="hidden lg:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-white/70 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/5">Pipeline</a>
+            <a href="#footer" className="hidden lg:inline-flex font-semibold text-[13.5px] tracking-wider uppercase text-white/70 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/5">{t("home.nav.team")}</a>
+            <button onClick={toggleAiAssistant} className="hidden md:inline-flex items-center gap-1.5 cursor-pointer px-3 h-9 rounded-md text-sm font-medium bg-white/10 hover:bg-white/15 text-indigo-200 border border-white/15">
+              <HiSparkles className="text-amber-400" />{t("home.nav.ask_ai")}
             </button>
             {user?.isSignedIn ? (
               <UserMenu name={user.name} email={user.email} />
             ) : (
-              <Link href="/auth/login" className="ml-1 inline-flex items-center gap-2 h-[42px] px-5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[13.5px] font-semibold tracking-wider uppercase transition-all hover:-translate-y-px">
+              <Link href="/auth/login" className="ml-1 inline-flex items-center gap-2 h-[42px] px-5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[13.5px] font-semibold tracking-wider uppercase transition-all hover:-translate-y-px">
                 {t("home.nav.sign_in")} <LuArrowRight />
               </Link>
             )}
@@ -268,9 +270,9 @@ export default function RobotisLanding() {
                 AI Metallurgy Simulation Platform. A closed-loop, AI-driven process-design workbench for hot-forging and cogging — built by Y. Alibek with research support from NSMLab, Sogang University.
               </p>
               <div className="flex items-center gap-2.5 mt-5">
-                {/* ForgeIQ emblem — dark mark matches site nav: slate-900 + white F + indigo dot */}
+                {/* ForgeIQ emblem — original indigo→violet gradient mark (icon.svg) */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/forgeiq-mark.svg" alt="ForgeIQ" className="h-12 w-12 block" />
+                <img src="/icon.svg" alt="ForgeIQ" className="h-12 w-12 block" />
                 {/* NSMLab supporting lab lockup — kept in white pill since the source PNG has white background */}
                 <span className="inline-flex bg-white rounded-lg p-2">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
