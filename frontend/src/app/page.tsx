@@ -461,125 +461,171 @@ function UserMenu({ name, email }: { name: string; email: string }) {
 /* ---------- visualisations ---------- */
 
 function CoggingViz() {
+  const bl = 230, sx = 44, st = 46, bw = 30;
+  const bars = [155, 122, 93, 70, 50, 32, 18];
+  const pcts = ["100%","79%","60%","45%","32%","21%","12%"];
   return (
-    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
+    <svg viewBox="0 0 400 270" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
       <defs>
-        <linearGradient id="barCog" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#60a5fa" />
-          <stop offset="100%" stopColor="#2563eb" />
+        <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#93c5fd"/><stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.85"/>
         </linearGradient>
+        <linearGradient id="cfill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.18"/><stop offset="100%" stopColor="#3b82f6" stopOpacity="0"/>
+        </linearGradient>
+        <filter id="cgl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
-      <rect width="400" height="300" fill="#0a0d14" />
-      <g stroke="rgba(255,255,255,0.08)" strokeWidth="1">
-        {[60, 110, 160, 210].map((y) => <line key={y} x1="48" y1={y} x2="372" y2={y} />)}
+      <rect width="400" height="270" fill="#080c14"/>
+      <g stroke="rgba(255,255,255,0.05)" strokeWidth="1">
+        {[80,120,160,200].map(y=><line key={y} x1="36" y1={y} x2="382" y2={y}/>)}
       </g>
-      <line x1="48" y1="248" x2="372" y2="248" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
-      <g fill="url(#barCog)">
-        {[
-          [60, 86, 162], [104, 118, 130], [148, 150, 98], [192, 178, 70],
-          [236, 200, 48], [280, 216, 32], [324, 228, 20],
-        ].map(([x, y, h]) => <rect key={x} x={x} y={y} width="30" height={h} rx="4" />)}
-      </g>
-      <polyline points="75,86 119,118 163,150 207,178 251,200 295,216 339,228" fill="none" stroke="#a5b4fc" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      <g fill="#a5b4fc"><circle cx="75" cy="86" r="3.5" /><circle cx="339" cy="228" r="3.5" /></g>
-      <text x="48" y="272" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11">P1</text>
-      <text x="339" y="272" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11" textAnchor="middle">P7</text>
-      <text x="16" y="92" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11">void%</text>
+      <line x1="36" y1={bl} x2="382" y2={bl} stroke="rgba(255,255,255,0.15)" strokeWidth="1"/>
+      {bars.map((h,i)=>{
+        const cx=sx+i*st+bw/2;
+        return (
+          <g key={i}>
+            <rect x={sx+i*st} y={bl-h} width={bw} height={h} rx="4" fill="url(#cg)"/>
+            <rect x={sx+i*st+5} y={bl-h+4} width={bw-10} height={Math.min(10,h-8)} rx="2" fill="rgba(255,255,255,0.1)"/>
+            <text x={cx} y={bl-h-6} textAnchor="middle" fill="rgba(147,197,253,0.9)" fontFamily="monospace" fontSize="9">{pcts[i]}</text>
+            <text x={cx} y={bl+15} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontFamily="monospace" fontSize="9">{`P${i+1}`}</text>
+          </g>
+        );
+      })}
+      <polygon points={[...bars.map((h,i)=>`${sx+i*st+bw/2},${bl-h}`),`${sx+6*st+bw/2},${bl}`,`${sx+bw/2},${bl}`].join(" ")} fill="url(#cfill)"/>
+      <polyline points={bars.map((h,i)=>`${sx+i*st+bw/2},${bl-h}`).join(" ")} fill="none" stroke="#a5b4fc" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx={sx+bw/2} cy={bl-bars[0]} r="4.5" fill="#c7d2fe" filter="url(#cgl)"/>
+      <circle cx={sx+6*st+bw/2} cy={bl-bars[6]} r="4.5" fill="#c7d2fe" filter="url(#cgl)"/>
+      <text x="14" y={bl-60} fill="rgba(255,255,255,0.3)" fontFamily="monospace" fontSize="9" textAnchor="middle" transform={`rotate(-90,14,${bl-60})`}>void%</text>
     </svg>
   );
 }
 
 function PmapViz() {
   return (
-    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
+    <svg viewBox="0 0 400 275" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
       <defs>
-        <radialGradient id="etaField" cx="63%" cy="40%" r="68%">
-          <stop offset="0%" stopColor="#6ee7b7" />
-          <stop offset="30%" stopColor="#10b981" />
-          <stop offset="55%" stopColor="#0d9488" />
-          <stop offset="74%" stopColor="#d97706" />
-          <stop offset="100%" stopColor="#b91c1c" />
-        </radialGradient>
+        <filter id="hblur" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="22"/>
+        </filter>
+        <clipPath id="mclip"><rect x="44" y="18" width="318" height="218"/></clipPath>
+        <filter id="swglow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
-      <rect x="40" y="22" width="330" height="230" fill="#0a0d14" />
-      <rect x="40" y="22" width="330" height="230" fill="url(#etaField)" opacity="0.92" />
-      <g stroke="rgba(10,13,20,0.28)" strokeWidth="1">
-        {[87, 134, 181, 228, 275, 322].map((x) => <line key={x} x1={x} y1="22" x2={x} y2="252" />)}
-        {[60, 98, 136, 174, 212].map((y) => <line key={y} x1="40" y1={y} x2="370" y2={y} />)}
+      <rect width="400" height="275" fill="#080c14"/>
+      <rect x="44" y="18" width="318" height="218" fill="#7f1d1d"/>
+      <g clipPath="url(#mclip)" filter="url(#hblur)">
+        <ellipse cx="275" cy="115" rx="155" ry="115" fill="#059669"/>
+        <ellipse cx="325" cy="85" rx="85" ry="72" fill="#34d399"/>
+        <ellipse cx="210" cy="95" rx="95" ry="82" fill="#10b981" opacity="0.7"/>
+        <ellipse cx="145" cy="158" rx="72" ry="62" fill="#d97706"/>
+        <ellipse cx="78" cy="178" rx="62" ry="55" fill="#dc2626"/>
+        <ellipse cx="98" cy="90" rx="55" ry="48" fill="#b91c1c"/>
+        <ellipse cx="58" cy="135" rx="38" ry="42" fill="#991b1b"/>
       </g>
-      <rect x="233" y="58" width="110" height="94" rx="5" fill="none" stroke="#fff" strokeWidth="2.5" strokeDasharray="7 5" />
-      <text x="288" y="50" fill="#fff" fontFamily="monospace" fontSize="12" fontWeight="700" textAnchor="middle">SAFE WINDOW</text>
-      <text x="40" y="272" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11">900°C</text>
-      <text x="370" y="272" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11" textAnchor="end">1250°C</text>
-      <text x="16" y="30" fill="rgba(255,255,255,0.6)" fontFamily="monospace" fontSize="11">ε̇</text>
+      <g stroke="rgba(0,0,0,0.22)" strokeWidth="1">
+        {[98,152,206,260,314].map(x=><line key={x} x1={x} y1="18" x2={x} y2="236"/>)}
+        {[60,102,144,186].map(y=><line key={y} x1="44" y1={y} x2="362" y2={y}/>)}
+      </g>
+      <rect x="44" y="18" width="318" height="218" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1"/>
+      <rect x="232" y="52" width="114" height="106" rx="5" fill="rgba(255,255,255,0.06)" stroke="white" strokeWidth="2" strokeDasharray="7 4" filter="url(#swglow)"/>
+      <text x="289" y="74" textAnchor="middle" fill="white" fontFamily="monospace" fontSize="10" fontWeight="700">SAFE</text>
+      <text x="289" y="89" textAnchor="middle" fill="white" fontFamily="monospace" fontSize="10" fontWeight="700">WINDOW</text>
+      <text x="80" y="42" textAnchor="middle" fill="rgba(252,165,165,0.85)" fontFamily="monospace" fontSize="9">ξ &lt; 0</text>
+      <text x="44" y="254" fill="rgba(255,255,255,0.45)" fontFamily="monospace" fontSize="10">900°C</text>
+      <text x="362" y="254" fill="rgba(255,255,255,0.45)" fontFamily="monospace" fontSize="10" textAnchor="end">1250°C</text>
+      <text x="20" y="127" fill="rgba(255,255,255,0.45)" fontFamily="monospace" fontSize="10" textAnchor="middle" transform="rotate(-90,20,127)">ε̇ (s⁻¹)</text>
     </svg>
   );
 }
 
 function PreformViz() {
-  const cubePositions = [
-    [0, -48], [-44, -24], [44, -24], [0, 0], [-44, 24], [44, 24], [0, 48], [0, -36], [0, -12],
-  ];
+  const cw = 38, ch = 22, cols = 8, rows = 6, ox = 28, oy = 52;
   return (
-    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
+    <svg viewBox="0 0 400 290" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
       <defs>
-        <linearGradient id="vxTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#c4b5fd" /><stop offset="100%" stopColor="#a78bfa" /></linearGradient>
-        <linearGradient id="vxL" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#8b5cf6" /><stop offset="100%" stopColor="#7c3aed" /></linearGradient>
-        <linearGradient id="vxR" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#6d28d9" /><stop offset="100%" stopColor="#5b21b6" /></linearGradient>
+        <linearGradient id="meshfill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.18"/>
+          <stop offset="100%" stopColor="#4c1d95" stopOpacity="0.06"/>
+        </linearGradient>
+        <linearGradient id="scan" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#c4b5fd" stopOpacity="0"/>
+          <stop offset="50%" stopColor="#c4b5fd" stopOpacity="0.55"/>
+          <stop offset="100%" stopColor="#c4b5fd" stopOpacity="0"/>
+        </linearGradient>
+        <filter id="pglow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <clipPath id="meshclip"><rect x={ox} y={oy} width={cols*cw} height={rows*ch}/></clipPath>
       </defs>
-      <rect width="400" height="300" fill="#0a0d14" />
-      <g transform="translate(200,168)" strokeLinejoin="round">
-        {cubePositions.map(([dx, dy], i) => (
-          <g key={i} transform={`translate(${dx},${dy})`}>
-            <polygon points="0,-12 22,0 0,12 -22,0" fill="url(#vxTop)" />
-            <polygon points="-22,0 0,12 0,36 -22,24" fill="url(#vxL)" />
-            <polygon points="22,0 0,12 0,36 22,24" fill="url(#vxR)" />
-          </g>
+      <rect width="400" height="290" fill="#080c14"/>
+      <rect x={ox} y={oy} width={cols*cw} height={rows*ch} fill="url(#meshfill)"/>
+      {Array.from({length:rows+1},(_,r)=>(
+        <line key={`r${r}`} x1={ox} y1={oy+r*ch} x2={ox+cols*cw} y2={oy+r*ch} stroke="rgba(139,92,246,0.35)" strokeWidth="1"/>
+      ))}
+      {Array.from({length:cols+1},(_,c)=>(
+        <line key={`c${c}`} x1={ox+c*cw} y1={oy} x2={ox+c*cw} y2={oy+rows*ch} stroke="rgba(139,92,246,0.35)" strokeWidth="1"/>
+      ))}
+      {[[2,1],[3,1],[4,1],[5,1],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[2,3],[3,3],[4,3],[5,3],[3,4],[4,4]].map(([c,r])=>(
+        <rect key={`${c},${r}`} x={ox+c*cw} y={oy+r*ch} width={cw} height={ch} fill="#7c3aed" opacity={0.1+(rows-r)*0.04}/>
+      ))}
+      <g clipPath="url(#meshclip)">
+        <rect x={ox} y={oy} width={cols*cw} height={ch*0.8} fill="url(#scan)" opacity="0.7">
+          <animateTransform attributeName="transform" type="translate" from="0,0" to={`0,${rows*ch}`} dur="3s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+      <rect x={ox} y={oy} width={cols*cw} height={rows*ch} fill="none" stroke="rgba(139,92,246,0.6)" strokeWidth="1.5"/>
+      <g opacity="0.7">
+        <line x1={ox+cols*cw/2} y1={oy-28} x2={ox+cols*cw/2} y2={oy-4} stroke="#a78bfa" strokeWidth="2.5"/>
+        <polygon points={`${ox+cols*cw/2-7},${oy-6} ${ox+cols*cw/2+7},${oy-6} ${ox+cols*cw/2},${oy+4}`} fill="#a78bfa"/>
+      </g>
+      <text x={ox+cols*cw/2} y={oy-34} textAnchor="middle" fill="rgba(167,139,250,0.65)" fontFamily="monospace" fontSize="9">PRESS FORCE</text>
+      <text x={ox+cols*cw/2} y={oy+rows*ch+20} textAnchor="middle" fill="rgba(139,92,246,0.45)" fontFamily="monospace" fontSize="9">CROSS-SECTION · GRAIN MESH</text>
+      <g fill="none" stroke="rgba(139,92,246,0.25)" strokeWidth="1" strokeDasharray="3 4">
+        {[1,2,3,4,5].map(r=>(
+          <path key={r} d={`M${ox} ${oy+r*ch} Q${ox+cols*cw/2} ${oy+r*ch-8} ${ox+cols*cw} ${oy+r*ch}`}/>
         ))}
       </g>
-      <line x1="0" y1="150" x2="400" y2="150" stroke="#c4b5fd" strokeWidth="1.5" opacity="0.35">
-        <animate attributeName="y1" values="70;230;70" dur="4s" repeatCount="indefinite" />
-        <animate attributeName="y2" values="70;230;70" dur="4s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0;0.5;0" dur="4s" repeatCount="indefinite" />
-      </line>
     </svg>
   );
 }
 
 function PipelineViz() {
+  const nodes=[
+    {x:118,y:88,n:"1",label:"map",c:"#4f46e5"},
+    {x:282,y:88,n:"2",label:"correct",c:"#0891b2"},
+    {x:282,y:212,n:"3",label:"schedule",c:"#059669"},
+    {x:118,y:212,n:"4",label:"preform",c:"#7c3aed"},
+  ];
+  const r=28;
   return (
     <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
       <defs>
-        <linearGradient id="node" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#818cf8" />
-          <stop offset="100%" stopColor="#6366f1" />
-        </linearGradient>
-        <marker id="ar" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="#6366f1" />
+        <radialGradient id="rbg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#312e81" stopOpacity="0.25"/>
+          <stop offset="100%" stopColor="#312e81" stopOpacity="0"/>
+        </radialGradient>
+        <filter id="nglow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M0,1 L9,5 L0,9 z" fill="#6366f1"/>
         </marker>
       </defs>
-      <rect width="400" height="300" fill="#0a0d14" />
-      <g fill="none" stroke="#4f46e5" strokeWidth="2.5" markerEnd="url(#ar)">
-        <path d="M150,80 H250" />
-        <path d="M278,108 V192" />
-        <path d="M250,220 H150" />
-        <path d="M122,192 V108" />
+      <rect width="400" height="300" fill="#080c14"/>
+      <rect width="400" height="300" fill="url(#rbg)"/>
+      <g fill="none" stroke="#4f46e5" strokeWidth="2" strokeOpacity="0.75" markerEnd="url(#arr)">
+        <line x1={118+r} y1="88" x2={282-r-10} y2="88"/>
+        <line x1="282" y1={88+r} x2="282" y2={212-r-10}/>
+        <line x1={282-r} y1="212" x2={118+r+10} y2="212"/>
+        <line x1="118" y1={212-r} x2="118" y2={88+r+10}/>
       </g>
-      <g fontFamily="monospace" fontSize="11" fill="#fff" textAnchor="middle">
-        {[
-          [110, 80, "1", "map"],
-          [290, 80, "2", "correct"],
-          [290, 220, "3", "schedule"],
-          [110, 220, "4", "preform"],
-        ].map(([x, y, n, label]) => (
-          <g key={n} transform={`translate(${x},${y})`}>
-            <circle r="26" fill="url(#node)" />
-            <text dy="-2">{n}</text>
-            <text dy="42" fill="rgba(255,255,255,0.7)">{label}</text>
-          </g>
-        ))}
-      </g>
-      <text x="200" y="154" fill="#a5b4fc" fontFamily="monospace" fontSize="12" fontWeight="700" textAnchor="middle">CLOSED LOOP</text>
+      <text x="200" y="145" textAnchor="middle" fill="#6366f1" fontFamily="monospace" fontSize="11" fontWeight="700" opacity="0.75">CLOSED</text>
+      <text x="200" y="160" textAnchor="middle" fill="#6366f1" fontFamily="monospace" fontSize="11" fontWeight="700" opacity="0.75">LOOP</text>
+      {nodes.map(({x,y,n,label,c})=>(
+        <g key={n}>
+          <circle cx={x} cy={y} r={r+6} fill={c} opacity="0.18" filter="url(#nglow)"/>
+          <circle cx={x} cy={y} r={r} fill={c} opacity="0.92"/>
+          <circle cx={x} cy={y} r={r-1} fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5"/>
+          <circle cx={x-7} cy={y-8} r={r*0.35} fill="rgba(255,255,255,0.07)"/>
+          <text x={x} y={y+5} textAnchor="middle" fill="white" fontFamily="monospace" fontSize="14" fontWeight="700">{n}</text>
+          <text x={x} y={y+r+17} textAnchor="middle" fill="rgba(255,255,255,0.55)" fontFamily="monospace" fontSize="10">{label}</text>
+        </g>
+      ))}
     </svg>
   );
 }
