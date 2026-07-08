@@ -293,9 +293,9 @@ export default function LandingPage() {
             ]} />
             <div>
               <h5 className="text-white font-bold text-xs tracking-[0.12em] uppercase mb-4">Lab</h5>
-              <a href="#" className="block text-sm py-1.5 hover:text-white">About NSMLab</a>
-              <a href="#" className="block text-sm py-1.5 hover:text-white">Research</a>
-              <a href="#" className="block text-sm py-1.5 hover:text-white">Contact</a>
+              <a href="https://sites.google.com/u.sogang.ac.kr/nsmlab" target="_blank" rel="noopener noreferrer" className="block text-sm py-1.5 hover:text-white">About NSMLab</a>
+              <a href="https://www.mdpi.com/3939500" target="_blank" rel="noopener noreferrer" className="block text-sm py-1.5 hover:text-white">Research</a>
+              <a href="mailto:alibek.yuldoshev96@gmail.com" className="block text-sm py-1.5 hover:text-white">Contact</a>
               <div className="flex gap-3 mt-5">
                 <a href="https://github.com/jonesh77/forgeiq" target="_blank" rel="noopener noreferrer" title="GitHub" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><FaGithub /></a>
                 <a href="https://www.linkedin.com/in/alibek-yuldoshev-a980b5413" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-600 hover:text-white transition-all"><LuLinkedin /></a>
