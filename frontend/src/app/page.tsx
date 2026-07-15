@@ -286,9 +286,9 @@ export default function LandingPage() {
               ["/workflow", t("home.pipeline.badge")],
             ]} />
             <FootCol heading="Resources" links={[
-              ["#", "Documentation"],
-              ["#", t("home.nav.capabilities")],
-              ["#", "Changelog"],
+              ["https://github.com/jonesh77/forgeiq#readme", "Documentation"],
+              ["https://github.com/jonesh77/forgeiq/blob/main/CAPABILITIES.md", t("home.nav.capabilities")],
+              ["https://github.com/jonesh77/forgeiq/commits/main", "Changelog"],
               ["https://github.com/jonesh77/forgeiq", "GitHub"],
             ]} />
             <div>
@@ -338,8 +338,6 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center justify-between gap-4 py-6 text-[12.5px]">
             <span>© {new Date().getFullYear()} ForgeIQ — Developed by Y. Alibek · Supported by NSMLab, Sogang University. All rights reserved.</span>
             <span className="flex gap-5">
-              <a href="#" className="hover:text-white">Privacy</a>
-              <a href="#" className="hover:text-white">Cookies</a>
               <Link href="/classic" className="hover:text-white">Classic version</Link>
             </span>
           </div>
