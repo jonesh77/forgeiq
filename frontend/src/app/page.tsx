@@ -309,7 +309,7 @@ export default function LandingPage() {
                 <p className="text-sm font-semibold text-white/80">NSMLab · TE608, Sogang University</p>
                 <p className="text-sm text-white/50 mt-1 leading-relaxed">Teilhard Hall (TE) Rm. 608<br />35 Baekbeom-ro, Mapo-gu, Seoul 04107<br />Republic of Korea · Tel. +82 2.705.8635</p>
                 <a
-                  href="https://maps.google.com/?q=37.5512,126.9390"
+                  href="https://maps.google.com/?q=서강대학교+떼이야르관"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 mt-4 text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
@@ -319,7 +319,7 @@ export default function LandingPage() {
               </div>
               <div className="rounded-xl overflow-hidden border border-white/10 h-[200px]">
                 <iframe
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=126.9365%2C37.5496%2C126.9415%2C37.5528&layer=mapnik&marker=37.5512%2C126.9390"
+                  src="https://maps.google.com/maps?q=%EC%84%9C%EA%B0%95%EB%8C%80%ED%95%99%EA%B5%90+%EB%96%BC%EC%9D%B4%EC%95%BC%EB%A5%B4%EA%B4%80&t=&z=17&ie=UTF8&iwloc=&output=embed"
                   width="100%"
                   height="200"
                   style={{ border: 0 }}
