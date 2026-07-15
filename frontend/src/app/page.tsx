@@ -323,13 +323,12 @@ export default function LandingPage() {
               </div>
               <div className="rounded-xl overflow-hidden border border-white/10 h-[200px]">
                 <iframe
-                  src="https://maps.google.com/maps?q=Sogang+University,Seoul,Korea&output=embed&z=15"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=126.930%2C37.545%2C126.945%2C37.558&layer=mapnik&marker=37.5515%2C126.9395"
                   width="100%"
                   height="200"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
                   title="NSMLab location"
                 />
               </div>
