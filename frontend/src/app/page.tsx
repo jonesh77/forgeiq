@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PiBrain, PiFlask, PiGitBranch } from "react-icons/pi";
 import { HiSparkles } from "react-icons/hi2";
-import { LuArrowRight, LuLifeBuoy, LuLinkedin, LuGraduationCap } from "react-icons/lu";
+import { LuArrowRight, LuLifeBuoy, LuLinkedin, LuGraduationCap, LuMapPin } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { useInView } from "@/lib/use-in-view";
@@ -303,6 +303,39 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+          {/* MAP */}
+          <div className="py-10 border-b border-white/10">
+            <h5 className="text-white font-bold text-xs tracking-[0.12em] uppercase mb-5 flex items-center gap-2">
+              <LuMapPin className="text-indigo-400" /> Find Us
+            </h5>
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6 items-center">
+              <div>
+                <p className="text-sm font-semibold text-white/80">NSMLab · Sogang University</p>
+                <p className="text-sm text-white/50 mt-1 leading-relaxed">35 Baekbeom-ro, Mapo-gu, Seoul 04107<br />Republic of Korea · Tel. +82 2.705.8635</p>
+                <a
+                  href="https://maps.google.com/?q=Sogang+University+Seoul+Korea"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 mt-4 text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
+                >
+                  Open in Google Maps <LuArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+              <div className="rounded-xl overflow-hidden border border-white/10 h-[200px]">
+                <iframe
+                  src="https://maps.google.com/maps?q=Sogang+University,Seoul,Korea&output=embed&z=15"
+                  width="100%"
+                  height="200"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="NSMLab location"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="flex flex-wrap items-center justify-between gap-4 py-6 text-[12.5px]">
             <span>© {new Date().getFullYear()} ForgeIQ — Developed by Y. Alibek · Supported by NSMLab, Sogang University. All rights reserved.</span>
             <span className="flex gap-5">

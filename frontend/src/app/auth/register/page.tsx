@@ -56,7 +56,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="relative text-xs text-slate-500">
-                    © {new Date().getFullYear()} {t("auth.brand.footer_suffix")}
+                    © {new Date().getFullYear()} Developed by Y. Alibek
                 </div>
             </aside>
 
