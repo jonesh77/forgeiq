@@ -160,7 +160,6 @@ export default function LandingPage() {
           href="/cogging"
           openLabel={t("home.programs.open")}
           viz={<video src="/videos/cogging.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />}
-          figLabel="FIG.01 · void closure"
         />
         <ProgramSeries
           flip
@@ -174,7 +173,6 @@ export default function LandingPage() {
           href="/processing_map"
           openLabel={t("home.programs.open")}
           viz={<video src="/videos/processing-map.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />}
-          figLabel="FIG.02 · η / ξ map"
         />
         <ProgramSeries
           num="03"
@@ -187,7 +185,6 @@ export default function LandingPage() {
           href="/3d_preform"
           openLabel={t("home.programs.open")}
           viz={<video src="/videos/preform.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />}
-          figLabel="FIG.03 · preform mesh"
         />
         <ProgramSeries
           flip
@@ -201,7 +198,6 @@ export default function LandingPage() {
           href="/workflow"
           openLabel={t("home.pipeline.cta")}
           viz={<video src="/videos/auto-pipeline.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />}
-          figLabel="FIG.04 · pipeline"
         />
       </div>
 
@@ -375,11 +371,11 @@ const ACCENT_STYLE: Record<string, { bg: string; text: string }> = {
 };
 
 function ProgramSeries({
-  num, accent, tag, subtitle, desc, specs, href, openLabel, viz, figLabel, flip,
+  num, accent, tag, subtitle, desc, specs, href, openLabel, viz, flip,
 }: {
   num: string; accent: keyof typeof ACCENT_STYLE; tag: string; title: string;
   subtitle: string; desc: string; specs: { v: string; l: string }[];
-  href: string; openLabel: string; viz: React.ReactNode; figLabel: string; flip?: boolean;
+  href: string; openLabel: string; viz: React.ReactNode; flip?: boolean;
 }) {
   const a = ACCENT_STYLE[accent];
   // Two refs — text and visual reveal independently, sliding in from opposite
@@ -425,9 +421,6 @@ function ProgramSeries({
           className={"relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 aspect-video shadow-2xl shadow-slate-900/40 " + (flip ? "lg:order-1" : "")}
           style={{ transform: vizTransform, opacity: vizSeen ? 1 : 0, transition: ease, willChange: "transform, opacity" }}
         >
-          <span className="absolute top-4 left-5 font-mono text-xs text-white bg-slate-950/60 px-2.5 py-1 rounded backdrop-blur-sm z-10">
-            {figLabel}
-          </span>
           {viz}
         </div>
       </div>
