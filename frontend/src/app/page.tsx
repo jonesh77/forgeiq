@@ -422,7 +422,7 @@ function ProgramSeries({
         </div>
         <div
           ref={vizRef}
-          className={"relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 aspect-[4/3] shadow-2xl shadow-slate-900/40 " + (flip ? "lg:order-1" : "")}
+          className={"relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 aspect-video shadow-2xl shadow-slate-900/40 " + (flip ? "lg:order-1" : "")}
           style={{ transform: vizTransform, opacity: vizSeen ? 1 : 0, transition: ease, willChange: "transform, opacity" }}
         >
           <span className="absolute top-4 left-5 font-mono text-xs text-white bg-slate-950/60 px-2.5 py-1 rounded backdrop-blur-sm z-10">
