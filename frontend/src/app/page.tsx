@@ -306,10 +306,10 @@ export default function LandingPage() {
             </h5>
             <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6 items-center">
               <div>
-                <p className="text-sm font-semibold text-white/80">NSMLab · Sogang University</p>
-                <p className="text-sm text-white/50 mt-1 leading-relaxed">35 Baekbeom-ro, Mapo-gu, Seoul 04107<br />Republic of Korea · Tel. +82 2.705.8635</p>
+                <p className="text-sm font-semibold text-white/80">NSMLab · TE608, Sogang University</p>
+                <p className="text-sm text-white/50 mt-1 leading-relaxed">Teilhard Hall (TE) Rm. 608<br />35 Baekbeom-ro, Mapo-gu, Seoul 04107<br />Republic of Korea · Tel. +82 2.705.8635</p>
                 <a
-                  href="https://maps.google.com/?q=Sogang+University+Seoul+Korea"
+                  href="https://maps.google.com/?q=37.5509,126.9387"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 mt-4 text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
@@ -319,7 +319,7 @@ export default function LandingPage() {
               </div>
               <div className="rounded-xl overflow-hidden border border-white/10 h-[200px]">
                 <iframe
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=126.930%2C37.545%2C126.945%2C37.558&layer=mapnik&marker=37.5515%2C126.9395"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=126.9360%2C37.5490%2C126.9415%2C37.5528&layer=mapnik&marker=37.5509%2C126.9387"
                   width="100%"
                   height="200"
                   style={{ border: 0 }}
